@@ -1,0 +1,13 @@
+{
+  "recommendations": [
+    "vscode-icons-team.vscode-icons",
+    "esbenp.prettier-vscode",
+    "usernamehw.errorlens",
+    "bradlc.vscode-tailwindcss",
+    "ultram4rine.vscode-choosealicense"
+  ],
+  "unwantedRecommendations": [
+    "eamodio.gitlens",
+    "davidanson.vscode-markdownlint"
+  ]
+}
