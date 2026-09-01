@@ -1,0 +1,24 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.cursorBlinking": "phase",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.guides.bracketPairs": "active",
+  "editor.guides.bracketPairsHorizontal": true,
+  "editor.wordWrap": "on",
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "explorer.compactFolders": false,
+  "files.encoding": "utf8",
+  "license.author": "Killer88967",
+  "license.default": "apache-2.0",
+  "workbench.colorTheme": "Dark Modern",
+  "workbench.iconTheme": "vscode-icons",
+  "chat.mcp.gallery.enabled": true,
+  "chat.mcp.access": "all",
+  "files.associations": {
+    "*.json": "json",
+    "*.css": "tailwindcss"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
+}
