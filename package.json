@@ -1,0 +1,21 @@
+{
+  "name": "discord-verification",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "author": "Killer88967",
+  "license": "Apache-2.0",
+  "scripts": {
+    "dev": "pnpm -r --parallel dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "11.25.0",
+      "onFail": "download"
+    }
+  },
+  "packageManager": "pnpm@11.25.0"
+}
