@@ -5,7 +5,16 @@
     "moduleResolution": "NodeNext",
     "lib": ["ES2022"],
     "types": ["node"],
-    "noEmit": true
+
+    "rootDir": ".",
+    "outDir": "dist"
   },
-  "include": ["src/**/*.ts", "generated/**/*.ts", "prisma.config.ts"]
+  "include": [
+    "src/**/*.ts",
+    "generated/**/*.ts"
+  ],
+  "exclude": [
+    "dist",
+    "node_modules"
+  ]
 }
