@@ -213,6 +213,9 @@ importers:
 
   apps/bot:
     dependencies:
+      '@verification/database':
+        specifier: workspace:*
+        version: link:../../packages/database
       discord.js:
         specifier: ^14.27.0
         version: 14.27.0
