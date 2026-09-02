@@ -1,6 +1,5 @@
 import { createHash, randomBytes } from "node:crypto";
 import { prisma } from "./prisma.js";
-import { text } from "node:stream/consumers";
 
 const DEFAULT_SESSION_TTL_MS = 10 * 60 * 1000;
 
