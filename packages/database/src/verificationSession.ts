@@ -36,6 +36,25 @@ export type VerificationSessionLookupResult =
       status: "USED";
     };
 
+export type CompleteVerificationSessionResult =
+  | {
+      status: "VERIFIED";
+      session: {
+        id: string;
+        guildId: string;
+        userId: string;
+      };
+    }
+  | {
+      status: "INVALID";
+    }
+  | {
+      status: "EXPIRED";
+    }
+  | {
+      status: "USED";
+    };
+
 function hashVerificationToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -72,7 +91,7 @@ export async function getVerificationSessionByToken(
 
   if (session.expiresAt.getTime() <= Date.now()) {
     await prisma.$transaction(async (tx) => {
-      await tx.verificationSession.update({
+      await tx.verificationSession.updateMany({
         where: {
           id: session.id,
         },
@@ -105,6 +124,123 @@ export async function getVerificationSessionByToken(
       expiresAt: session.expiresAt,
     },
   };
+}
+
+export async function completeVerificationSession(
+  token: string,
+): Promise<CompleteVerificationSessionResult> {
+  const tokenHash = hashVerificationToken(token);
+  const now = new Date();
+
+  return prisma.$transaction(async (tx) => {
+    const session = await tx.verificationSession.findUnique({
+      where: {
+        tokenHash,
+      },
+      select: {
+        id: true,
+        guildId: true,
+        userId: true,
+        status: true,
+        expiresAt: true,
+      },
+    });
+
+    if (!session) {
+      return {
+        status: "INVALID",
+      };
+    }
+
+    if (session.status !== "PENDING") {
+      return {
+        status: "USED",
+      };
+    }
+
+    if (session.expiresAt <= now) {
+      const expired = await tx.verificationSession.updateMany({
+        where: {
+          id: session.id,
+          status: "PENDING",
+        },
+        data: {
+          status: "EXPIRED",
+        },
+      });
+
+      if (expired.count === 1) {
+        await tx.verificationEvent.create({
+          data: {
+            guildId: session.guildId,
+            sessionId: session.id,
+            userId: session.userId,
+            type: "EXPIRED",
+          },
+        });
+      }
+
+      return {
+        status: "EXPIRED",
+      };
+    }
+
+    const completed = await tx.verificationSession.updateMany({
+      where: {
+        id: session.id,
+        status: "PENDING",
+        expiresAt: {
+          gt: now,
+        },
+      },
+      data: {
+        status: "VERIFIED",
+        completedAt: now,
+      },
+    });
+
+    if (completed.count !== 1) {
+      return {
+        status: "USED",
+      };
+    }
+
+    await tx.verifiedUser.upsert({
+      where: {
+        guildId_userId: {
+          guildId: session.guildId,
+          userId: session.userId,
+        },
+      },
+      create: {
+        guildId: session.guildId,
+        userId: session.userId,
+        firstVerifiedAt: now,
+        lastVerifiedAt: now,
+      },
+      update: {
+        lastVerifiedAt: now,
+      },
+    });
+
+    await tx.verificationEvent.create({
+      data: {
+        guildId: session.guildId,
+        sessionId: session.id,
+        userId: session.userId,
+        type: "VERIFIED",
+      },
+    });
+
+    return {
+      status: "VERIFIED",
+      session: {
+        id: session.id,
+        guildId: session.guildId,
+        userId: session.userId,
+      },
+    };
+  });
 }
 
 export async function createVerificationSession({
