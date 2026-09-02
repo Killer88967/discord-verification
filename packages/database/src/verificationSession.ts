@@ -1,5 +1,6 @@
 import { createHash, randomBytes } from "node:crypto";
 import { prisma } from "./prisma.js";
+import { text } from "node:stream/consumers";
 
 const DEFAULT_SESSION_TTL_MS = 10 * 60 * 1000;
 
@@ -91,23 +92,26 @@ export async function getVerificationSessionByToken(
 
   if (session.expiresAt.getTime() <= Date.now()) {
     await prisma.$transaction(async (tx) => {
-      await tx.verificationSession.updateMany({
+      const expired = await tx.verificationSession.updateMany({
         where: {
           id: session.id,
+          status: "PENDING",
         },
         data: {
           status: "EXPIRED",
         },
       });
 
-      await tx.verificationEvent.create({
-        data: {
-          guildId: session.guildId,
-          sessionId: session.id,
-          userId: session.userId,
-          type: "EXPIRED",
-        },
-      });
+      if (expired.count === 1) {
+        await tx.verificationEvent.create({
+          data: {
+            guildId: session.guildId,
+            sessionId: session.id,
+            userId: session.userId,
+            type: "EXPIRED",
+          },
+        });
+      }
     });
 
     return {
