@@ -16,8 +16,95 @@ export interface CreatedVerificationSession {
   expiresAt: Date;
 }
 
+export type VerificationSessionLookupResult =
+  | {
+      status: "VALID";
+      session: {
+        id: string;
+        guildId: string;
+        userId: string;
+        expiresAt: Date;
+      };
+    }
+  | {
+      status: "INVALID";
+    }
+  | {
+      status: "EXPIRED";
+    }
+  | {
+      status: "USED";
+    };
+
 function hashVerificationToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
+}
+
+export async function getVerificationSessionByToken(
+  token: string,
+): Promise<VerificationSessionLookupResult> {
+  const tokenHash = hashVerificationToken(token);
+
+  const session = await prisma.verificationSession.findUnique({
+    where: {
+      tokenHash,
+    },
+    select: {
+      id: true,
+      guildId: true,
+      userId: true,
+      status: true,
+      expiresAt: true,
+    },
+  });
+
+  if (!session) {
+    return {
+      status: "INVALID",
+    };
+  }
+
+  if (session.status !== "PENDING") {
+    return {
+      status: "USED",
+    };
+  }
+
+  if (session.expiresAt.getTime() <= Date.now()) {
+    await prisma.$transaction(async (tx) => {
+      await tx.verificationSession.update({
+        where: {
+          id: session.id,
+        },
+        data: {
+          status: "EXPIRED",
+        },
+      });
+
+      await tx.verificationEvent.create({
+        data: {
+          guildId: session.guildId,
+          sessionId: session.id,
+          userId: session.userId,
+          type: "EXPIRED",
+        },
+      });
+    });
+
+    return {
+      status: "EXPIRED",
+    };
+  }
+
+  return {
+    status: "VALID",
+    session: {
+      id: session.id,
+      guildId: session.guildId,
+      userId: session.userId,
+      expiresAt: session.expiresAt,
+    },
+  };
 }
 
 export async function createVerificationSession({
