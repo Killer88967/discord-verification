@@ -1,0 +1,113 @@
+generator client {
+    provider = "prisma-client"
+    output   = "../generated/prisma"
+}
+
+datasource db {
+    provider = "postgresql"
+}
+
+enum VerificationStatus {
+    PENDING
+    VERIFIED
+    REJECTED
+    EXPIRED
+}
+
+enum VerificationEventType {
+    SESSION_CREATED
+    SESSION_OPENED
+    VERIFIED
+    REJECTED
+    EXPIRED
+}
+
+model Guild {
+    id   String  @id
+    name String?
+
+    config   GuildConfig?
+    sessions VerificationSession[]
+    users    VerifiedUser[]
+    events   VerificationEvent[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model GuildConfig {
+    guildId String @id
+    guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+    verifiedRoleId        String?
+    verificationChannelId String?
+    logChannelId          String?
+
+    enabled Boolean @default(true)
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model VerificationSession {
+    id String @id @default(cuid())
+
+    guildId String
+    guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+    userId String
+
+    tokenHash String @unique
+
+    status VerificationStatus @default(PENDING)
+
+    expiresAt   DateTime
+    completedAt DateTime?
+
+    events VerificationEvent[]
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([guildId, userId])
+    @@index([status])
+    @@index([expiresAt])
+}
+
+model VerifiedUser {
+    id String @id @default(cuid())
+
+    guildId String
+    guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+    userId String
+
+    firstVerifiedAt DateTime @default(now())
+    lastVerifiedAt  DateTime @default(now())
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([guildId, userId])
+    @@index([userId])
+}
+
+model VerificationEvent {
+    id String @id @default(cuid())
+
+    guildId String
+    guild   Guild  @relation(fields: [guildId], references: [id], onDelete: Cascade)
+
+    sessionId String?
+    session   VerificationSession? @relation(fields: [sessionId], references: [id], onDelete: SetNull)
+
+    userId String
+
+    type VerificationEventType
+
+    createdAt DateTime @default(now())
+
+    @@index([guildId, userId])
+    @@index([sessionId])
+    @@index([createdAt])
+}

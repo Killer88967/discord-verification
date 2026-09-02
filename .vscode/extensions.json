@@ -4,10 +4,12 @@
     "esbenp.prettier-vscode",
     "usernamehw.errorlens",
     "bradlc.vscode-tailwindcss",
-    "ultram4rine.vscode-choosealicense"
+    "ultram4rine.vscode-choosealicense",
+    "prisma.prisma"
   ],
   "unwantedRecommendations": [
     "eamodio.gitlens",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "ms-azuretools.vscode-containers"
   ]
 }
