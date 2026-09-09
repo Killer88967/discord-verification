@@ -11,7 +11,9 @@
     "typecheck": "pnpm -r typecheck",
     "gen:secret": "openssl rand -hex 32",
     "db:gen": "pnpm --filter @verification/database generate",
-    "db:build": "pnpm --filter @verification/database build"
+    "db:build": "pnpm --filter @verification/database build",
+    "db:dev": "pnpm --filter @verification/database dev",
+    "db:mig": "pnpm --filter @verification/database migrate --name"
   },
   "devEngines": {
     "packageManager": {

@@ -34,6 +34,7 @@ export async function storeVerificationSignals({
         kind: signal.kind,
         valueHash: signal.valueHash,
       })),
+      skipDuplicates: true,
     });
   });
 }

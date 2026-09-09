@@ -196,6 +196,7 @@ export type VerificationSignalOrderByWithRelationInput = {
 
 export type VerificationSignalWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  sessionId_kind?: Prisma.VerificationSignalSessionIdKindCompoundUniqueInput
   AND?: Prisma.VerificationSignalWhereInput | Prisma.VerificationSignalWhereInput[]
   OR?: Prisma.VerificationSignalWhereInput[]
   NOT?: Prisma.VerificationSignalWhereInput | Prisma.VerificationSignalWhereInput[]
@@ -204,7 +205,7 @@ export type VerificationSignalWhereUniqueInput = Prisma.AtLeast<{
   valueHash?: Prisma.StringFilter<"VerificationSignal"> | string
   createdAt?: Prisma.DateTimeFilter<"VerificationSignal"> | Date | string
   session?: Prisma.XOR<Prisma.VerificationSessionScalarRelationFilter, Prisma.VerificationSessionWhereInput>
-}, "id">
+}, "id" | "sessionId_kind">
 
 export type VerificationSignalOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -291,6 +292,11 @@ export type VerificationSignalListRelationFilter = {
 
 export type VerificationSignalOrderByRelationAggregateInput = {
   _count?: Prisma.SortOrder
+}
+
+export type VerificationSignalSessionIdKindCompoundUniqueInput = {
+  sessionId: string
+  kind: $Enums.VerificationSignalKind
 }
 
 export type VerificationSignalCountOrderByAggregateInput = {

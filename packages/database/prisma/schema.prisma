@@ -144,6 +144,7 @@ model VerificationSignal {
 
     createdAt DateTime @default(now())
 
+    @@unique([sessionId, kind])
     @@index([kind, valueHash])
     @@index([sessionId])
 }
