@@ -129,13 +129,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
-    deviceMatches:
-      result.status === "VERIFIED"
-        ? deviceMatches.map((match) => ({
-            guildId: match.guildId,
-            userId: match.userId,
-          }))
-        : [],
+    deviceMatchCount: result.status === "VERIFIED" ? deviceMatches.length : 0,
   });
 }
 
