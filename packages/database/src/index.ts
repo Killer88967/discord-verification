@@ -22,3 +22,5 @@ export {
   type StoredVerificationSignal,
   type StoreVerificationSignalsOptions,
 } from "./verificationSignals.js";
+
+export { findDeviceMatches, type DeviceMatch } from "./deviceMatches.js";
