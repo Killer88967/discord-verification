@@ -1,1 +1,314 @@
-# discord-verification
+Discord Verification
+
+A self-hosted Discord verification system built to provide more advanced verification than a simple button or CAPTCHA.
+
+Discord Verification combines a Discord bot, web-based verification flow, device/browser signals, and a persistent database to help Discord servers verify users and detect potentially linked accounts.
+
+[!WARNING]
+This project is currently under development. APIs, database schemas, configuration, and behavior may change.
+
+Features
+
+- Discord verification through generated, single-use verification sessions
+- Web-based verification flow
+- Automatic verified-role assignment
+- Configurable verification settings per Discord server
+- Expiring verification sessions
+- Verification event logging
+- Browser and device signal collection
+- Hashed verification signals
+- Detection infrastructure for potentially linked Discord accounts
+- PostgreSQL-backed persistent storage
+- Monorepo architecture with reusable internal packages
+- Written primarily in TypeScript
+
+How It Works
+
+1. A Discord user starts verification through the bot.
+2. The bot creates a new verification session in the database.
+3. A unique verification URL is generated for that session.
+4. The user opens the verification website.
+5. The verification service validates the session and processes verification signals.
+6. When verification succeeds, the session is marked as verified.
+7. The web service communicates with the bot’s internal API.
+8. The bot assigns the configured verified role to the Discord user.
+
+Verification sessions have an expiration time and their lifecycle can be recorded through events such as:
+
+- SESSION_CREATED
+- SESSION_OPENED
+- VERIFIED
+- REJECTED
+- EXPIRED
+
+Verification Signals
+
+The system currently has support for verification signals including:
+
+- Device token
+- User agent
+- Timezone
+- Language
+- Platform
+- Screen information
+- Hardware information
+- Network information
+
+Signal values are designed to be stored as hashes rather than directly storing their original values.
+
+These signals can be used by the verification system to identify relationships between verification attempts and help detect potentially linked accounts.
+
+Project Structure
+
+discord-verification/
+├── apps/
+│ ├── bot/ # Discord bot
+│ └── web/ # Next.js verification website
+│
+├── packages/
+│ ├── database/ # Prisma models and database utilities
+│ ├── security/ # Security and verification utilities
+│ ├── shared/ # Shared application utilities
+│ └── types/ # Shared TypeScript types
+│
+├── package.json
+├── pnpm-workspace.yaml
+├── tsconfig.json
+└── README.md
+
+Tech Stack
+
+Technology Usage
+TypeScript Primary language
+Discord.js Discord bot
+Next.js Verification website and API
+React Web interface
+Tailwind CSS Web styling
+Prisma Database ORM/tooling
+PostgreSQL Persistent database
+pnpm Package manager and monorepo workspace
+
+Requirements
+
+Before running the project, you will need:
+
+- Node.js
+- pnpm 12.3.4
+- PostgreSQL
+- A Discord application and bot
+- OpenSSL or another method of generating secure secrets
+
+Installation
+
+Clone the repository:
+
+git clone https://github.com/Killer88967/discord-verification.git
+cd discord-verification
+
+Install dependencies:
+
+pnpm install
+
+Environment Variables
+
+The project requires several environment variables depending on which application is being run.
+
+Discord Bot
+
+DISCORD_TOKEN=
+DISCORD_CLIENT_ID=
+VERIFY_URL=http://localhost:3000
+INTERNAL_API_SECRET=
+INTERNAL_API_PORT=3100
+DATABASE_URL=
+
+Web Application
+
+DATABASE_URL=
+FINGERPRINT_HMAC_SECRET=
+BOT_INTERNAL_URL=http://localhost:3100
+INTERNAL_API_SECRET=
+
+INTERNAL_API_SECRET must match between the bot and web application.
+
+You can generate a random secret using:
+
+pnpm gen:secret
+
+which currently uses:
+
+openssl rand -hex 32
+
+Do not commit real secrets, Discord tokens, database credentials, or production environment files to Git.
+
+Database Setup
+
+The database package uses Prisma with PostgreSQL.
+
+Generate the Prisma client:
+
+pnpm db:gen
+
+Run a development migration:
+
+pnpm db:mig <migration-name>
+
+For example:
+
+pnpm db:mig initial
+
+The database currently stores information including:
+
+- Discord guilds
+- Guild verification configuration
+- Verification sessions
+- Verified users
+- Verification events
+- Verification signals
+- Browser devices
+- Potential account links
+
+Development
+
+Run all development applications in parallel:
+
+pnpm dev
+
+The root workspace runs each package’s dev command through pnpm.
+
+You can also run individual workspace applications.
+
+Bot
+
+pnpm --filter @verification/bot dev
+
+Web
+
+pnpm --filter @verification/web dev
+
+By default, the Next.js application runs on:
+
+http://localhost:3000
+
+The bot’s internal API defaults to port:
+
+3100
+
+unless INTERNAL_API_PORT is configured differently.
+
+Building
+
+Build the entire workspace:
+
+pnpm build
+
+Run TypeScript checks across the workspace:
+
+pnpm typecheck
+
+Database Models
+
+The verification database is centered around several core models.
+
+Guild
+
+Represents a Discord server using the verification system.
+
+GuildConfig
+
+Stores server-specific settings such as:
+
+- Verified role
+- Verification channel
+- Log channel
+- Whether verification is enabled
+
+VerificationSession
+
+Represents an individual verification attempt and contains its status, user, server, expiration time, events, and collected signals.
+
+Possible states are:
+
+PENDING
+VERIFIED
+REJECTED
+EXPIRED
+
+VerifiedUser
+
+Tracks users that have successfully completed verification in a server.
+
+VerificationEvent
+
+Records events that occur during a verification session.
+
+VerificationSignal
+
+Stores hashed signals associated with a verification attempt.
+
+BrowserDevice
+
+Represents a recognized browser/device token using its hashed value.
+
+AccountLink
+
+Represents a detected relationship between two Discord user IDs.
+
+Links can currently have confidence levels of:
+
+LOW
+MEDIUM
+HIGH
+
+Security
+
+The project is designed so sensitive verification values can be processed as hashes instead of being stored directly.
+
+Several secrets are also used internally, including:
+
+- Discord bot token
+- Internal bot/web API secret
+- Fingerprint HMAC secret
+- Database credentials
+
+Production deployments should always use strong, independently generated secrets and HTTPS.
+
+Never expose INTERNAL_API_SECRET or FINGERPRINT_HMAC_SECRET to browser-side JavaScript.
+
+Monorepo
+
+This repository uses pnpm workspaces.
+
+The primary applications are:
+
+@verification/bot
+@verification/web
+
+Internal packages are shared between applications using workspace dependencies such as:
+
+{
+"@verification/database": "workspace:\*"
+}
+
+This keeps database, security, shared logic, and types separated from application-specific code.
+
+Contributing
+
+Contributions, bug reports, and suggestions are welcome.
+
+If contributing code:
+
+1. Fork the repository.
+2. Create a branch for your changes.
+3. Install dependencies with pnpm install.
+4. Make your changes.
+5. Run the build and type checks.
+6. Submit a pull request.
+
+License
+
+This project is licensed under the Apache License 2.0.
+
+Author
+
+Created by Killer88967.
