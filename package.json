@@ -9,7 +9,6 @@
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-    
     "db:gen": "pnpm --filter @verification/database generate",
     "db:build": "pnpm --filter @verification/database build",
     "db:dev": "pnpm --filter @verification/database dev",
@@ -25,7 +24,6 @@
   },
   "packageManager": "pnpm@12.3.4",
   "devDependencies": {
-    "concurrently": "^10.0.5",
     "typescript": "^7.0.2"
   }
 }
