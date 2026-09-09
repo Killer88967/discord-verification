@@ -1,5 +1,7 @@
 import { getVerificationSessionByToken } from "@verification/database";
-import Link from "next/link";
+import { VerificationClient } from "@/components/VerificationClient";
+
+export const dynamic = "force-dynamic";
 
 interface VerifyPageProps {
   params: Promise<{
@@ -66,7 +68,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
           </div>
         </div>
 
-        <p>Placeholder</p>
+        <VerificationClient token={token} />
 
         <p className="mt-5 text-center text-xs text-zinc-500">
           This verification session can only be completed once.
