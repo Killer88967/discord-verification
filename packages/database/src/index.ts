@@ -9,3 +9,8 @@ export {
   type CreatedVerificationSession,
   type VerificationSessionLookupResult,
 } from "./verificationSession.js";
+
+export {
+  getRoleAssignmentTarget,
+  type RoleAssignmentTargetResult,
+} from "./roleAssignment.js";

@@ -1,9 +1,12 @@
 import "dotenv/config";
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 import { commands } from "./commands/index.js";
+import { startInternalServer } from "./internal/server.js";
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
+const internalApiSecret = process.env.INTERNAL_API_SECRET;
+const internalApiPort = Number(process.env.INTERNAL_API_PORT ?? "3100");
 
 if (!token) {
   throw new Error("DISCORD_TOKEN is not defined.");
@@ -11,6 +14,14 @@ if (!token) {
 
 if (!clientId) {
   throw new Error("DISCORD_CLIENT_ID is not defined.");
+}
+
+if (!internalApiSecret) {
+  throw new Error("INTERNAL_API_SECRET is not defined.");
+}
+
+if (!Number.isInteger(internalApiPort) || internalApiPort <= 0) {
+  throw new Error("INTERNAL_API_PORT is invalid.");
 }
 
 const client = new Client({
@@ -23,6 +34,12 @@ const rest = new REST({
 
 client.once("clientReady", async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
+
+  startInternalServer({
+    client: readyClient,
+    secret: internalApiSecret,
+    port: internalApiPort,
+  });
 
   await rest.put(
     // Routes.applicationCommands(clientId)
