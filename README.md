@@ -62,8 +62,13 @@ Project Structure
 
 discord-verification/
 ├── apps/
-│ ├── bot/ # Discord bot
-│ └── web/ # Next.js verification website
+│ ├── bot/
+│ │ ├── src/ # Discord bot source
+│ │ └── .env.example # Bot environment template
+│ │
+│ └── web/
+│ ├── src/ # Next.js verification website
+│ └── .env.example # Web environment template
 │
 ├── packages/
 │ ├── database/ # Prisma models and database utilities
@@ -109,41 +114,82 @@ Install dependencies:
 
 pnpm install
 
+Environment Setup
+
+Environment templates are included for both applications.
+
+Create the bot environment file:
+
+cp apps/bot/.env.example apps/bot/.env
+
+Create the web environment file:
+
+cp apps/web/.env.example apps/web/.env
+
+Then replace the placeholder values inside each file.
+
+Bot Environment
+
+apps/bot/.env
+
+DISCORD_TOKEN=REPLACE
+DISCORD_CLIENT_ID=REPLACE
+VERIFY_URL=http://localhost:3000
+DATABASE_URL="postgres://postgres:postgres@localhost:51214/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0"
+
+# Internal
+
+INTERNAL_API_SECRET=REPLACE
+INTERNAL_API_PORT=3100
+
+Web Environment
+
+apps/web/.env
+
+DATABASE_URL="postgres://postgres:postgres@localhost:51214/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0"
+
+# Internal
+
+INTERNAL_API_SECRET=REPLACE
+BOT_INTERNAL_URL=http://127.0.0.1:3100
+
+# Security
+
+FINGERPRINT_HMAC_SECRET=REPLACE
+
 Environment Variables
 
-The project requires several environment variables depending on which application is being run.
+Variable Application Description
+DISCORD_TOKEN Bot Discord bot token
+DISCORD_CLIENT_ID Bot Discord application/client ID
+VERIFY_URL Bot Base URL of the verification website
+DATABASE_URL Bot & Web PostgreSQL connection string
+INTERNAL_API_SECRET Bot & Web Shared secret used for internal communication
+INTERNAL_API_PORT Bot Port used by the bot’s internal API
+BOT_INTERNAL_URL Web URL used by the web application to communicate with the bot
+FINGERPRINT_HMAC_SECRET Web Secret used when hashing verification fingerprint data
 
-Discord Bot
+[!IMPORTANT]
+INTERNAL_API_SECRET must contain the same value in both the bot and web environment files.
 
-DISCORD_TOKEN=
-DISCORD_CLIENT_ID=
-VERIFY_URL=http://localhost:3000
-INTERNAL_API_SECRET=
-INTERNAL_API_PORT=3100
-DATABASE_URL=
-
-Web Application
-
-DATABASE_URL=
-FINGERPRINT_HMAC_SECRET=
-BOT_INTERNAL_URL=http://localhost:3100
-INTERNAL_API_SECRET=
-
-INTERNAL_API_SECRET must match between the bot and web application.
-
-You can generate a random secret using:
+Generate a secure secret with:
 
 pnpm gen:secret
 
-which currently uses:
+This currently uses:
 
 openssl rand -hex 32
 
-Do not commit real secrets, Discord tokens, database credentials, or production environment files to Git.
+You should generate separate secure values where appropriate rather than reusing a secret for unrelated purposes.
+
+[!CAUTION]
+Never commit real Discord tokens, database credentials, internal API secrets, fingerprint secrets, or production environment files to Git.
 
 Database Setup
 
 The database package uses Prisma with PostgreSQL.
+
+Make sure DATABASE_URL points to a running PostgreSQL database before continuing.
 
 Generate the Prisma client:
 
@@ -176,7 +222,7 @@ pnpm dev
 
 The root workspace runs each package’s dev command through pnpm.
 
-You can also run individual workspace applications.
+You can also run individual applications.
 
 Bot
 
@@ -186,15 +232,15 @@ Web
 
 pnpm --filter @verification/web dev
 
-By default, the Next.js application runs on:
+By default, the Next.js application runs at:
 
 http://localhost:3000
 
-The bot’s internal API defaults to port:
+The bot’s internal API defaults to:
 
-3100
+http://127.0.0.1:3100
 
-unless INTERNAL_API_PORT is configured differently.
+unless INTERNAL_API_PORT or BOT_INTERNAL_URL is configured differently.
 
 Building
 
@@ -264,7 +310,7 @@ Security
 
 The project is designed so sensitive verification values can be processed as hashes instead of being stored directly.
 
-Several secrets are also used internally, including:
+Several secrets are used internally, including:
 
 - Discord bot token
 - Internal bot/web API secret
@@ -273,7 +319,7 @@ Several secrets are also used internally, including:
 
 Production deployments should always use strong, independently generated secrets and HTTPS.
 
-Never expose INTERNAL_API_SECRET or FINGERPRINT_HMAC_SECRET to browser-side JavaScript.
+Never expose INTERNAL_API_SECRET, FINGERPRINT_HMAC_SECRET, or other server-side credentials to browser-side JavaScript.
 
 Monorepo
 
@@ -301,9 +347,10 @@ If contributing code:
 1. Fork the repository.
 2. Create a branch for your changes.
 3. Install dependencies with pnpm install.
-4. Make your changes.
-5. Run the build and type checks.
-6. Submit a pull request.
+4. Copy and configure the required .env.example files.
+5. Make your changes.
+6. Run the build and type checks.
+7. Submit a pull request.
 
 License
 
