@@ -1,4 +1,4 @@
-import { createVerificationSession } from "@verification/database";
+import { createVerificationLink } from "../verification/createVerificationLink.js";
 import {
   ChatInputCommandInteraction,
   MessageFlags,
@@ -30,19 +30,17 @@ export const verifyCommand = {
       flags: MessageFlags.Ephemeral,
     });
 
-    const session = await createVerificationSession({
+    const url = await createVerificationLink({
       guildId: interaction.guild.id,
       guildName: interaction.guild.name,
       userId: interaction.user.id,
     });
 
-    const url = new URL(`/verify/${session.token}`, verifyUrl);
-
     await interaction.editReply({
       content: [
         "Your verification link is ready.",
         "",
-        url.toString(),
+        url,
         "",
         "This link expires in 10 minutes and can only be used once.",
       ].join("\n"),

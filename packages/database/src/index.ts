@@ -14,3 +14,5 @@ export {
   getRoleAssignmentTarget,
   type RoleAssignmentTargetResult,
 } from "./roleAssignment.js";
+
+export { configureGuild, type ConfigureGuildOptions } from "./guildConfig.js";

@@ -2,6 +2,7 @@ import "dotenv/config";
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 import { commands } from "./commands/index.js";
 import { startInternalServer } from "./internal/server.js";
+import { createVerificationLink } from "./verification/createVerificationLink.js";
 
 const token = process.env.DISCORD_TOKEN;
 const clientId = process.env.DISCORD_CLIENT_ID;
@@ -56,6 +57,51 @@ client.once("clientReady", async (readyClient) => {
 });
 
 client.on("interactionCreate", async (interaction) => {
+  if (interaction.isButton() && interaction.customId === "verification:start") {
+    if (!interaction.inCachedGuild()) {
+      return;
+    }
+
+    try {
+      await interaction.deferReply({
+        flags: 64,
+      });
+
+      const url = await createVerificationLink({
+        guildId: interaction.guild.id,
+        guildName: interaction.guild.name,
+        userId: interaction.user.id,
+      });
+
+      await interaction.editReply({
+        content: [
+          "Your verification link is ready.",
+          "",
+          url,
+          "",
+          "This link expires in 10 minutes and can only be used once.",
+        ].join("\n"),
+      });
+    } catch (error) {
+      console.error("Failed to create verification link:", error);
+
+      if (interaction.deferred || interaction.replied) {
+        await interaction.editReply({
+          content:
+            "Something went wrong while creating your verification link.",
+        });
+      } else {
+        await interaction.reply({
+          content:
+            "Something went wrong while creating your verification link.",
+          flags: 64,
+        });
+      }
+    }
+
+    return;
+  }
+
   if (!interaction.isChatInputCommand()) {
     return;
   }
@@ -84,6 +130,10 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.reply(message);
     }
   }
+});
+
+client.on("interactionCreate", async (interaction) => {
+  // existing slash-command handling...
 });
 
 await client.login(token);
