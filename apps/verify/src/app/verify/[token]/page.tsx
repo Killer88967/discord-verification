@@ -54,18 +54,8 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
           </h1>
 
           <p className="mt-2 text-sm leading-6 text-zinc-400">
-            Continue with Discord to verify that this account belongs to you.
+            Your browser is securely completing the verification process.
           </p>
-        </div>
-
-        <div className="mb-6 rounded-xl border border-zinc-800 bg-zinc-950 p-4">
-          <div className="text-xs font-medium uppercase tracking-wide text-zinc-500">
-            Verification session
-          </div>
-
-          <div className="mt-2 text-sm text-zinc-300">
-            This link is valid and waiting for authentication.
-          </div>
         </div>
 
         <VerificationClient token={token} />

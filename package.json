@@ -9,22 +9,23 @@
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
-
+    
     "db:gen": "pnpm --filter @verification/database generate",
     "db:build": "pnpm --filter @verification/database build",
     "db:dev": "pnpm --filter @verification/database dev",
-
-    "vr:dev": "pnpm --filter @verification/verify dev"
+    "vr:dev": "pnpm --filter @verification/verify dev",
+    "bot:dev": "pnpm --filter @verification/bot dev"
   },
   "devEngines": {
     "packageManager": {
       "name": "pnpm",
-      "version": "11.25.0",
+      "version": "12.3.4",
       "onFail": "download"
     }
   },
-  "packageManager": "pnpm@11.25.0",
+  "packageManager": "pnpm@12.3.4",
   "devDependencies": {
+    "concurrently": "^10.0.5",
     "typescript": "^7.0.2"
   }
 }
