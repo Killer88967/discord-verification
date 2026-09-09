@@ -1,6 +1,6 @@
 import { getAccountLinksForUser } from "@verification/database";
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
-import { Command } from "../types/Command.js";
+import { Command } from "../types/command/index.js";
 
 export const checkCommand = new Command()
   .name("check")

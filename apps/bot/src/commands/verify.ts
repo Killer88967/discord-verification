@@ -1,5 +1,5 @@
 import { createVerificationLink } from "../verification/createVerificationLink.js";
-import { Command } from "../types/Command.js";
+import { Command } from "../types/command/index.js";
 
 const verifyUrl = process.env.VERIFY_URL;
 

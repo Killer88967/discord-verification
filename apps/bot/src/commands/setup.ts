@@ -8,7 +8,7 @@ import {
   MessageFlags,
   PermissionFlagsBits,
 } from "discord.js";
-import { Command } from "../types/Command.js";
+import { Command } from "../types/command/index.js";
 
 export const setupCommand = new Command()
   .name("setup")

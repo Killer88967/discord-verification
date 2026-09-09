@@ -2,12 +2,13 @@ import {
   ApplicationIntegrationType,
   type AutocompleteInteraction,
   type ChatInputCommandInteraction,
-  InteractionContextType,
   type LocalizationMap,
+  InteractionContextType,
   MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
 import * as COptions from "./CommandOptions.js";
+import { SubcommandGroup } from "./SubcommandGroup.js";
 import { Subcommand } from "./Subcommand.js";
 
 /**
@@ -30,7 +31,7 @@ export type AutocompleteHandler = (
 ) => Promise<void>;
 
 /**
- * Fluent builder aused to define and execute Discord slash commands.
+ * Fluent builder used to define and execute Discord slash commands.
  *
  * @example
  * ```ts
@@ -421,6 +422,19 @@ export class Command<TGuildOnly extends boolean = false> {
     const subcommand = build(new Subcommand());
 
     this.data.addSubcommand(subcommand.data);
+
+    return this;
+  }
+
+  /**
+   * Adds a subcommand group.
+   */
+  public subcommandGroup(
+    build: (group: SubcommandGroup) => SubcommandGroup,
+  ): this {
+    const group = build(new SubcommandGroup());
+
+    this.data.addSubcommandGroup(group.data);
 
     return this;
   }
