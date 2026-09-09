@@ -10,10 +10,7 @@
     "build": "pnpm -r build",
     "typecheck": "pnpm -r typecheck",
     "db:gen": "pnpm --filter @verification/database generate",
-    "db:build": "pnpm --filter @verification/database build",
-    "db:dev": "pnpm --filter @verification/database dev",
-    "vr:dev": "pnpm --filter @verification/verify dev",
-    "bot:dev": "pnpm --filter @verification/bot dev"
+    "db:build": "pnpm --filter @verification/database build"
   },
   "devEngines": {
     "packageManager": {
