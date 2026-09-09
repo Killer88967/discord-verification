@@ -132,8 +132,4 @@ client.on("interactionCreate", async (interaction) => {
   }
 });
 
-client.on("interactionCreate", async (interaction) => {
-  // existing slash-command handling...
-});
-
 await client.login(token);
