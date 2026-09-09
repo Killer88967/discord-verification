@@ -126,7 +126,7 @@ importers:
         version: 17.4.2
     devDependencies:
       '@types/node':
-        specifier: ^26.4.0
+        specifier: ^26.5.0
         version: 26.5.0
       tsx:
         specifier: ^4.23.13
@@ -137,6 +137,9 @@ importers:
       '@verification/database':
         specifier: workspace:*
         version: link:../../packages/database
+      '@verification/security':
+        specifier: workspace:*
+        version: link:../../packages/security
       next:
         specifier: 16.3.4
         version: 16.3.4(@babel/core@7.29.7(supports-color@10.2.2))(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
@@ -188,7 +191,7 @@ importers:
         version: 8.23.0
     devDependencies:
       '@types/node':
-        specifier: ^26.4.0
+        specifier: ^26.5.0
         version: 26.5.0
       '@types/pg':
         specifier: ^8.23.1
@@ -196,6 +199,12 @@ importers:
       prisma:
         specifier: ^7.10.0
         version: 7.10.0(@types/react-dom@19.2.7(@types/react@19.2.18))(@types/react@19.2.18)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)(typescript@7.0.2)
+
+  packages/security:
+    devDependencies:
+      '@types/node':
+        specifier: ^26.5.0
+        version: 26.5.0
 
   packages/types: {}
 
