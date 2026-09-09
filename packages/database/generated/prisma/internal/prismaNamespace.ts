@@ -403,7 +403,8 @@ export const ModelName = {
   VerifiedUser: 'VerifiedUser',
   VerificationEvent: 'VerificationEvent',
   BrowserDevice: 'BrowserDevice',
-  VerificationSignal: 'VerificationSignal'
+  VerificationSignal: 'VerificationSignal',
+  AccountLink: 'AccountLink'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -419,7 +420,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "guildConfig" | "verificationSession" | "verifiedUser" | "verificationEvent" | "browserDevice" | "verificationSignal"
+    modelProps: "guild" | "guildConfig" | "verificationSession" | "verifiedUser" | "verificationEvent" | "browserDevice" | "verificationSignal" | "accountLink"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -941,6 +942,80 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    AccountLink: {
+      payload: Prisma.$AccountLinkPayload<ExtArgs>
+      fields: Prisma.AccountLinkFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.AccountLinkFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.AccountLinkFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        findFirst: {
+          args: Prisma.AccountLinkFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.AccountLinkFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        findMany: {
+          args: Prisma.AccountLinkFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>[]
+        }
+        create: {
+          args: Prisma.AccountLinkCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        createMany: {
+          args: Prisma.AccountLinkCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.AccountLinkCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>[]
+        }
+        delete: {
+          args: Prisma.AccountLinkDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        update: {
+          args: Prisma.AccountLinkUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        deleteMany: {
+          args: Prisma.AccountLinkDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.AccountLinkUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.AccountLinkUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>[]
+        }
+        upsert: {
+          args: Prisma.AccountLinkUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$AccountLinkPayload>
+        }
+        aggregate: {
+          args: Prisma.AccountLinkAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateAccountLink>
+        }
+        groupBy: {
+          args: Prisma.AccountLinkGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountLinkGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.AccountLinkCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AccountLinkCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -1064,6 +1139,21 @@ export const VerificationSignalScalarFieldEnum = {
 export type VerificationSignalScalarFieldEnum = (typeof VerificationSignalScalarFieldEnum)[keyof typeof VerificationSignalScalarFieldEnum]
 
 
+export const AccountLinkScalarFieldEnum = {
+  id: 'id',
+  userAId: 'userAId',
+  userBId: 'userBId',
+  reason: 'reason',
+  confidence: 'confidence',
+  firstSeenAt: 'firstSeenAt',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountLinkScalarFieldEnum = (typeof AccountLinkScalarFieldEnum)[keyof typeof AccountLinkScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -1168,6 +1258,34 @@ export type EnumVerificationSignalKindFieldRefInput<$PrismaModel> = FieldRefInpu
  * Reference to a field of type 'VerificationSignalKind[]'
  */
 export type ListEnumVerificationSignalKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationSignalKind[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountLinkReason'
+ */
+export type EnumAccountLinkReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountLinkReason'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountLinkReason[]'
+ */
+export type ListEnumAccountLinkReasonFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountLinkReason[]'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountLinkConfidence'
+ */
+export type EnumAccountLinkConfidenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountLinkConfidence'>
+    
+
+
+/**
+ * Reference to a field of type 'AccountLinkConfidence[]'
+ */
+export type ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountLinkConfidence[]'>
     
 
 
@@ -1342,6 +1460,7 @@ export type GlobalOmitConfig = {
   verificationEvent?: Prisma.VerificationEventOmit
   browserDevice?: Prisma.BrowserDeviceOmit
   verificationSignal?: Prisma.VerificationSignalOmit
+  accountLink?: Prisma.AccountLinkOmit
 }
 
 /* Types for Logging */

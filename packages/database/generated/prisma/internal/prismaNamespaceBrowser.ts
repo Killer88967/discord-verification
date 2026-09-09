@@ -57,7 +57,8 @@ export const ModelName = {
   VerifiedUser: 'VerifiedUser',
   VerificationEvent: 'VerificationEvent',
   BrowserDevice: 'BrowserDevice',
-  VerificationSignal: 'VerificationSignal'
+  VerificationSignal: 'VerificationSignal',
+  AccountLink: 'AccountLink'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -158,6 +159,21 @@ export const VerificationSignalScalarFieldEnum = {
 } as const
 
 export type VerificationSignalScalarFieldEnum = (typeof VerificationSignalScalarFieldEnum)[keyof typeof VerificationSignalScalarFieldEnum]
+
+
+export const AccountLinkScalarFieldEnum = {
+  id: 'id',
+  userAId: 'userAId',
+  userBId: 'userBId',
+  reason: 'reason',
+  confidence: 'confidence',
+  firstSeenAt: 'firstSeenAt',
+  lastSeenAt: 'lastSeenAt',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type AccountLinkScalarFieldEnum = (typeof AccountLinkScalarFieldEnum)[keyof typeof AccountLinkScalarFieldEnum]
 
 
 export const SortOrder = {

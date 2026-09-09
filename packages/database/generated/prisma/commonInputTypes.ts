@@ -199,6 +199,40 @@ export type EnumVerificationSignalKindWithAggregatesFilter<$PrismaModel = never>
   _max?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
 }
 
+export type EnumAccountLinkReasonFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkReason | Prisma.EnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel> | $Enums.AccountLinkReason
+}
+
+export type EnumAccountLinkConfidenceFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkConfidence | Prisma.EnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel> | $Enums.AccountLinkConfidence
+}
+
+export type EnumAccountLinkReasonWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkReason | Prisma.EnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkReasonWithAggregatesFilter<$PrismaModel> | $Enums.AccountLinkReason
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel>
+}
+
+export type EnumAccountLinkConfidenceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkConfidence | Prisma.EnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkConfidenceWithAggregatesFilter<$PrismaModel> | $Enums.AccountLinkConfidence
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -395,6 +429,40 @@ export type NestedEnumVerificationSignalKindWithAggregatesFilter<$PrismaModel = 
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
+}
+
+export type NestedEnumAccountLinkReasonFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkReason | Prisma.EnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel> | $Enums.AccountLinkReason
+}
+
+export type NestedEnumAccountLinkConfidenceFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkConfidence | Prisma.EnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel> | $Enums.AccountLinkConfidence
+}
+
+export type NestedEnumAccountLinkReasonWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkReason | Prisma.EnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkReason[] | Prisma.ListEnumAccountLinkReasonFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkReasonWithAggregatesFilter<$PrismaModel> | $Enums.AccountLinkReason
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountLinkReasonFilter<$PrismaModel>
+}
+
+export type NestedEnumAccountLinkConfidenceWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.AccountLinkConfidence | Prisma.EnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  in?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  notIn?: $Enums.AccountLinkConfidence[] | Prisma.ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumAccountLinkConfidenceWithAggregatesFilter<$PrismaModel> | $Enums.AccountLinkConfidence
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumAccountLinkConfidenceFilter<$PrismaModel>
 }
 
 

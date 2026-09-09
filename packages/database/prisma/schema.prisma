@@ -7,6 +7,16 @@ datasource db {
     provider = "postgresql"
 }
 
+enum AccountLinkReason {
+    DEVICE_TOKEN
+}
+
+enum AccountLinkConfidence {
+    LOW
+    MEDIUM
+    HIGH
+}
+
 enum VerificationStatus {
     PENDING
     VERIFIED
@@ -147,4 +157,24 @@ model VerificationSignal {
     @@unique([sessionId, kind])
     @@index([kind, valueHash])
     @@index([sessionId])
+}
+
+model AccountLink {
+    id String @id @default(cuid())
+
+    userAId String
+    userBId String
+
+    reason     AccountLinkReason
+    confidence AccountLinkConfidence
+
+    firstSeenAt DateTime @default(now())
+    lastSeenAt  DateTime @default(now())
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@unique([userAId, userBId, reason])
+    @@index([userAId])
+    @@index([userBId])
 }

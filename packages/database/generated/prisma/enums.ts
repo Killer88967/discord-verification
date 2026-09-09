@@ -9,6 +9,22 @@
 * 🟢 You can import this file directly.
 */
 
+export const AccountLinkReason = {
+  DEVICE_TOKEN: 'DEVICE_TOKEN'
+} as const
+
+export type AccountLinkReason = (typeof AccountLinkReason)[keyof typeof AccountLinkReason]
+
+
+export const AccountLinkConfidence = {
+  LOW: 'LOW',
+  MEDIUM: 'MEDIUM',
+  HIGH: 'HIGH'
+} as const
+
+export type AccountLinkConfidence = (typeof AccountLinkConfidence)[keyof typeof AccountLinkConfidence]
+
+
 export const VerificationStatus = {
   PENDING: 'PENDING',
   VERIFIED: 'VERIFIED',

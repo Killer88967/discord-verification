@@ -76,3 +76,8 @@ export type BrowserDevice = Prisma.BrowserDeviceModel
  * 
  */
 export type VerificationSignal = Prisma.VerificationSignalModel
+/**
+ * Model AccountLink
+ * 
+ */
+export type AccountLink = Prisma.AccountLinkModel
