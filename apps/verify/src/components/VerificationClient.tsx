@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from "react";
 
+const DEVICE_ID_KEY = "verification:device-id";
+
 interface VerificationClientProps {
   token: string;
 }
@@ -13,6 +15,52 @@ type VerificationState =
   | "USED"
   | "INVALID"
   | "ERROR";
+
+interface VerificationSignals {
+  timezone: string;
+  language: string;
+  languages: string[];
+  platform: string;
+  screen: {
+    width: number;
+    height: number;
+    colorDepth: number;
+    pixelRatio: number;
+  };
+  hardwareConcurrency: number;
+  maxTouchPoints: number;
+}
+
+function getDeviceId(): string {
+  const existing = window.localStorage.getItem(DEVICE_ID_KEY);
+
+  if (existing) {
+    return existing;
+  }
+
+  const value = crypto.randomUUID();
+
+  window.localStorage.setItem(DEVICE_ID_KEY, value);
+
+  return value;
+}
+
+function collectSignals(): VerificationSignals {
+  return {
+    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+    language: navigator.language,
+    languages: [...navigator.languages],
+    platform: navigator.platform,
+    screen: {
+      width: window.screen.width,
+      height: window.screen.height,
+      colorDepth: window.screen.colorDepth,
+      pixelRatio: window.devicePixelRatio,
+    },
+    hardwareConcurrency: navigator.hardwareConcurrency,
+    maxTouchPoints: navigator.maxTouchPoints,
+  };
+}
 
 export function VerificationClient({ token }: VerificationClientProps) {
   const [state, setState] = useState<VerificationState>("CHECKING");
@@ -34,6 +82,10 @@ export function VerificationClient({ token }: VerificationClientProps) {
             headers: {
               "Content-Type": "application/json",
             },
+            body: JSON.stringify({
+              deviceId: getDeviceId(),
+              signals: collectSignals(),
+            }),
           },
         );
 

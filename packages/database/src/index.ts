@@ -16,3 +16,9 @@ export {
 } from "./roleAssignment.js";
 
 export { configureGuild, type ConfigureGuildOptions } from "./guildConfig.js";
+
+export {
+  storeVerificationSignals,
+  type StoredVerificationSignal,
+  type StoreVerificationSignalsOptions,
+} from "./verificationSignals.js";
