@@ -1,10 +1,14 @@
 import {
+  ApplicationIntegrationType,
   type AutocompleteInteraction,
   type ChatInputCommandInteraction,
-  ChannelType,
+  InteractionContextType,
+  type LocalizationMap,
   MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
+import * as COptions from "./CommandOptions.js";
+import { Subcommand } from "./Subcommand.js";
 
 /**
  * Function executed when a slash command is invoked.
@@ -26,116 +30,7 @@ export type AutocompleteHandler = (
 ) => Promise<void>;
 
 /**
- * Channel types Discord allows within slash-command channel options.
- */
-export type GuildCommandChannelType =
-  | ChannelType.GuildText
-  | ChannelType.GuildVoice
-  | ChannelType.GuildCategory
-  | ChannelType.GuildAnnouncement
-  | ChannelType.AnnouncementThread
-  | ChannelType.PublicThread
-  | ChannelType.PrivateThread
-  | ChannelType.GuildStageVoice
-  | ChannelType.GuildForum
-  | ChannelType.GuildMedia;
-
-/**
- * Shared configuration for slash-command options.
- */
-export interface CommandOptionSettings {
-  /**
-   * Whether the option must be supplied.
-   *
-   * @default false
-   */
-  required?: boolean;
-}
-
-/**
- * Configuration for string command options.
- */
-export interface StringOptionSettings extends CommandOptionSettings {
-  /**
-   * Minimum accepted string length.
-   */
-  minLength?: number;
-
-  /**
-   * Maximum accepted string length.
-   */
-  maxLength?: number;
-
-  /**
-   * Enables Discord autocomplete for this option.
-   *
-   * Cannot be combined with static choices.
-   *
-   * @default false
-   */
-  autocomplete?: boolean;
-
-  /**
-   * Static choices displayed by Discord.
-   */
-  choices?: readonly {
-    name: string;
-    value: string;
-  }[];
-}
-
-/**
- * Configuration for integer command options.
- */
-export interface IntegerOptionSettings extends CommandOptionSettings {
-  min?: number;
-  max?: number;
-  autocomplete?: boolean;
-
-  choices?: readonly {
-    name: string;
-    value: number;
-  }[];
-}
-
-/**
- * Configuration for number command options.
- */
-export interface NumberOptionSettings extends CommandOptionSettings {
-  min?: number;
-  max?: number;
-  autocomplete?: boolean;
-
-  choices?: readonly {
-    name: string;
-    value: number;
-  }[];
-}
-
-/**
- * Configuration for channel command options.
- */
-export interface ChannelOptionSettings extends CommandOptionSettings {
-  /**
-   * Restricts the option to specific Discord channel types.
-   */
-  types?: GuildCommandChannelType[];
-}
-
-/**
- * Automatic interaction deferral configuration.
- */
-export interface DeferSettings {
-  /**
-   * Whether the deferred response should only be visible to the command user.
-   *
-   * @default false
-   */
-  ephemeral?: boolean;
-}
-
-/**
- * Fluent builder used to define and execute Discord slash commands.
+ * Fluent builder aused to define and execute Discord slash commands.
  *
  * @example
  * ```ts
@@ -166,7 +61,7 @@ export class Command<TGuildOnly extends boolean = false> {
   private autocompleteHandler?: AutocompleteHandler;
 
   private guildOnlyValue = false;
-  private deferSettings?: DeferSettings;
+  private deferSettings?: COptions.DeferSettings;
 
   /**
    * Sets the slash-command name.
@@ -194,6 +89,7 @@ export class Command<TGuildOnly extends boolean = false> {
    */
   public guildOnly(): Command<true> {
     this.guildOnlyValue = true;
+    this.data.setContexts(InteractionContextType.Guild);
 
     return this as unknown as Command<true>;
   }
@@ -211,6 +107,8 @@ export class Command<TGuildOnly extends boolean = false> {
    * Prevents the command from being usable in DMs.
    *
    * This affects Discord command registration rather than runtime execution.
+   *
+   * @deprecated
    */
   public dmPermission(value: boolean): this {
     this.data.setDMPermission(value);
@@ -219,9 +117,54 @@ export class Command<TGuildOnly extends boolean = false> {
   }
 
   /**
+   * Restricts the contexts where Discord exposes this command.
+   */
+  public contexts(...contexts: InteractionContextType[]): this {
+    this.data.setContexts(...contexts);
+
+    return this;
+  }
+
+  /**
+   * Restricts which application installation types expose this command.
+   */
+  public integrationTypes(...types: ApplicationIntegrationType[]): this {
+    this.data.setIntegrationTypes(...types);
+
+    return this;
+  }
+
+  /**
+   * Marks the command as age-restricted.
+   */
+  public nsfw(value = true): this {
+    this.data.setNSFW(value);
+
+    return this;
+  }
+
+  /**
+   * Sets localized command names.
+   */
+  public nameLocalizations(values: LocalizationMap | null): this {
+    this.data.setNameLocalizations(values);
+
+    return this;
+  }
+
+  /**
+   * Sets localized command descriptions.
+   */
+  public descriptionLocalizations(values: LocalizationMap | null): this {
+    this.data.setDescriptionLocalizations(values);
+
+    return this;
+  }
+
+  /**
    * Automatically defers the command response.
    */
-  public defer(settings: DeferSettings = {}): this {
+  public defer(settings: COptions.DeferSettings = {}): this {
     this.deferSettings = settings;
 
     return this;
@@ -253,7 +196,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public userOption(
     name: string,
     description: string,
-    settings: CommandOptionSettings = {},
+    settings: COptions.CommandOptionSettings = {},
   ): this {
     this.data.addUserOption((option) =>
       option
@@ -271,7 +214,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public roleOption(
     name: string,
     description: string,
-    settings: CommandOptionSettings = {},
+    settings: COptions.CommandOptionSettings = {},
   ): this {
     this.data.addRoleOption((option) =>
       option
@@ -289,7 +232,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public channelOption(
     name: string,
     description: string,
-    settings: ChannelOptionSettings = {},
+    settings: COptions.ChannelOptionSettings = {},
   ): this {
     this.data.addChannelOption((option) => {
       option
@@ -313,7 +256,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public stringOption(
     name: string,
     description: string,
-    settings: StringOptionSettings = {},
+    settings: COptions.StringOptionSettings = {},
   ): this {
     this.data.addStringOption((option) => {
       option
@@ -349,7 +292,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public integerOption(
     name: string,
     description: string,
-    settings: IntegerOptionSettings = {},
+    settings: COptions.IntegerOptionSettings = {},
   ): this {
     this.data.addIntegerOption((option) => {
       option
@@ -385,7 +328,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public numberOption(
     name: string,
     description: string,
-    settings: NumberOptionSettings = {},
+    settings: COptions.NumberOptionSettings = {},
   ): this {
     this.data.addNumberOption((option) => {
       option
@@ -421,7 +364,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public booleanOption(
     name: string,
     description: string,
-    settings: CommandOptionSettings = {},
+    settings: COptions.CommandOptionSettings = {},
   ): this {
     this.data.addBooleanOption((option) =>
       option
@@ -441,7 +384,7 @@ export class Command<TGuildOnly extends boolean = false> {
   public mentionableOption(
     name: string,
     description: string,
-    settings: CommandOptionSettings = {},
+    settings: COptions.CommandOptionSettings = {},
   ): this {
     this.data.addMentionableOption((option) =>
       option
@@ -449,6 +392,35 @@ export class Command<TGuildOnly extends boolean = false> {
         .setDescription(description)
         .setRequired(settings.required ?? false),
     );
+
+    return this;
+  }
+
+  /**
+   * Adds an attachment option.
+   */
+  public attachmentOption(
+    name: string,
+    description: string,
+    settings: COptions.CommandOptionSettings = {},
+  ): this {
+    this.data.addAttachmentOption((option) =>
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false),
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds a subcommand.
+   */
+  public subcommand(build: (subcommand: Subcommand) => Subcommand): this {
+    const subcommand = build(new Subcommand());
+
+    this.data.addSubcommand(subcommand.data);
 
     return this;
   }
