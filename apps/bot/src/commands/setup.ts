@@ -4,44 +4,26 @@ import {
   ButtonBuilder,
   ButtonStyle,
   ChannelType,
-  ChatInputCommandInteraction,
   EmbedBuilder,
   MessageFlags,
   PermissionFlagsBits,
-  SlashCommandBuilder,
 } from "discord.js";
+import { Command } from "../types/Command.js";
 
-export const setupCommand = {
-  data: new SlashCommandBuilder()
-    .setName("setup")
-    .setDescription("Configure verification for this server.")
-    .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild)
-    .addChannelOption((option) =>
-      option
-        .setName("channel")
-        .setDescription("The channel where users will verify.")
-        .addChannelTypes(ChannelType.GuildText)
-        .setRequired(true),
-    )
-    .addRoleOption((option) =>
-      option
-        .setName("role")
-        .setDescription("The role granted after verification.")
-        .setRequired(true),
-    ),
-
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    if (!interaction.inCachedGuild()) {
-      await interaction.reply({
-        content: "This command can only be used in a server.",
-        flags: MessageFlags.Ephemeral,
-      });
-
-      return;
-    }
-
+export const setupCommand = new Command()
+  .name("setup")
+  .description("Configure verification for this server.")
+  .guildOnly()
+  .permissions(PermissionFlagsBits.ManageGuild)
+  .channelOption("channel", "The channel where users will verify.", {
+    required: true,
+    types: [ChannelType.GuildText],
+  })
+  .roleOption("role", "The role granted after verification.", {
+    required: true,
+  })
+  .execute(async (interaction) => {
     const channel = interaction.options.getChannel("channel", true);
-
     const role = interaction.options.getRole("role", true);
 
     if (channel.type !== ChannelType.GuildText) {
@@ -67,6 +49,16 @@ export const setupCommand = {
     if (role.id === interaction.guild.id || role.managed) {
       await interaction.reply({
         content: "That role cannot be used as the verified role.",
+        flags: MessageFlags.Ephemeral,
+      });
+
+      return;
+    }
+
+    if (!botMember.permissions.has(PermissionFlagsBits.ManageRoles)) {
+      await interaction.reply({
+        content:
+          "I need the Manage Roles permission to configure verification.",
         flags: MessageFlags.Ephemeral,
       });
 
@@ -142,5 +134,4 @@ export const setupCommand = {
         `Role: ${role}`,
       ].join("\n"),
     });
-  },
-};
+  });

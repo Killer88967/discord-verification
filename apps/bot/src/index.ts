@@ -115,7 +115,7 @@ client.on("interactionCreate", async (interaction) => {
   }
 
   try {
-    await command.execute(interaction);
+    await command.run(interaction);
   } catch (error) {
     console.error(`Failed to execute /${interaction.commandName}:`, error);
 

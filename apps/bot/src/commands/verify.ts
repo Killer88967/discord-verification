@@ -1,9 +1,5 @@
 import { createVerificationLink } from "../verification/createVerificationLink.js";
-import {
-  ChatInputCommandInteraction,
-  MessageFlags,
-  SlashCommandBuilder,
-} from "discord.js";
+import { Command } from "../types/Command.js";
 
 const verifyUrl = process.env.VERIFY_URL;
 
@@ -11,25 +7,12 @@ if (!verifyUrl) {
   throw new Error("VERIFY_URL is not defined.");
 }
 
-export const verifyCommand = {
-  data: new SlashCommandBuilder()
-    .setName("verify")
-    .setDescription("Create a verification link for this server."),
-
-  async execute(interaction: ChatInputCommandInteraction): Promise<void> {
-    if (!interaction.inCachedGuild()) {
-      await interaction.reply({
-        content: "This command can only be used in a server.",
-        flags: MessageFlags.Ephemeral,
-      });
-
-      return;
-    }
-
-    await interaction.deferReply({
-      flags: MessageFlags.Ephemeral,
-    });
-
+export const verifyCommand = new Command()
+  .name("verify")
+  .description("Create a verification link for this server.")
+  .guildOnly()
+  .ephemeral()
+  .execute(async (interaction) => {
     const url = await createVerificationLink({
       guildId: interaction.guild.id,
       guildName: interaction.guild.name,
@@ -42,8 +25,7 @@ export const verifyCommand = {
         "",
         url,
         "",
-        "This link expires in 10 minutes and can only be used once.",
+        "This link expires in 10 minutes and can only be used one.",
       ].join("\n"),
     });
-  },
-};
+  });
