@@ -1,5 +1,6 @@
 import {
   completeVerificationSession,
+  findDeviceMatches,
   getVerificationSessionByToken,
   storeVerificationSignals,
 } from "@verification/database";
@@ -68,6 +69,10 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   const sessionId = lookup.session.id;
   const deviceTokenHash = hashSignal(body.deviceId, secret);
   const userAgent = request.headers.get("user-agent") ?? "unknown";
+  const deviceMatches = await findDeviceMatches(
+    deviceTokenHash,
+    lookup.session.userId,
+  );
 
   await storeVerificationSignals({
     sessionId,
@@ -124,6 +129,13 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
+    deviceMatches:
+      result.status === "VERIFIED"
+        ? deviceMatches.map((match) => ({
+            guildId: match.guildId,
+            userId: match.userId,
+          }))
+        : [],
   });
 }
 
