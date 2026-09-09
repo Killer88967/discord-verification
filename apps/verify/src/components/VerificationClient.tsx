@@ -37,6 +37,10 @@ export function VerificationClient({ token }: VerificationClientProps) {
           },
         );
 
+        if (!response.ok) {
+          throw new Error(`Verification request failed: ${response.status}`);
+        }
+
         const data = (await response.json()) as {
           status: "VERIFIED" | "EXPIRED" | "USED" | "INVALID";
         };
