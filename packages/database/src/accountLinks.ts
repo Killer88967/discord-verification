@@ -11,6 +11,14 @@ export interface UpsertAccountLinkOptions {
   confidence: AccountLinkConfidence;
 }
 
+export interface AccountLinkMatch {
+  userId: string;
+  reason: AccountLinkReason;
+  confidence: AccountLinkConfidence;
+  firstSeenAt: Date;
+  lastSeenAt: Date;
+}
+
 export async function upsertAccountLink({
   userAId,
   userBId,
@@ -47,4 +55,32 @@ export async function upsertAccountLink({
       lastSeenAt: now,
     },
   });
+}
+
+export async function getAccountLinksForUser(
+  userId: string,
+): Promise<AccountLinkMatch[]> {
+  const links = await prisma.accountLink.findMany({
+    where: {
+      OR: [
+        {
+          userAId: userId,
+        },
+        {
+          userBId: userId,
+        },
+      ],
+    },
+    orderBy: {
+      lastSeenAt: "desc",
+    },
+  });
+
+  return links.map((link) => ({
+    userId: link.userAId === userId ? link.userBId : link.userAId,
+    reason: link.reason,
+    confidence: link.confidence,
+    firstSeenAt: link.firstSeenAt,
+    lastSeenAt: link.lastSeenAt,
+  }));
 }

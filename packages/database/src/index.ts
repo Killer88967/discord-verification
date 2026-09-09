@@ -26,6 +26,8 @@ export {
 export { findDeviceMatches, type DeviceMatch } from "./deviceMatches.js";
 
 export {
+  getAccountLinksForUser,
   upsertAccountLink,
+  type AccountLinkMatch,
   type UpsertAccountLinkOptions,
 } from "./accountLinks.js";

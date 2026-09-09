@@ -14,6 +14,9 @@
   "workbench.iconTheme": "vscode-icons",
   "chat.mcp.gallery.enabled": true,
   "chat.mcp.access": "all",
+  "github.copilot.enable": {
+    "*": false
+  },
   "files.associations": {
     "*.json": "json",
     "*.css": "tailwindcss"
