@@ -75,17 +75,6 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     lookup.session.userId,
   );
 
-  await Promise.all(
-    deviceMatches.map((match) =>
-      upsertAccountLink({
-        userAId: lookup.session.userId,
-        userBId: match.userId,
-        reason: "DEVICE_TOKEN",
-        confidence: "HIGH",
-      }),
-    ),
-  );
-
   await storeVerificationSignals({
     sessionId,
     deviceTokenHash,
@@ -136,6 +125,17 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   const result = await completeVerificationSession(token);
 
   if (result.status === "VERIFIED") {
+    await Promise.all(
+      deviceMatches.map((match) =>
+        upsertAccountLink({
+          userAId: lookup.session.userId,
+          userBId: match.userId,
+          reason: "DEVICE_TOKEN",
+          confidence: "HIGH",
+        }),
+      ),
+    );
+
     await assignVerifiedRole(result.session.id);
   }
 

@@ -32,9 +32,11 @@ export async function findDeviceMatches(
     },
   });
 
-  return signals.map((signal) => ({
+  const matches = signals.map((signal) => ({
     sessionId: signal.sessionId,
     guildId: signal.session.guildId,
     userId: signal.session.userId,
   }));
+
+  return [...new Map(matches.map((match) => [match.userId, match])).values()];
 }
