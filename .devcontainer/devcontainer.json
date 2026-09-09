@@ -1,0 +1,55 @@
+{
+  "name": "Discord Verification",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu",
+
+  "features": {
+    "ghcr.io/devcontainers/features/node:2.1.0": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers-extra/features/pnpm:2": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "prisma.prisma",
+        "ultram4rine.vscode-choosealicense",
+        "usernamehw.errorlens",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+        "vscode-icons-team.vscode-icons"
+      ],
+
+      "settings": {
+        "editor.bracketPairColorization.enabled": true,
+        "editor.cursorBlinking": "phase",
+        "editor.cursorSmoothCaretAnimation": "on",
+        "editor.guides.bracketPairs": "active",
+        "editor.guides.bracketPairsHorizontal": true,
+        "editor.wordWrap": "on",
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "explorer.compactFolders": false,
+        "files.encoding": "utf8",
+        "license.author": "Killer88967", // Replace with your name
+        "license.default": "apache-2.0", // Replace with your license of choice
+        "workbench.colorTheme": "Dark Modern",
+        "workbench.iconTheme": "vscode-icons",
+        "chat.mcp.gallery.enabled": true,
+        "chat.mcp.access": "all",
+        "files.associations": {
+          "*.json": "json",
+          "*.css": "tailwindcss"
+        },
+        "[json]": {
+          "editor.defaultFormatter": "esbenp.prettier-vscode"
+        },
+        "[prisma]": {
+          "editor.defaultFormatter": "Prisma.prisma"
+        }
+      }
+    }
+  }
+}
