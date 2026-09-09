@@ -24,3 +24,8 @@ export {
 } from "./verificationSignals.js";
 
 export { findDeviceMatches, type DeviceMatch } from "./deviceMatches.js";
+
+export {
+  upsertAccountLink,
+  type UpsertAccountLinkOptions,
+} from "./accountLinks.js";

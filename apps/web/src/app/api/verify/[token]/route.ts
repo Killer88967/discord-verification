@@ -3,6 +3,7 @@ import {
   findDeviceMatches,
   getVerificationSessionByToken,
   storeVerificationSignals,
+  upsertAccountLink,
 } from "@verification/database";
 import { hashSignal } from "@verification/security";
 import { NextResponse } from "next/server";
@@ -72,6 +73,17 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   const deviceMatches = await findDeviceMatches(
     deviceTokenHash,
     lookup.session.userId,
+  );
+
+  await Promise.all(
+    deviceMatches.map((match) =>
+      upsertAccountLink({
+        userAId: lookup.session.userId,
+        userBId: match.userId,
+        reason: "DEVICE_TOKEN",
+        confidence: "HIGH",
+      }),
+    ),
   );
 
   await storeVerificationSignals({
