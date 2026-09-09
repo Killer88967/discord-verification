@@ -36,7 +36,7 @@ async function assignVerifiedRole(sessionId: string): Promise<void> {
   }
 
   const response = await fetch(
-    new URL("/internal/verificaion-complete", botInternalUrl),
+    new URL("/internal/verification-complete", botInternalUrl),
     {
       method: "POST",
       headers: {
