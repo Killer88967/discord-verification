@@ -15,10 +15,28 @@ export const checkCommand = new Command()
     const user = interaction.options.getUser("user", true);
     const links = await getAccountLinksForUser(user.id);
 
+    const guildLinks = (
+      await Promise.all(
+        links.map(async (link) => {
+          const member =
+            interaction.guild.members.cache.get(link.userId) ??
+            (await interaction.guild.members
+              .fetch(link.userId)
+              .catch(() => null));
+
+          if (!member) {
+            return null;
+          }
+
+          return link;
+        }),
+      )
+    ).filter((link) => link !== null);
+
     const linkedAccounts =
-      links.length === 0
+      guildLinks.length === 0
         ? "No linked accounts found."
-        : links
+        : guildLinks
             .slice(0, 10)
             .map((link) =>
               [
@@ -31,13 +49,15 @@ export const checkCommand = new Command()
             .join("\n\n");
 
     const extra =
-      links.length > 10 ? `\n\n...and ${links.length - 10} more.` : "";
+      guildLinks.length > 10
+        ? `\n\n...and ${guildLinks.length - 10} more.`
+        : "";
 
     const embed = new EmbedBuilder()
       .setTitle("Verification Check")
       .setDescription(`${user}\n\`${user.id}\``)
       .addFields({
-        name: `Linked Accounts (${links.length})`,
+        name: `Linked Accounts (${guildLinks.length})`,
         value: `${linkedAccounts}${extra}`,
       })
       .setColor(0x5865f2)
