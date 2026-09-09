@@ -22,6 +22,17 @@ enum VerificationEventType {
     EXPIRED
 }
 
+enum VerificationSignalKind {
+    DEVICE_TOKEN
+    USER_AGENT
+    TIMEZONE
+    LANGUAGE
+    PLATFORM
+    SCREEN
+    HARDWARE
+    NETWORK
+}
+
 model Guild {
     id   String  @id
     name String?
@@ -64,7 +75,8 @@ model VerificationSession {
     expiresAt   DateTime
     completedAt DateTime?
 
-    events VerificationEvent[]
+    events  VerificationEvent[]
+    signals VerificationSignal[]
 
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
@@ -110,4 +122,28 @@ model VerificationEvent {
     @@index([guildId, userId])
     @@index([sessionId])
     @@index([createdAt])
+}
+
+model BrowserDevice {
+    id String @id @default(cuid())
+
+    deviceTokenHash String @unique
+
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+}
+
+model VerificationSignal {
+    id String @id @default(cuid())
+
+    sessionId String
+    session   VerificationSession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+    kind      VerificationSignalKind
+    valueHash String
+
+    createdAt DateTime @default(now())
+
+    @@index([kind, valueHash])
+    @@index([sessionId])
 }

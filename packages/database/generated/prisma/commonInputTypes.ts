@@ -182,6 +182,23 @@ export type EnumVerificationEventTypeWithAggregatesFilter<$PrismaModel = never> 
   _max?: Prisma.NestedEnumVerificationEventTypeFilter<$PrismaModel>
 }
 
+export type EnumVerificationSignalKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationSignalKind | Prisma.EnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel> | $Enums.VerificationSignalKind
+}
+
+export type EnumVerificationSignalKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationSignalKind | Prisma.EnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationSignalKindWithAggregatesFilter<$PrismaModel> | $Enums.VerificationSignalKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
+}
+
 export type NestedStringFilter<$PrismaModel = never> = {
   equals?: string | Prisma.StringFieldRefInput<$PrismaModel>
   in?: string[] | Prisma.ListStringFieldRefInput<$PrismaModel>
@@ -361,6 +378,23 @@ export type NestedEnumVerificationEventTypeWithAggregatesFilter<$PrismaModel = n
   _count?: Prisma.NestedIntFilter<$PrismaModel>
   _min?: Prisma.NestedEnumVerificationEventTypeFilter<$PrismaModel>
   _max?: Prisma.NestedEnumVerificationEventTypeFilter<$PrismaModel>
+}
+
+export type NestedEnumVerificationSignalKindFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationSignalKind | Prisma.EnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel> | $Enums.VerificationSignalKind
+}
+
+export type NestedEnumVerificationSignalKindWithAggregatesFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationSignalKind | Prisma.EnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  in?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  notIn?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  not?: Prisma.NestedEnumVerificationSignalKindWithAggregatesFilter<$PrismaModel> | $Enums.VerificationSignalKind
+  _count?: Prisma.NestedIntFilter<$PrismaModel>
+  _min?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
+  _max?: Prisma.NestedEnumVerificationSignalKindFilter<$PrismaModel>
 }
 
 

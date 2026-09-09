@@ -55,7 +55,9 @@ export const ModelName = {
   GuildConfig: 'GuildConfig',
   VerificationSession: 'VerificationSession',
   VerifiedUser: 'VerifiedUser',
-  VerificationEvent: 'VerificationEvent'
+  VerificationEvent: 'VerificationEvent',
+  BrowserDevice: 'BrowserDevice',
+  VerificationSignal: 'VerificationSignal'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -135,6 +137,27 @@ export const VerificationEventScalarFieldEnum = {
 } as const
 
 export type VerificationEventScalarFieldEnum = (typeof VerificationEventScalarFieldEnum)[keyof typeof VerificationEventScalarFieldEnum]
+
+
+export const BrowserDeviceScalarFieldEnum = {
+  id: 'id',
+  deviceTokenHash: 'deviceTokenHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserDeviceScalarFieldEnum = (typeof BrowserDeviceScalarFieldEnum)[keyof typeof BrowserDeviceScalarFieldEnum]
+
+
+export const VerificationSignalScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  kind: 'kind',
+  valueHash: 'valueHash',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationSignalScalarFieldEnum = (typeof VerificationSignalScalarFieldEnum)[keyof typeof VerificationSignalScalarFieldEnum]
 
 
 export const SortOrder = {

@@ -42,3 +42,13 @@ export type VerifiedUser = Prisma.VerifiedUserModel
  * 
  */
 export type VerificationEvent = Prisma.VerificationEventModel
+/**
+ * Model BrowserDevice
+ * 
+ */
+export type BrowserDevice = Prisma.BrowserDeviceModel
+/**
+ * Model VerificationSignal
+ * 
+ */
+export type VerificationSignal = Prisma.VerificationSignalModel

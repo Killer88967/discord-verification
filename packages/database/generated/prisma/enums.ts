@@ -28,3 +28,17 @@ export const VerificationEventType = {
 } as const
 
 export type VerificationEventType = (typeof VerificationEventType)[keyof typeof VerificationEventType]
+
+
+export const VerificationSignalKind = {
+  DEVICE_TOKEN: 'DEVICE_TOKEN',
+  USER_AGENT: 'USER_AGENT',
+  TIMEZONE: 'TIMEZONE',
+  LANGUAGE: 'LANGUAGE',
+  PLATFORM: 'PLATFORM',
+  SCREEN: 'SCREEN',
+  HARDWARE: 'HARDWARE',
+  NETWORK: 'NETWORK'
+} as const
+
+export type VerificationSignalKind = (typeof VerificationSignalKind)[keyof typeof VerificationSignalKind]

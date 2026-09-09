@@ -401,7 +401,9 @@ export const ModelName = {
   GuildConfig: 'GuildConfig',
   VerificationSession: 'VerificationSession',
   VerifiedUser: 'VerifiedUser',
-  VerificationEvent: 'VerificationEvent'
+  VerificationEvent: 'VerificationEvent',
+  BrowserDevice: 'BrowserDevice',
+  VerificationSignal: 'VerificationSignal'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -417,7 +419,7 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
     omit: GlobalOmitOptions
   }
   meta: {
-    modelProps: "guild" | "guildConfig" | "verificationSession" | "verifiedUser" | "verificationEvent"
+    modelProps: "guild" | "guildConfig" | "verificationSession" | "verifiedUser" | "verificationEvent" | "browserDevice" | "verificationSignal"
     txIsolationLevel: TransactionIsolationLevel
   }
   model: {
@@ -791,6 +793,154 @@ export type TypeMap<ExtArgs extends runtime.Types.Extensions.InternalArgs = runt
         }
       }
     }
+    BrowserDevice: {
+      payload: Prisma.$BrowserDevicePayload<ExtArgs>
+      fields: Prisma.BrowserDeviceFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.BrowserDeviceFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.BrowserDeviceFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        findFirst: {
+          args: Prisma.BrowserDeviceFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.BrowserDeviceFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        findMany: {
+          args: Prisma.BrowserDeviceFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>[]
+        }
+        create: {
+          args: Prisma.BrowserDeviceCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        createMany: {
+          args: Prisma.BrowserDeviceCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.BrowserDeviceCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>[]
+        }
+        delete: {
+          args: Prisma.BrowserDeviceDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        update: {
+          args: Prisma.BrowserDeviceUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        deleteMany: {
+          args: Prisma.BrowserDeviceDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.BrowserDeviceUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.BrowserDeviceUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>[]
+        }
+        upsert: {
+          args: Prisma.BrowserDeviceUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$BrowserDevicePayload>
+        }
+        aggregate: {
+          args: Prisma.BrowserDeviceAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateBrowserDevice>
+        }
+        groupBy: {
+          args: Prisma.BrowserDeviceGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrowserDeviceGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.BrowserDeviceCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.BrowserDeviceCountAggregateOutputType> | number
+        }
+      }
+    }
+    VerificationSignal: {
+      payload: Prisma.$VerificationSignalPayload<ExtArgs>
+      fields: Prisma.VerificationSignalFieldRefs
+      operations: {
+        findUnique: {
+          args: Prisma.VerificationSignalFindUniqueArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload> | null
+        }
+        findUniqueOrThrow: {
+          args: Prisma.VerificationSignalFindUniqueOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        findFirst: {
+          args: Prisma.VerificationSignalFindFirstArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload> | null
+        }
+        findFirstOrThrow: {
+          args: Prisma.VerificationSignalFindFirstOrThrowArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        findMany: {
+          args: Prisma.VerificationSignalFindManyArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>[]
+        }
+        create: {
+          args: Prisma.VerificationSignalCreateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        createMany: {
+          args: Prisma.VerificationSignalCreateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        createManyAndReturn: {
+          args: Prisma.VerificationSignalCreateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>[]
+        }
+        delete: {
+          args: Prisma.VerificationSignalDeleteArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        update: {
+          args: Prisma.VerificationSignalUpdateArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        deleteMany: {
+          args: Prisma.VerificationSignalDeleteManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateMany: {
+          args: Prisma.VerificationSignalUpdateManyArgs<ExtArgs>
+          result: BatchPayload
+        }
+        updateManyAndReturn: {
+          args: Prisma.VerificationSignalUpdateManyAndReturnArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>[]
+        }
+        upsert: {
+          args: Prisma.VerificationSignalUpsertArgs<ExtArgs>
+          result: runtime.Types.Utils.PayloadToResult<Prisma.$VerificationSignalPayload>
+        }
+        aggregate: {
+          args: Prisma.VerificationSignalAggregateArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.AggregateVerificationSignal>
+        }
+        groupBy: {
+          args: Prisma.VerificationSignalGroupByArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationSignalGroupByOutputType>[]
+        }
+        count: {
+          args: Prisma.VerificationSignalCountArgs<ExtArgs>
+          result: runtime.Types.Utils.Optional<Prisma.VerificationSignalCountAggregateOutputType> | number
+        }
+      }
+    }
   }
 } & {
   other: {
@@ -893,6 +1043,27 @@ export const VerificationEventScalarFieldEnum = {
 export type VerificationEventScalarFieldEnum = (typeof VerificationEventScalarFieldEnum)[keyof typeof VerificationEventScalarFieldEnum]
 
 
+export const BrowserDeviceScalarFieldEnum = {
+  id: 'id',
+  deviceTokenHash: 'deviceTokenHash',
+  createdAt: 'createdAt',
+  updatedAt: 'updatedAt'
+} as const
+
+export type BrowserDeviceScalarFieldEnum = (typeof BrowserDeviceScalarFieldEnum)[keyof typeof BrowserDeviceScalarFieldEnum]
+
+
+export const VerificationSignalScalarFieldEnum = {
+  id: 'id',
+  sessionId: 'sessionId',
+  kind: 'kind',
+  valueHash: 'valueHash',
+  createdAt: 'createdAt'
+} as const
+
+export type VerificationSignalScalarFieldEnum = (typeof VerificationSignalScalarFieldEnum)[keyof typeof VerificationSignalScalarFieldEnum]
+
+
 export const SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -983,6 +1154,20 @@ export type EnumVerificationEventTypeFieldRefInput<$PrismaModel> = FieldRefInput
  * Reference to a field of type 'VerificationEventType[]'
  */
 export type ListEnumVerificationEventTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationEventType[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VerificationSignalKind'
+ */
+export type EnumVerificationSignalKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationSignalKind'>
+    
+
+
+/**
+ * Reference to a field of type 'VerificationSignalKind[]'
+ */
+export type ListEnumVerificationSignalKindFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationSignalKind[]'>
     
 
 
@@ -1155,6 +1340,8 @@ export type GlobalOmitConfig = {
   verificationSession?: Prisma.VerificationSessionOmit
   verifiedUser?: Prisma.VerifiedUserOmit
   verificationEvent?: Prisma.VerificationEventOmit
+  browserDevice?: Prisma.BrowserDeviceOmit
+  verificationSignal?: Prisma.VerificationSignalOmit
 }
 
 /* Types for Logging */

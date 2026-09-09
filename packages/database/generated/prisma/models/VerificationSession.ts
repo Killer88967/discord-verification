@@ -216,6 +216,7 @@ export type VerificationSessionWhereInput = {
   updatedAt?: Prisma.DateTimeFilter<"VerificationSession"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
   events?: Prisma.VerificationEventListRelationFilter
+  signals?: Prisma.VerificationSignalListRelationFilter
 }
 
 export type VerificationSessionOrderByWithRelationInput = {
@@ -230,6 +231,7 @@ export type VerificationSessionOrderByWithRelationInput = {
   updatedAt?: Prisma.SortOrder
   guild?: Prisma.GuildOrderByWithRelationInput
   events?: Prisma.VerificationEventOrderByRelationAggregateInput
+  signals?: Prisma.VerificationSignalOrderByRelationAggregateInput
 }
 
 export type VerificationSessionWhereUniqueInput = Prisma.AtLeast<{
@@ -247,6 +249,7 @@ export type VerificationSessionWhereUniqueInput = Prisma.AtLeast<{
   updatedAt?: Prisma.DateTimeFilter<"VerificationSession"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
   events?: Prisma.VerificationEventListRelationFilter
+  signals?: Prisma.VerificationSignalListRelationFilter
 }, "id" | "tokenHash">
 
 export type VerificationSessionOrderByWithAggregationInput = {
@@ -290,6 +293,7 @@ export type VerificationSessionCreateInput = {
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutSessionsInput
   events?: Prisma.VerificationEventCreateNestedManyWithoutSessionInput
+  signals?: Prisma.VerificationSignalCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionUncheckedCreateInput = {
@@ -303,6 +307,7 @@ export type VerificationSessionUncheckedCreateInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.VerificationEventUncheckedCreateNestedManyWithoutSessionInput
+  signals?: Prisma.VerificationSignalUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionUpdateInput = {
@@ -316,6 +321,7 @@ export type VerificationSessionUpdateInput = {
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutSessionsNestedInput
   events?: Prisma.VerificationEventUpdateManyWithoutSessionNestedInput
+  signals?: Prisma.VerificationSignalUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionUncheckedUpdateInput = {
@@ -329,6 +335,7 @@ export type VerificationSessionUncheckedUpdateInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.VerificationEventUncheckedUpdateManyWithoutSessionNestedInput
+  signals?: Prisma.VerificationSignalUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionCreateManyInput = {
@@ -417,6 +424,11 @@ export type VerificationSessionNullableScalarRelationFilter = {
   isNot?: Prisma.VerificationSessionWhereInput | null
 }
 
+export type VerificationSessionScalarRelationFilter = {
+  is?: Prisma.VerificationSessionWhereInput
+  isNot?: Prisma.VerificationSessionWhereInput
+}
+
 export type VerificationSessionCreateNestedManyWithoutGuildInput = {
   create?: Prisma.XOR<Prisma.VerificationSessionCreateWithoutGuildInput, Prisma.VerificationSessionUncheckedCreateWithoutGuildInput> | Prisma.VerificationSessionCreateWithoutGuildInput[] | Prisma.VerificationSessionUncheckedCreateWithoutGuildInput[]
   connectOrCreate?: Prisma.VerificationSessionCreateOrConnectWithoutGuildInput | Prisma.VerificationSessionCreateOrConnectWithoutGuildInput[]
@@ -483,6 +495,20 @@ export type VerificationSessionUpdateOneWithoutEventsNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationSessionUpdateToOneWithWhereWithoutEventsInput, Prisma.VerificationSessionUpdateWithoutEventsInput>, Prisma.VerificationSessionUncheckedUpdateWithoutEventsInput>
 }
 
+export type VerificationSessionCreateNestedOneWithoutSignalsInput = {
+  create?: Prisma.XOR<Prisma.VerificationSessionCreateWithoutSignalsInput, Prisma.VerificationSessionUncheckedCreateWithoutSignalsInput>
+  connectOrCreate?: Prisma.VerificationSessionCreateOrConnectWithoutSignalsInput
+  connect?: Prisma.VerificationSessionWhereUniqueInput
+}
+
+export type VerificationSessionUpdateOneRequiredWithoutSignalsNestedInput = {
+  create?: Prisma.XOR<Prisma.VerificationSessionCreateWithoutSignalsInput, Prisma.VerificationSessionUncheckedCreateWithoutSignalsInput>
+  connectOrCreate?: Prisma.VerificationSessionCreateOrConnectWithoutSignalsInput
+  upsert?: Prisma.VerificationSessionUpsertWithoutSignalsInput
+  connect?: Prisma.VerificationSessionWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.VerificationSessionUpdateToOneWithWhereWithoutSignalsInput, Prisma.VerificationSessionUpdateWithoutSignalsInput>, Prisma.VerificationSessionUncheckedUpdateWithoutSignalsInput>
+}
+
 export type VerificationSessionCreateWithoutGuildInput = {
   id?: string
   userId: string
@@ -493,6 +519,7 @@ export type VerificationSessionCreateWithoutGuildInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.VerificationEventCreateNestedManyWithoutSessionInput
+  signals?: Prisma.VerificationSignalCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionUncheckedCreateWithoutGuildInput = {
@@ -505,6 +532,7 @@ export type VerificationSessionUncheckedCreateWithoutGuildInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   events?: Prisma.VerificationEventUncheckedCreateNestedManyWithoutSessionInput
+  signals?: Prisma.VerificationSignalUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionCreateOrConnectWithoutGuildInput = {
@@ -558,6 +586,7 @@ export type VerificationSessionCreateWithoutEventsInput = {
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutSessionsInput
+  signals?: Prisma.VerificationSignalCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionUncheckedCreateWithoutEventsInput = {
@@ -570,6 +599,7 @@ export type VerificationSessionUncheckedCreateWithoutEventsInput = {
   completedAt?: Date | string | null
   createdAt?: Date | string
   updatedAt?: Date | string
+  signals?: Prisma.VerificationSignalUncheckedCreateNestedManyWithoutSessionInput
 }
 
 export type VerificationSessionCreateOrConnectWithoutEventsInput = {
@@ -598,6 +628,7 @@ export type VerificationSessionUpdateWithoutEventsInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   guild?: Prisma.GuildUpdateOneRequiredWithoutSessionsNestedInput
+  signals?: Prisma.VerificationSignalUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionUncheckedUpdateWithoutEventsInput = {
@@ -610,6 +641,75 @@ export type VerificationSessionUncheckedUpdateWithoutEventsInput = {
   completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  signals?: Prisma.VerificationSignalUncheckedUpdateManyWithoutSessionNestedInput
+}
+
+export type VerificationSessionCreateWithoutSignalsInput = {
+  id?: string
+  userId: string
+  tokenHash: string
+  status?: $Enums.VerificationStatus
+  expiresAt: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  guild: Prisma.GuildCreateNestedOneWithoutSessionsInput
+  events?: Prisma.VerificationEventCreateNestedManyWithoutSessionInput
+}
+
+export type VerificationSessionUncheckedCreateWithoutSignalsInput = {
+  id?: string
+  guildId: string
+  userId: string
+  tokenHash: string
+  status?: $Enums.VerificationStatus
+  expiresAt: Date | string
+  completedAt?: Date | string | null
+  createdAt?: Date | string
+  updatedAt?: Date | string
+  events?: Prisma.VerificationEventUncheckedCreateNestedManyWithoutSessionInput
+}
+
+export type VerificationSessionCreateOrConnectWithoutSignalsInput = {
+  where: Prisma.VerificationSessionWhereUniqueInput
+  create: Prisma.XOR<Prisma.VerificationSessionCreateWithoutSignalsInput, Prisma.VerificationSessionUncheckedCreateWithoutSignalsInput>
+}
+
+export type VerificationSessionUpsertWithoutSignalsInput = {
+  update: Prisma.XOR<Prisma.VerificationSessionUpdateWithoutSignalsInput, Prisma.VerificationSessionUncheckedUpdateWithoutSignalsInput>
+  create: Prisma.XOR<Prisma.VerificationSessionCreateWithoutSignalsInput, Prisma.VerificationSessionUncheckedCreateWithoutSignalsInput>
+  where?: Prisma.VerificationSessionWhereInput
+}
+
+export type VerificationSessionUpdateToOneWithWhereWithoutSignalsInput = {
+  where?: Prisma.VerificationSessionWhereInput
+  data: Prisma.XOR<Prisma.VerificationSessionUpdateWithoutSignalsInput, Prisma.VerificationSessionUncheckedUpdateWithoutSignalsInput>
+}
+
+export type VerificationSessionUpdateWithoutSignalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  guild?: Prisma.GuildUpdateOneRequiredWithoutSessionsNestedInput
+  events?: Prisma.VerificationEventUpdateManyWithoutSessionNestedInput
+}
+
+export type VerificationSessionUncheckedUpdateWithoutSignalsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  guildId?: Prisma.StringFieldUpdateOperationsInput | string
+  userId?: Prisma.StringFieldUpdateOperationsInput | string
+  tokenHash?: Prisma.StringFieldUpdateOperationsInput | string
+  status?: Prisma.EnumVerificationStatusFieldUpdateOperationsInput | $Enums.VerificationStatus
+  expiresAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  completedAt?: Prisma.NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+  events?: Prisma.VerificationEventUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionCreateManyGuildInput = {
@@ -633,6 +733,7 @@ export type VerificationSessionUpdateWithoutGuildInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.VerificationEventUpdateManyWithoutSessionNestedInput
+  signals?: Prisma.VerificationSignalUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionUncheckedUpdateWithoutGuildInput = {
@@ -645,6 +746,7 @@ export type VerificationSessionUncheckedUpdateWithoutGuildInput = {
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   events?: Prisma.VerificationEventUncheckedUpdateManyWithoutSessionNestedInput
+  signals?: Prisma.VerificationSignalUncheckedUpdateManyWithoutSessionNestedInput
 }
 
 export type VerificationSessionUncheckedUpdateManyWithoutGuildInput = {
@@ -665,10 +767,12 @@ export type VerificationSessionUncheckedUpdateManyWithoutGuildInput = {
 
 export type VerificationSessionCountOutputType = {
   events: number
+  signals: number
 }
 
 export type VerificationSessionCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   events?: boolean | VerificationSessionCountOutputTypeCountEventsArgs
+  signals?: boolean | VerificationSessionCountOutputTypeCountSignalsArgs
 }
 
 /**
@@ -688,6 +792,13 @@ export type VerificationSessionCountOutputTypeCountEventsArgs<ExtArgs extends ru
   where?: Prisma.VerificationEventWhereInput
 }
 
+/**
+ * VerificationSessionCountOutputType without action
+ */
+export type VerificationSessionCountOutputTypeCountSignalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.VerificationSignalWhereInput
+}
+
 
 export type VerificationSessionSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
@@ -701,6 +812,7 @@ export type VerificationSessionSelect<ExtArgs extends runtime.Types.Extensions.I
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   events?: boolean | Prisma.VerificationSession$eventsArgs<ExtArgs>
+  signals?: boolean | Prisma.VerificationSession$signalsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationSessionCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["verificationSession"]>
 
@@ -746,6 +858,7 @@ export type VerificationSessionOmit<ExtArgs extends runtime.Types.Extensions.Int
 export type VerificationSessionInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
   events?: boolean | Prisma.VerificationSession$eventsArgs<ExtArgs>
+  signals?: boolean | Prisma.VerificationSession$signalsArgs<ExtArgs>
   _count?: boolean | Prisma.VerificationSessionCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type VerificationSessionIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -760,6 +873,7 @@ export type $VerificationSessionPayload<ExtArgs extends runtime.Types.Extensions
   objects: {
     guild: Prisma.$GuildPayload<ExtArgs>
     events: Prisma.$VerificationEventPayload<ExtArgs>[]
+    signals: Prisma.$VerificationSignalPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
@@ -1167,6 +1281,7 @@ export interface Prisma__VerificationSessionClient<T, Null = never, ExtArgs exte
   readonly [Symbol.toStringTag]: "PrismaPromise"
   guild<T extends Prisma.GuildDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.GuildDefaultArgs<ExtArgs>>): Prisma.Prisma__GuildClient<runtime.Types.Result.GetResult<Prisma.$GuildPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   events<T extends Prisma.VerificationSession$eventsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationSession$eventsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationEventPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+  signals<T extends Prisma.VerificationSession$signalsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.VerificationSession$signalsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$VerificationSignalPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -1627,6 +1742,30 @@ export type VerificationSession$eventsArgs<ExtArgs extends runtime.Types.Extensi
   take?: number
   skip?: number
   distinct?: Prisma.VerificationEventScalarFieldEnum | Prisma.VerificationEventScalarFieldEnum[]
+}
+
+/**
+ * VerificationSession.signals
+ */
+export type VerificationSession$signalsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the VerificationSignal
+   */
+  select?: Prisma.VerificationSignalSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the VerificationSignal
+   */
+  omit?: Prisma.VerificationSignalOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.VerificationSignalInclude<ExtArgs> | null
+  where?: Prisma.VerificationSignalWhereInput
+  orderBy?: Prisma.VerificationSignalOrderByWithRelationInput | Prisma.VerificationSignalOrderByWithRelationInput[]
+  cursor?: Prisma.VerificationSignalWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.VerificationSignalScalarFieldEnum | Prisma.VerificationSignalScalarFieldEnum[]
 }
 
 /**
