@@ -66,12 +66,7 @@ export default async function VerifyPage({ params }: VerifyPageProps) {
           </div>
         </div>
 
-        <Link
-          href={`/api/auth/discord?token=${encodeURIComponent(token)}`}
-          className="flex h-11 w-full items-center justify-center rounded-lg bg-indigo-500 font-medium transition hover:bg-indigo-400"
-        >
-          Continue with Discord
-        </Link>
+        <p>Placeholder</p>
 
         <p className="mt-5 text-center text-xs text-zinc-500">
           This verification session can only be completed once.
