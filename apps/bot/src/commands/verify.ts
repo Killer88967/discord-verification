@@ -25,7 +25,7 @@ export const verifyCommand = new Command()
         "",
         url,
         "",
-        "This link expires in 10 minutes and can only be used one.",
+        "This link expires in 10 minutes and can only be used once.",
       ].join("\n"),
     });
   });

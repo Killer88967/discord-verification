@@ -1,17 +1,34 @@
 import {
+  type AutocompleteInteraction,
   type ChatInputCommandInteraction,
   ChannelType,
   MessageFlags,
   SlashCommandBuilder,
 } from "discord.js";
 
-type CommandHandler<TGuildOnly extends boolean> = (
+/**
+ * Function executed when a slash command is invoked.
+ *
+ * Guild-only commands receive a cached guild interaction, allowing direct
+ * access to properties such as `interaction.guild`.
+ */
+export type CommandHandler<TGuildOnly extends boolean> = (
   interaction: TGuildOnly extends true
     ? ChatInputCommandInteraction<"cached">
     : ChatInputCommandInteraction,
 ) => Promise<void>;
 
-type GuildCommandChannelType =
+/**
+ * Function executed when Discord requests autocomplete results.
+ */
+export type AutocompleteHandler = (
+  interaction: AutocompleteInteraction,
+) => Promise<void>;
+
+/**
+ * Channel types Discord allows within slash-command channel options.
+ */
+export type GuildCommandChannelType =
   | ChannelType.GuildText
   | ChannelType.GuildVoice
   | ChannelType.GuildCategory
@@ -23,50 +40,204 @@ type GuildCommandChannelType =
   | ChannelType.GuildForum
   | ChannelType.GuildMedia;
 
-interface CommandOptionSettings {
+/**
+ * Shared configuration for slash-command options.
+ */
+export interface CommandOptionSettings {
+  /**
+   * Whether the option must be supplied.
+   *
+   * @default false
+   */
   required?: boolean;
 }
 
-interface ChannelOptionSettings extends CommandOptionSettings {
+/**
+ * Configuration for string command options.
+ */
+export interface StringOptionSettings extends CommandOptionSettings {
+  /**
+   * Minimum accepted string length.
+   */
+  minLength?: number;
+
+  /**
+   * Maximum accepted string length.
+   */
+  maxLength?: number;
+
+  /**
+   * Enables Discord autocomplete for this option.
+   *
+   * Cannot be combined with static choices.
+   *
+   * @default false
+   */
+  autocomplete?: boolean;
+
+  /**
+   * Static choices displayed by Discord.
+   */
+  choices?: readonly {
+    name: string;
+    value: string;
+  }[];
+}
+
+/**
+ * Configuration for integer command options.
+ */
+export interface IntegerOptionSettings extends CommandOptionSettings {
+  min?: number;
+  max?: number;
+  autocomplete?: boolean;
+
+  choices?: readonly {
+    name: string;
+    value: number;
+  }[];
+}
+
+/**
+ * Configuration for number command options.
+ */
+export interface NumberOptionSettings extends CommandOptionSettings {
+  min?: number;
+  max?: number;
+  autocomplete?: boolean;
+
+  choices?: readonly {
+    name: string;
+    value: number;
+  }[];
+}
+
+/**
+ * Configuration for channel command options.
+ */
+export interface ChannelOptionSettings extends CommandOptionSettings {
+  /**
+   * Restricts the option to specific Discord channel types.
+   */
   types?: GuildCommandChannelType[];
 }
 
-interface DeferSettings {
+/**
+ * Automatic interaction deferral configuration.
+ */
+export interface DeferSettings {
+  /**
+   * Whether the deferred response should only be visible to the command user.
+   *
+   * @default false
+   */
   ephemeral?: boolean;
 }
 
+/**
+ * Fluent builder used to define and execute Discord slash commands.
+ *
+ * @example
+ * ```ts
+ * export const checkCommand = new Command()
+ *   .name("check")
+ *   .description("Check a user.")
+ *   .guildOnly()
+ *   .permissions(PermissionFlagsBits.ModerateMembers)
+ *   .ephemeral()
+ *   .userOption("user", "User to check.", {
+ *     required: true,
+ *   })
+ *   .execute(async (interaction) => {
+ *     const user = interaction.options.getUser("user", true);
+ *   });
+ * ```
+ */
 export class Command<TGuildOnly extends boolean = false> {
+  /**
+   * Underlying Discord.js slash-command builder.
+   *
+   * Used during application-command registration.
+   */
   public readonly data = new SlashCommandBuilder();
 
   private handler?: (interaction: ChatInputCommandInteraction) => Promise<void>;
 
+  private autocompleteHandler?: AutocompleteHandler;
+
   private guildOnlyValue = false;
   private deferSettings?: DeferSettings;
 
+  /**
+   * Sets the slash-command name.
+   */
   public name(value: string): this {
     this.data.setName(value);
 
     return this;
   }
 
+  /**
+   * Sets the slash-command description.
+   */
   public description(value: string): this {
     this.data.setDescription(value);
 
     return this;
   }
 
+  /**
+   * Marks this command as guild-only.
+   *
+   * The execute callback will receive a cached guild interaction, allowing
+   * TypeScript to safely expose `interaction.guild`.
+   */
   public guildOnly(): Command<true> {
     this.guildOnlyValue = true;
 
     return this as unknown as Command<true>;
   }
 
+  /**
+   * Sets the permissions required for this command by default.
+   */
   public permissions(value: bigint | number): this {
     this.data.setDefaultMemberPermissions(value);
 
     return this;
   }
 
+  /**
+   * Prevents the command from being usable in DMs.
+   *
+   * This affects Discord command registration rather than runtime execution.
+   */
+  public dmPermission(value: boolean): this {
+    this.data.setDMPermission(value);
+
+    return this;
+  }
+
+  /**
+   * Automatically defers the command response.
+   */
+  public defer(settings: DeferSettings = {}): this {
+    this.deferSettings = settings;
+
+    return this;
+  }
+
+  /**
+   * Automatically defers the command with an ephemeral response.
+   *
+   * Equivalent to:
+   *
+   * ```ts
+   * .defer({
+   *   ephemeral: true,
+   * })
+   * ```
+   */
   public ephemeral(value = true): this {
     this.deferSettings = {
       ...(this.deferSettings ?? {}),
@@ -76,12 +247,9 @@ export class Command<TGuildOnly extends boolean = false> {
     return this;
   }
 
-  public defer(settings: DeferSettings = {}): this {
-    this.deferSettings = settings;
-
-    return this;
-  }
-
+  /**
+   * Adds a Discord user option.
+   */
   public userOption(
     name: string,
     description: string,
@@ -97,6 +265,9 @@ export class Command<TGuildOnly extends boolean = false> {
     return this;
   }
 
+  /**
+   * Adds a Discord role option.
+   */
   public roleOption(
     name: string,
     description: string,
@@ -112,6 +283,9 @@ export class Command<TGuildOnly extends boolean = false> {
     return this;
   }
 
+  /**
+   * Adds a Discord channel option.
+   */
   public channelOption(
     name: string,
     description: string,
@@ -133,6 +307,155 @@ export class Command<TGuildOnly extends boolean = false> {
     return this;
   }
 
+  /**
+   * Adds a string option.
+   */
+  public stringOption(
+    name: string,
+    description: string,
+    settings: StringOptionSettings = {},
+  ): this {
+    this.data.addStringOption((option) => {
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false);
+
+      if (settings.minLength !== undefined) {
+        option.setMinLength(settings.minLength);
+      }
+
+      if (settings.maxLength !== undefined) {
+        option.setMaxLength(settings.maxLength);
+      }
+
+      if (settings.autocomplete !== undefined) {
+        option.setAutocomplete(settings.autocomplete);
+      }
+
+      if (settings.choices?.length) {
+        option.addChoices(...settings.choices);
+      }
+
+      return option;
+    });
+
+    return this;
+  }
+
+  /**
+   * Adds an integer option.
+   */
+  public integerOption(
+    name: string,
+    description: string,
+    settings: IntegerOptionSettings = {},
+  ): this {
+    this.data.addIntegerOption((option) => {
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false);
+
+      if (settings.min !== undefined) {
+        option.setMinValue(settings.min);
+      }
+
+      if (settings.max !== undefined) {
+        option.setMaxValue(settings.max);
+      }
+
+      if (settings.autocomplete !== undefined) {
+        option.setAutocomplete(settings.autocomplete);
+      }
+
+      if (settings.choices?.length) {
+        option.addChoices(...settings.choices);
+      }
+
+      return option;
+    });
+
+    return this;
+  }
+
+  /**
+   * Adds a numeric option.
+   */
+  public numberOption(
+    name: string,
+    description: string,
+    settings: NumberOptionSettings = {},
+  ): this {
+    this.data.addNumberOption((option) => {
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false);
+
+      if (settings.min !== undefined) {
+        option.setMinValue(settings.min);
+      }
+
+      if (settings.max !== undefined) {
+        option.setMaxValue(settings.max);
+      }
+
+      if (settings.autocomplete !== undefined) {
+        option.setAutocomplete(settings.autocomplete);
+      }
+
+      if (settings.choices?.length) {
+        option.addChoices(...settings.choices);
+      }
+
+      return option;
+    });
+
+    return this;
+  }
+
+  /**
+   * Adds a boolean option.
+   */
+  public booleanOption(
+    name: string,
+    description: string,
+    settings: CommandOptionSettings = {},
+  ): this {
+    this.data.addBooleanOption((option) =>
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false),
+    );
+
+    return this;
+  }
+
+  /**
+   * Adds a mentionable option.
+   *
+   * Mentionable options accept either users or roles.
+   */
+  public mentionableOption(
+    name: string,
+    description: string,
+    settings: CommandOptionSettings = {},
+  ): this {
+    this.data.addMentionableOption((option) =>
+      option
+        .setName(name)
+        .setDescription(description)
+        .setRequired(settings.required ?? false),
+    );
+
+    return this;
+  }
+
+  /**
+   * Registers the callback invoked when this command executes.
+   */
   public execute(handler: CommandHandler<TGuildOnly>): this {
     this.handler = handler as (
       interaction: ChatInputCommandInteraction,
@@ -141,10 +464,26 @@ export class Command<TGuildOnly extends boolean = false> {
     return this;
   }
 
+  /**
+   * Registers the autocomplete callback for this command.
+   */
+  public autocomplete(handler: AutocompleteHandler): this {
+    this.autocompleteHandler = handler;
+
+    return this;
+  }
+
+  /**
+   * Executes the registered command callback.
+   *
+   * This method is intended to be called by the bot's interaction dispatcher.
+   *
+   * @throws If no execute callback has been registered.
+   */
   public async run(interaction: ChatInputCommandInteraction): Promise<void> {
     if (!this.handler) {
       throw new Error(
-        `Command ${this.data.name || "unknown"} has no execute handler.`,
+        `Command "${this.data.name || "unknown"}" has no execute handler.`,
       );
     }
 
@@ -166,5 +505,22 @@ export class Command<TGuildOnly extends boolean = false> {
     }
 
     await this.handler(interaction);
+  }
+
+  /**
+   * Executes this command's autocomplete callback.
+   *
+   * @throws If autocomplete was requested but no autocomplete callback exists.
+   */
+  public async runAutocomplete(
+    interaction: AutocompleteInteraction,
+  ): Promise<void> {
+    if (!this.autocompleteHandler) {
+      throw new Error(
+        `Command "${this.data.name || "unknown"}" has no autocomplete handler.`,
+      );
+    }
+
+    await this.autocompleteHandler(interaction);
   }
 }

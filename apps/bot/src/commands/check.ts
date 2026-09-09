@@ -7,12 +7,9 @@ export const checkCommand = new Command()
   .description("Check a user for verification relationships.")
   .guildOnly()
   .permissions(PermissionFlagsBits.ModerateMembers)
-  //.ephemeral()
+  .ephemeral()
   .userOption("user", "The user to check.", {
     required: true,
-  })
-  .defer({
-    ephemeral: true,
   })
   .execute(async (interaction) => {
     const user = interaction.options.getUser("user", true);
