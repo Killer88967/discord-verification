@@ -177,7 +177,7 @@ model AccountLink {
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
-    @@unique([userAId, userBId, reason])
+    @@unique([userAId, userBId])
     @@index([userAId])
     @@index([userBId])
 }

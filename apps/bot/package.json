@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/index.ts",
-    "check": "tsx src/commands/check.ts",
     "build": "tsc",
     "typecheck": "tsc --noEmit"
   },

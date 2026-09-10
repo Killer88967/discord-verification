@@ -278,7 +278,7 @@ export type AccountLinkOrderByWithRelationInput = {
 
 export type AccountLinkWhereUniqueInput = Prisma.AtLeast<{
   id?: string
-  userAId_userBId_reason?: Prisma.AccountLinkUserAIdUserBIdReasonCompoundUniqueInput
+  userAId_userBId?: Prisma.AccountLinkUserAIdUserBIdCompoundUniqueInput
   AND?: Prisma.AccountLinkWhereInput | Prisma.AccountLinkWhereInput[]
   OR?: Prisma.AccountLinkWhereInput[]
   NOT?: Prisma.AccountLinkWhereInput | Prisma.AccountLinkWhereInput[]
@@ -292,7 +292,7 @@ export type AccountLinkWhereUniqueInput = Prisma.AtLeast<{
   lastSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
-}, "id" | "userAId_userBId_reason">
+}, "id" | "userAId_userBId">
 
 export type AccountLinkOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -436,10 +436,9 @@ export type EnumVerificationSignalKindNullableListFilter<$PrismaModel = never> =
   isEmpty?: boolean
 }
 
-export type AccountLinkUserAIdUserBIdReasonCompoundUniqueInput = {
+export type AccountLinkUserAIdUserBIdCompoundUniqueInput = {
   userAId: string
   userBId: string
-  reason: $Enums.AccountLinkReason
 }
 
 export type AccountLinkCountOrderByAggregateInput = {
