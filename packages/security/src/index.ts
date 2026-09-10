@@ -1,1 +1,2 @@
-export { hashSignal } from "./hashSignal.js";
+export * from "./hashSignal.js";
+export * from "./riskScore.js";
