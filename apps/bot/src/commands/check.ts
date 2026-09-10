@@ -35,15 +35,18 @@ export const checkCommand = new Command()
 
     const linkedAccounts =
       guildLinks.length === 0
-        ? "No linked accounts found."
+        ? "No linked accounts found in this server."
         : guildLinks
             .slice(0, 10)
             .map((link) =>
               [
                 `<@${link.userId}>`,
                 `\`${link.userId}\``,
-                `Reason: ${link.reason}`,
+                `Reason: ${formatReason(link.reason)}`,
                 `Confidence: ${link.confidence}`,
+                `Risk Score: ${link.score}/100`,
+                `First Seen: <t:${Math.floor(link.firstSeenAt.getTime() / 1000)}:R>`,
+                `Last Seen: <t:${Math.floor(link.lastSeenAt.getTime() / 1000)}:R>`,
               ].join("\n"),
             )
             .join("\n\n");
@@ -67,3 +70,13 @@ export const checkCommand = new Command()
       embeds: [embed],
     });
   });
+
+function formatReason(reason: "DEVICE_TOKEN" | "SIGNAL_MATCH"): string {
+  switch (reason) {
+    case "DEVICE_TOKEN":
+      return "Device Token";
+
+    case "SIGNAL_MATCH":
+      return "Browser Signal Match";
+  }
+}
