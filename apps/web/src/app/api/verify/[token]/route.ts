@@ -1,6 +1,5 @@
 import {
   completeVerificationSession,
-  findDeviceMatches,
   findSignalMatches,
   getVerificationSessionByToken,
   storeVerificationSignals,
@@ -152,6 +151,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
           reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
           confidence: assessment.confidence,
           score: assessment.score,
+          matchedSignals: match.matchedKinds,
         });
       }),
     );

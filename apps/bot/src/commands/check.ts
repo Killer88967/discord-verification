@@ -45,6 +45,7 @@ export const checkCommand = new Command()
                 `Reason: ${formatReason(link.reason)}`,
                 `Confidence: ${link.confidence}`,
                 `Risk Score: ${link.score}/100`,
+                `Signals: ${formatSignals(link.matchedSignals)}`,
                 `First Seen: <t:${Math.floor(link.firstSeenAt.getTime() / 1000)}:R>`,
                 `Last Seen: <t:${Math.floor(link.lastSeenAt.getTime() / 1000)}:R>`,
               ].join("\n"),
@@ -79,4 +80,27 @@ function formatReason(reason: "DEVICE_TOKEN" | "SIGNAL_MATCH"): string {
     case "SIGNAL_MATCH":
       return "Browser Signal Match";
   }
+}
+
+function formatSignals(
+  signals: (
+    | "DEVICE_TOKEN"
+    | "USER_AGENT"
+    | "TIMEZONE"
+    | "LANGUAGE"
+    | "PLATFORM"
+    | "SCREEN"
+    | "HARDWARE"
+    | "NETWORK"
+  )[],
+): string {
+  return signals
+    .map((signal) =>
+      signal
+        .toLowerCase()
+        .split("_")
+        .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+        .join(" "),
+    )
+    .join(", ");
 }

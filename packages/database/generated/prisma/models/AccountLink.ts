@@ -67,6 +67,7 @@ export type AccountLinkCountAggregateOutputType = {
   reason: number
   confidence: number
   score: number
+  matchedSignals: number
   firstSeenAt: number
   lastSeenAt: number
   createdAt: number
@@ -116,6 +117,7 @@ export type AccountLinkCountAggregateInputType = {
   reason?: true
   confidence?: true
   score?: true
+  matchedSignals?: true
   firstSeenAt?: true
   lastSeenAt?: true
   createdAt?: true
@@ -216,6 +218,7 @@ export type AccountLinkGroupByOutputType = {
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
   score: number
+  matchedSignals: $Enums.VerificationSignalKind[]
   firstSeenAt: Date
   lastSeenAt: Date
   createdAt: Date
@@ -252,6 +255,7 @@ export type AccountLinkWhereInput = {
   reason?: Prisma.EnumAccountLinkReasonFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFilter<"AccountLink"> | $Enums.AccountLinkConfidence
   score?: Prisma.IntFilter<"AccountLink"> | number
+  matchedSignals?: Prisma.EnumVerificationSignalKindNullableListFilter<"AccountLink">
   firstSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
@@ -265,6 +269,7 @@ export type AccountLinkOrderByWithRelationInput = {
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  matchedSignals?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -282,6 +287,7 @@ export type AccountLinkWhereUniqueInput = Prisma.AtLeast<{
   reason?: Prisma.EnumAccountLinkReasonFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFilter<"AccountLink"> | $Enums.AccountLinkConfidence
   score?: Prisma.IntFilter<"AccountLink"> | number
+  matchedSignals?: Prisma.EnumVerificationSignalKindNullableListFilter<"AccountLink">
   firstSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
@@ -295,6 +301,7 @@ export type AccountLinkOrderByWithAggregationInput = {
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  matchedSignals?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -316,6 +323,7 @@ export type AccountLinkScalarWhereWithAggregatesInput = {
   reason?: Prisma.EnumAccountLinkReasonWithAggregatesFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceWithAggregatesFilter<"AccountLink"> | $Enums.AccountLinkConfidence
   score?: Prisma.IntWithAggregatesFilter<"AccountLink"> | number
+  matchedSignals?: Prisma.EnumVerificationSignalKindNullableListFilter<"AccountLink">
   firstSeenAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
@@ -329,6 +337,7 @@ export type AccountLinkCreateInput = {
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
   score: number
+  matchedSignals?: Prisma.AccountLinkCreatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -342,6 +351,7 @@ export type AccountLinkUncheckedCreateInput = {
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
   score: number
+  matchedSignals?: Prisma.AccountLinkCreatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -355,6 +365,7 @@ export type AccountLinkUpdateInput = {
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  matchedSignals?: Prisma.AccountLinkUpdatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -368,6 +379,7 @@ export type AccountLinkUncheckedUpdateInput = {
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  matchedSignals?: Prisma.AccountLinkUpdatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -381,6 +393,7 @@ export type AccountLinkCreateManyInput = {
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
   score: number
+  matchedSignals?: Prisma.AccountLinkCreatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -394,6 +407,7 @@ export type AccountLinkUpdateManyMutationInput = {
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  matchedSignals?: Prisma.AccountLinkUpdatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -407,10 +421,19 @@ export type AccountLinkUncheckedUpdateManyInput = {
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
   score?: Prisma.IntFieldUpdateOperationsInput | number
+  matchedSignals?: Prisma.AccountLinkUpdatematchedSignalsInput | $Enums.VerificationSignalKind[]
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
+}
+
+export type EnumVerificationSignalKindNullableListFilter<$PrismaModel = never> = {
+  equals?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel> | null
+  has?: $Enums.VerificationSignalKind | Prisma.EnumVerificationSignalKindFieldRefInput<$PrismaModel> | null
+  hasEvery?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  hasSome?: $Enums.VerificationSignalKind[] | Prisma.ListEnumVerificationSignalKindFieldRefInput<$PrismaModel>
+  isEmpty?: boolean
 }
 
 export type AccountLinkUserAIdUserBIdReasonCompoundUniqueInput = {
@@ -426,6 +449,7 @@ export type AccountLinkCountOrderByAggregateInput = {
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
   score?: Prisma.SortOrder
+  matchedSignals?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -466,6 +490,10 @@ export type AccountLinkSumOrderByAggregateInput = {
   score?: Prisma.SortOrder
 }
 
+export type AccountLinkCreatematchedSignalsInput = {
+  set: $Enums.VerificationSignalKind[]
+}
+
 export type EnumAccountLinkReasonFieldUpdateOperationsInput = {
   set?: $Enums.AccountLinkReason
 }
@@ -482,6 +510,11 @@ export type IntFieldUpdateOperationsInput = {
   divide?: number
 }
 
+export type AccountLinkUpdatematchedSignalsInput = {
+  set?: $Enums.VerificationSignalKind[]
+  push?: $Enums.VerificationSignalKind | $Enums.VerificationSignalKind[]
+}
+
 
 
 export type AccountLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -491,6 +524,7 @@ export type AccountLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   reason?: boolean
   confidence?: boolean
   score?: boolean
+  matchedSignals?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -504,6 +538,7 @@ export type AccountLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   reason?: boolean
   confidence?: boolean
   score?: boolean
+  matchedSignals?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -517,6 +552,7 @@ export type AccountLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   reason?: boolean
   confidence?: boolean
   score?: boolean
+  matchedSignals?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -530,13 +566,14 @@ export type AccountLinkSelectScalar = {
   reason?: boolean
   confidence?: boolean
   score?: boolean
+  matchedSignals?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AccountLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userAId" | "userBId" | "reason" | "confidence" | "score" | "firstSeenAt" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["accountLink"]>
+export type AccountLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userAId" | "userBId" | "reason" | "confidence" | "score" | "matchedSignals" | "firstSeenAt" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["accountLink"]>
 
 export type $AccountLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AccountLink"
@@ -548,6 +585,7 @@ export type $AccountLinkPayload<ExtArgs extends runtime.Types.Extensions.Interna
     reason: $Enums.AccountLinkReason
     confidence: $Enums.AccountLinkConfidence
     score: number
+    matchedSignals: $Enums.VerificationSignalKind[]
     firstSeenAt: Date
     lastSeenAt: Date
     createdAt: Date
@@ -981,6 +1019,7 @@ export interface AccountLinkFieldRefs {
   readonly reason: Prisma.FieldRef<"AccountLink", 'AccountLinkReason'>
   readonly confidence: Prisma.FieldRef<"AccountLink", 'AccountLinkConfidence'>
   readonly score: Prisma.FieldRef<"AccountLink", 'Int'>
+  readonly matchedSignals: Prisma.FieldRef<"AccountLink", 'VerificationSignalKind[]'>
   readonly firstSeenAt: Prisma.FieldRef<"AccountLink", 'DateTime'>
   readonly lastSeenAt: Prisma.FieldRef<"AccountLink", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AccountLink", 'DateTime'>

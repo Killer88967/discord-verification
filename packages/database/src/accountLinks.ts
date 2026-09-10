@@ -1,6 +1,7 @@
 import type {
   AccountLinkConfidence,
   AccountLinkReason,
+  VerificationSignalKind,
 } from "../generated/prisma/enums.js";
 import { prisma } from "./prisma.js";
 
@@ -10,6 +11,7 @@ export interface UpsertAccountLinkOptions {
   reason: AccountLinkReason;
   confidence: AccountLinkConfidence;
   score: number;
+  matchedSignals: VerificationSignalKind[];
 }
 
 export interface AccountLinkMatch {
@@ -17,6 +19,7 @@ export interface AccountLinkMatch {
   reason: AccountLinkReason;
   confidence: AccountLinkConfidence;
   score: number;
+  matchedSignals: VerificationSignalKind[];
   firstSeenAt: Date;
   lastSeenAt: Date;
 }
@@ -27,6 +30,7 @@ export async function upsertAccountLink({
   reason,
   confidence,
   score,
+  matchedSignals,
 }: UpsertAccountLinkOptions) {
   if (userAId === userBId) {
     throw new Error("Cannot link an account to itself.");
@@ -51,12 +55,14 @@ export async function upsertAccountLink({
       reason,
       confidence,
       score,
+      matchedSignals,
       firstSeenAt: now,
       lastSeenAt: now,
     },
     update: {
       confidence,
       score,
+      matchedSignals,
       lastSeenAt: now,
     },
   });
@@ -86,6 +92,7 @@ export async function getAccountLinksForUser(
     reason: link.reason,
     confidence: link.confidence,
     score: link.score,
+    matchedSignals: link.matchedSignals,
     firstSeenAt: link.firstSeenAt,
     lastSeenAt: link.lastSeenAt,
   }));

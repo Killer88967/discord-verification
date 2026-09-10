@@ -166,9 +166,10 @@ model AccountLink {
     userAId String
     userBId String
 
-    reason     AccountLinkReason
-    confidence AccountLinkConfidence
-    score      Int
+    reason         AccountLinkReason
+    confidence     AccountLinkConfidence
+    score          Int
+    matchedSignals VerificationSignalKind[]
 
     firstSeenAt DateTime @default(now())
     lastSeenAt  DateTime @default(now())
