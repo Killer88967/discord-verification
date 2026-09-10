@@ -17,7 +17,7 @@ export const configCommand = new Command()
       .description("Configure verification security settings.")
       .integerOption(
         "minimum-account-age",
-        "Minimum Discord account ge in days.",
+        "Minimum Discord account age in days.",
         {
           min: 0,
           max: 3650,
@@ -25,7 +25,7 @@ export const configCommand = new Command()
       )
       .integerOption(
         "risk-threshold",
-        "Risk scord required to trigger the configured action.",
+        "Risk score required to trigger the configured action.",
         {
           min: 0,
           max: 100,
@@ -179,7 +179,7 @@ function parseRiskAction(value: string): "NONE" | "REJECT" | "KICK" | "BAN" {
       return value;
 
     default:
-      throw new Error(`Unkown verification risk action: ${value}`);
+      throw new Error(`Unknown verification risk action: ${value}`);
   }
 }
 
