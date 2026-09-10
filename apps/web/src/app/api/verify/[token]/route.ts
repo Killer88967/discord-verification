@@ -1,11 +1,17 @@
 import {
   completeVerificationSession,
   findDeviceMatches,
+  findSignalMatches,
   getVerificationSessionByToken,
   storeVerificationSignals,
   upsertAccountLink,
+  type SignalMatchInput,
 } from "@verification/database";
-import { hashSignal } from "@verification/security";
+import {
+  calculateRiskScore,
+  hashSignal,
+  type RiskReason,
+} from "@verification/security";
 import { NextResponse } from "next/server";
 import { validateVerificationPayload } from "@/lib/verification/validateVerificationPayload";
 import { readJsonBody } from "@/lib/http/readJsonBody";
@@ -76,70 +82,77 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   const sessionId = lookup.session.id;
   const deviceTokenHash = hashSignal(body.deviceId, secret);
   const userAgent = request.headers.get("user-agent") ?? "unknown";
-  const deviceMatches = await findDeviceMatches(
-    deviceTokenHash,
-    lookup.session.userId,
-  );
+  const signals: SignalMatchInput[] = [
+    {
+      kind: "DEVICE_TOKEN",
+      valueHash: deviceTokenHash,
+    },
+    {
+      kind: "USER_AGENT",
+      valueHash: hashSignal(userAgent, secret),
+    },
+    {
+      kind: "TIMEZONE",
+      valueHash: hashSignal(body.signals.timezone, secret),
+    },
+    {
+      kind: "LANGUAGE",
+      valueHash: hashSignal(
+        JSON.stringify({
+          language: body.signals.language,
+          languages: body.signals.languages,
+        }),
+        secret,
+      ),
+    },
+    {
+      kind: "PLATFORM",
+      valueHash: hashSignal(body.signals.platform, secret),
+    },
+    {
+      kind: "SCREEN",
+      valueHash: hashSignal(JSON.stringify(body.signals.screen), secret),
+    },
+    {
+      kind: "HARDWARE",
+      valueHash: hashSignal(
+        JSON.stringify({
+          hardwareConcurrency: body.signals.hardwareConcurrency,
+          maxTouchPoints: body.signals.maxTouchPoints,
+        }),
+        secret,
+      ),
+    },
+  ];
+  const signalMatches = await findSignalMatches(signals, lookup.session.userId);
 
   await storeVerificationSignals({
     sessionId,
     deviceTokenHash,
-    signals: [
-      {
-        kind: "DEVICE_TOKEN",
-        valueHash: deviceTokenHash,
-      },
-      {
-        kind: "USER_AGENT",
-        valueHash: hashSignal(userAgent, secret),
-      },
-      {
-        kind: "TIMEZONE",
-        valueHash: hashSignal(body.signals.timezone, secret),
-      },
-      {
-        kind: "LANGUAGE",
-        valueHash: hashSignal(
-          JSON.stringify({
-            language: body.signals.language,
-            languages: body.signals.languages,
-          }),
-          secret,
-        ),
-      },
-      {
-        kind: "PLATFORM",
-        valueHash: hashSignal(body.signals.platform, secret),
-      },
-      {
-        kind: "SCREEN",
-        valueHash: hashSignal(JSON.stringify(body.signals.screen), secret),
-      },
-      {
-        kind: "HARDWARE",
-        valueHash: hashSignal(
-          JSON.stringify({
-            hardwareConcurrency: body.signals.hardwareConcurrency,
-            maxTouchPoints: body.signals.maxTouchPoints,
-          }),
-          secret,
-        ),
-      },
-    ],
+    signals,
   });
 
   const result = await completeVerificationSession(token);
 
   if (result.status === "VERIFIED") {
     await Promise.all(
-      deviceMatches.map((match) =>
-        upsertAccountLink({
+      signalMatches.map((match) => {
+        const assessment = calculateRiskScore(
+          match.matchedKinds.map((kind) => ({
+            matched: true,
+            reason: signalKindToRiskReason(kind),
+          })),
+        );
+
+        const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
+
+        return upsertAccountLink({
           userAId: result.session.userId,
           userBId: match.userId,
-          reason: "DEVICE_TOKEN",
-          confidence: "HIGH",
-        }),
-      ),
+          reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
+          confidence: assessment.confidence,
+        });
+      }),
     );
 
     await assignVerifiedRole(result.session.id);
@@ -147,8 +160,36 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
-    deviceMatchCount: result.status === "VERIFIED" ? deviceMatches.length : 0,
+    deviceMatchCount: result.status === "VERIFIED" ? signalMatches.length : 0,
   });
+}
+
+function signalKindToRiskReason(kind: SignalMatchInput["kind"]): RiskReason {
+  switch (kind) {
+    case "DEVICE_TOKEN":
+      return "DEVICE_TOKEN_MATCH";
+
+    case "USER_AGENT":
+      return "USER_AGENT_MATCH";
+
+    case "TIMEZONE":
+      return "TIMEZONE_MATCH";
+
+    case "LANGUAGE":
+      return "LANGUAGE_MATCH";
+
+    case "PLATFORM":
+      return "PLATFORM_MATCH";
+
+    case "SCREEN":
+      return "SCREEN_MATCH";
+
+    case "HARDWARE":
+      return "HARDWARE_MATCH";
+
+    case "NETWORK":
+      throw new Error("NETWORK signal scoring is not implemented yet.");
+  }
 }
 
 async function assignVerifiedRole(sessionId: string): Promise<void> {

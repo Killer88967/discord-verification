@@ -52,7 +52,7 @@ function getConfidence(score: number): RiskConfidence {
     return "HIGH";
   }
 
-  if (score >= 35) {
+  if (score >= 20) {
     return "MEDIUM";
   }
 
