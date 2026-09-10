@@ -380,7 +380,7 @@ Internal packages are shared between applications using workspace dependencies s
 
 ```json
 {
-  "@verification/database": "workspace:\*"
+  "@verification/database": "workspace:*"
 }
 ```
 
