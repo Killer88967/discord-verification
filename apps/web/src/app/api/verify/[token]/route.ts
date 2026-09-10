@@ -8,8 +8,10 @@ import {
 import { hashSignal } from "@verification/security";
 import { NextResponse } from "next/server";
 import { validateVerificationPayload } from "@/lib/verification/validateVerificationPayload";
+import { readJsonBody } from "@/lib/http/readJsonBody";
 
 export const runtime = "nodejs";
+const MAX_VERIFICATION_BODY_BYTES = 16 * 1024;
 
 interface VerifyRouteContext {
   params: Promise<{
@@ -26,11 +28,20 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     throw new Error("FINGERPRINT_HMAC_SECRET is not defined.");
   }
 
-  let rawBody: unknown;
+  const bodyResult = await readJsonBody(request, MAX_VERIFICATION_BODY_BYTES);
 
-  try {
-    rawBody = await request.json();
-  } catch {
+  if (bodyResult.status === "TOO_LARGE") {
+    return NextResponse.json(
+      {
+        error: "Verification payload is too large.",
+      },
+      {
+        status: 413,
+      },
+    );
+  }
+
+  if (bodyResult.status === "INVALID_JSON") {
     return NextResponse.json(
       {
         error: "Invalid JSON payload.",
@@ -41,7 +52,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     );
   }
 
-  const body = validateVerificationPayload(rawBody);
+  const body = validateVerificationPayload(bodyResult.value);
 
   if (!body) {
     return NextResponse.json(

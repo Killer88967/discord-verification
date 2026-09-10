@@ -19,7 +19,8 @@
   },
   "files.associations": {
     "*.json": "json",
-    "*.css": "tailwindcss"
+    "*.css": "tailwindcss",
+    "NOTICE": "markdown"
   },
   "[json]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
