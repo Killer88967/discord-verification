@@ -402,7 +402,10 @@ If contributing code:
 
 ## License
 
-This project is licensed under the [Apache License 2.0](LICENSE).
+Discord Verification Bot is licensed under the
+[Apache License 2.0](LICENSE).
+
+See [NOTICE](NOTICE) for attribution information.
 
 ## Author
 
