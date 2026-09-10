@@ -20,8 +20,20 @@ export type GuildConfigModel = runtime.Types.Result.DefaultSelection<Prisma.$Gui
 
 export type AggregateGuildConfig = {
   _count: GuildConfigCountAggregateOutputType | null
+  _avg: GuildConfigAvgAggregateOutputType | null
+  _sum: GuildConfigSumAggregateOutputType | null
   _min: GuildConfigMinAggregateOutputType | null
   _max: GuildConfigMaxAggregateOutputType | null
+}
+
+export type GuildConfigAvgAggregateOutputType = {
+  minimumAccountAgeDays: number | null
+  riskThreshold: number | null
+}
+
+export type GuildConfigSumAggregateOutputType = {
+  minimumAccountAgeDays: number | null
+  riskThreshold: number | null
 }
 
 export type GuildConfigMinAggregateOutputType = {
@@ -30,6 +42,9 @@ export type GuildConfigMinAggregateOutputType = {
   verificationChannelId: string | null
   logChannelId: string | null
   enabled: boolean | null
+  minimumAccountAgeDays: number | null
+  riskThreshold: number | null
+  riskAction: $Enums.VerificationRiskAction | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -40,6 +55,9 @@ export type GuildConfigMaxAggregateOutputType = {
   verificationChannelId: string | null
   logChannelId: string | null
   enabled: boolean | null
+  minimumAccountAgeDays: number | null
+  riskThreshold: number | null
+  riskAction: $Enums.VerificationRiskAction | null
   createdAt: Date | null
   updatedAt: Date | null
 }
@@ -50,11 +68,24 @@ export type GuildConfigCountAggregateOutputType = {
   verificationChannelId: number
   logChannelId: number
   enabled: number
+  minimumAccountAgeDays: number
+  riskThreshold: number
+  riskAction: number
   createdAt: number
   updatedAt: number
   _all: number
 }
 
+
+export type GuildConfigAvgAggregateInputType = {
+  minimumAccountAgeDays?: true
+  riskThreshold?: true
+}
+
+export type GuildConfigSumAggregateInputType = {
+  minimumAccountAgeDays?: true
+  riskThreshold?: true
+}
 
 export type GuildConfigMinAggregateInputType = {
   guildId?: true
@@ -62,6 +93,9 @@ export type GuildConfigMinAggregateInputType = {
   verificationChannelId?: true
   logChannelId?: true
   enabled?: true
+  minimumAccountAgeDays?: true
+  riskThreshold?: true
+  riskAction?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -72,6 +106,9 @@ export type GuildConfigMaxAggregateInputType = {
   verificationChannelId?: true
   logChannelId?: true
   enabled?: true
+  minimumAccountAgeDays?: true
+  riskThreshold?: true
+  riskAction?: true
   createdAt?: true
   updatedAt?: true
 }
@@ -82,6 +119,9 @@ export type GuildConfigCountAggregateInputType = {
   verificationChannelId?: true
   logChannelId?: true
   enabled?: true
+  minimumAccountAgeDays?: true
+  riskThreshold?: true
+  riskAction?: true
   createdAt?: true
   updatedAt?: true
   _all?: true
@@ -125,6 +165,18 @@ export type GuildConfigAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: GuildConfigAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: GuildConfigSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: GuildConfigMinAggregateInputType
@@ -155,6 +207,8 @@ export type GuildConfigGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: GuildConfigCountAggregateInputType | true
+  _avg?: GuildConfigAvgAggregateInputType
+  _sum?: GuildConfigSumAggregateInputType
   _min?: GuildConfigMinAggregateInputType
   _max?: GuildConfigMaxAggregateInputType
 }
@@ -165,9 +219,14 @@ export type GuildConfigGroupByOutputType = {
   verificationChannelId: string | null
   logChannelId: string | null
   enabled: boolean
+  minimumAccountAgeDays: number
+  riskThreshold: number
+  riskAction: $Enums.VerificationRiskAction
   createdAt: Date
   updatedAt: Date
   _count: GuildConfigCountAggregateOutputType | null
+  _avg: GuildConfigAvgAggregateOutputType | null
+  _sum: GuildConfigSumAggregateOutputType | null
   _min: GuildConfigMinAggregateOutputType | null
   _max: GuildConfigMaxAggregateOutputType | null
 }
@@ -196,6 +255,9 @@ export type GuildConfigWhereInput = {
   verificationChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolFilter<"GuildConfig"> | boolean
+  minimumAccountAgeDays?: Prisma.IntFilter<"GuildConfig"> | number
+  riskThreshold?: Prisma.IntFilter<"GuildConfig"> | number
+  riskAction?: Prisma.EnumVerificationRiskActionFilter<"GuildConfig"> | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFilter<"GuildConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GuildConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -207,6 +269,9 @@ export type GuildConfigOrderByWithRelationInput = {
   verificationChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
+  riskAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   guild?: Prisma.GuildOrderByWithRelationInput
@@ -221,6 +286,9 @@ export type GuildConfigWhereUniqueInput = Prisma.AtLeast<{
   verificationChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolFilter<"GuildConfig"> | boolean
+  minimumAccountAgeDays?: Prisma.IntFilter<"GuildConfig"> | number
+  riskThreshold?: Prisma.IntFilter<"GuildConfig"> | number
+  riskAction?: Prisma.EnumVerificationRiskActionFilter<"GuildConfig"> | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFilter<"GuildConfig"> | Date | string
   updatedAt?: Prisma.DateTimeFilter<"GuildConfig"> | Date | string
   guild?: Prisma.XOR<Prisma.GuildScalarRelationFilter, Prisma.GuildWhereInput>
@@ -232,11 +300,16 @@ export type GuildConfigOrderByWithAggregationInput = {
   verificationChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
+  riskAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.GuildConfigCountOrderByAggregateInput
+  _avg?: Prisma.GuildConfigAvgOrderByAggregateInput
   _max?: Prisma.GuildConfigMaxOrderByAggregateInput
   _min?: Prisma.GuildConfigMinOrderByAggregateInput
+  _sum?: Prisma.GuildConfigSumOrderByAggregateInput
 }
 
 export type GuildConfigScalarWhereWithAggregatesInput = {
@@ -248,6 +321,9 @@ export type GuildConfigScalarWhereWithAggregatesInput = {
   verificationChannelId?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolWithAggregatesFilter<"GuildConfig"> | boolean
+  minimumAccountAgeDays?: Prisma.IntWithAggregatesFilter<"GuildConfig"> | number
+  riskThreshold?: Prisma.IntWithAggregatesFilter<"GuildConfig"> | number
+  riskAction?: Prisma.EnumVerificationRiskActionWithAggregatesFilter<"GuildConfig"> | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"GuildConfig"> | Date | string
   updatedAt?: Prisma.DateTimeWithAggregatesFilter<"GuildConfig"> | Date | string
 }
@@ -257,6 +333,9 @@ export type GuildConfigCreateInput = {
   verificationChannelId?: string | null
   logChannelId?: string | null
   enabled?: boolean
+  minimumAccountAgeDays?: number
+  riskThreshold?: number
+  riskAction?: $Enums.VerificationRiskAction
   createdAt?: Date | string
   updatedAt?: Date | string
   guild: Prisma.GuildCreateNestedOneWithoutConfigInput
@@ -268,6 +347,9 @@ export type GuildConfigUncheckedCreateInput = {
   verificationChannelId?: string | null
   logChannelId?: string | null
   enabled?: boolean
+  minimumAccountAgeDays?: number
+  riskThreshold?: number
+  riskAction?: $Enums.VerificationRiskAction
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -277,17 +359,23 @@ export type GuildConfigUpdateInput = {
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  guild?: Prisma.GuildUpdateOneRequiredWithoutConfigNestedInput
+  guild?: Prisma.GuildUpdateOneRequiredWithoutConfigNestedInput | undefined
 }
 
 export type GuildConfigUncheckedUpdateInput = {
-  guildId?: Prisma.StringFieldUpdateOperationsInput | string
+  guildId?: Prisma.StringFieldUpdateOperationsInput | string | undefined
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -298,6 +386,9 @@ export type GuildConfigCreateManyInput = {
   verificationChannelId?: string | null
   logChannelId?: string | null
   enabled?: boolean
+  minimumAccountAgeDays?: number
+  riskThreshold?: number
+  riskAction?: $Enums.VerificationRiskAction
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -307,6 +398,9 @@ export type GuildConfigUpdateManyMutationInput = {
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -317,6 +411,9 @@ export type GuildConfigUncheckedUpdateManyInput = {
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -332,8 +429,16 @@ export type GuildConfigCountOrderByAggregateInput = {
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
+  riskAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type GuildConfigAvgOrderByAggregateInput = {
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
 }
 
 export type GuildConfigMaxOrderByAggregateInput = {
@@ -342,6 +447,9 @@ export type GuildConfigMaxOrderByAggregateInput = {
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
+  riskAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
 }
@@ -352,8 +460,16 @@ export type GuildConfigMinOrderByAggregateInput = {
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
+  riskAction?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type GuildConfigSumOrderByAggregateInput = {
+  minimumAccountAgeDays?: Prisma.SortOrder
+  riskThreshold?: Prisma.SortOrder
 }
 
 export type GuildConfigCreateNestedOneWithoutGuildInput = {
@@ -392,11 +508,26 @@ export type BoolFieldUpdateOperationsInput = {
   set?: boolean
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
+export type EnumVerificationRiskActionFieldUpdateOperationsInput = {
+  set?: $Enums.VerificationRiskAction
+}
+
 export type GuildConfigCreateWithoutGuildInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
   enabled?: boolean
+  minimumAccountAgeDays?: number
+  riskThreshold?: number
+  riskAction?: $Enums.VerificationRiskAction
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -406,6 +537,9 @@ export type GuildConfigUncheckedCreateWithoutGuildInput = {
   verificationChannelId?: string | null
   logChannelId?: string | null
   enabled?: boolean
+  minimumAccountAgeDays?: number
+  riskThreshold?: number
+  riskAction?: $Enums.VerificationRiskAction
   createdAt?: Date | string
   updatedAt?: Date | string
 }
@@ -431,6 +565,9 @@ export type GuildConfigUpdateWithoutGuildInput = {
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -440,6 +577,9 @@ export type GuildConfigUncheckedUpdateWithoutGuildInput = {
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
+  minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
+  riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
+  riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -452,6 +592,9 @@ export type GuildConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   verificationChannelId?: boolean
   logChannelId?: boolean
   enabled?: boolean
+  minimumAccountAgeDays?: boolean
+  riskThreshold?: boolean
+  riskAction?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -463,6 +606,9 @@ export type GuildConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   verificationChannelId?: boolean
   logChannelId?: boolean
   enabled?: boolean
+  minimumAccountAgeDays?: boolean
+  riskThreshold?: boolean
+  riskAction?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -474,6 +620,9 @@ export type GuildConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   verificationChannelId?: boolean
   logChannelId?: boolean
   enabled?: boolean
+  minimumAccountAgeDays?: boolean
+  riskThreshold?: boolean
+  riskAction?: boolean
   createdAt?: boolean
   updatedAt?: boolean
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
@@ -485,11 +634,14 @@ export type GuildConfigSelectScalar = {
   verificationChannelId?: boolean
   logChannelId?: boolean
   enabled?: boolean
+  minimumAccountAgeDays?: boolean
+  riskThreshold?: boolean
+  riskAction?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type GuildConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "verifiedRoleId" | "verificationChannelId" | "logChannelId" | "enabled" | "createdAt" | "updatedAt", ExtArgs["result"]["guildConfig"]>
+export type GuildConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "verifiedRoleId" | "verificationChannelId" | "logChannelId" | "enabled" | "minimumAccountAgeDays" | "riskThreshold" | "riskAction" | "createdAt" | "updatedAt", ExtArgs["result"]["guildConfig"]>
 export type GuildConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -511,6 +663,9 @@ export type $GuildConfigPayload<ExtArgs extends runtime.Types.Extensions.Interna
     verificationChannelId: string | null
     logChannelId: string | null
     enabled: boolean
+    minimumAccountAgeDays: number
+    riskThreshold: number
+    riskAction: $Enums.VerificationRiskAction
     createdAt: Date
     updatedAt: Date
   }, ExtArgs["result"]["guildConfig"]>
@@ -942,6 +1097,9 @@ export interface GuildConfigFieldRefs {
   readonly verificationChannelId: Prisma.FieldRef<"GuildConfig", 'String'>
   readonly logChannelId: Prisma.FieldRef<"GuildConfig", 'String'>
   readonly enabled: Prisma.FieldRef<"GuildConfig", 'Boolean'>
+  readonly minimumAccountAgeDays: Prisma.FieldRef<"GuildConfig", 'Int'>
+  readonly riskThreshold: Prisma.FieldRef<"GuildConfig", 'Int'>
+  readonly riskAction: Prisma.FieldRef<"GuildConfig", 'VerificationRiskAction'>
   readonly createdAt: Prisma.FieldRef<"GuildConfig", 'DateTime'>
   readonly updatedAt: Prisma.FieldRef<"GuildConfig", 'DateTime'>
 }

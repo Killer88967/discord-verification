@@ -59,3 +59,13 @@ export const VerificationSignalKind = {
 } as const
 
 export type VerificationSignalKind = (typeof VerificationSignalKind)[keyof typeof VerificationSignalKind]
+
+
+export const VerificationRiskAction = {
+  NONE: 'NONE',
+  REJECT: 'REJECT',
+  KICK: 'KICK',
+  BAN: 'BAN'
+} as const
+
+export type VerificationRiskAction = (typeof VerificationRiskAction)[keyof typeof VerificationRiskAction]

@@ -1071,6 +1071,9 @@ export const GuildConfigScalarFieldEnum = {
   verificationChannelId: 'verificationChannelId',
   logChannelId: 'logChannelId',
   enabled: 'enabled',
+  minimumAccountAgeDays: 'minimumAccountAgeDays',
+  riskThreshold: 'riskThreshold',
+  riskAction: 'riskAction',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
@@ -1222,6 +1225,34 @@ export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel,
 
 
 /**
+ * Reference to a field of type 'Int'
+ */
+export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+    
+
+
+/**
+ * Reference to a field of type 'Int[]'
+ */
+export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'VerificationRiskAction'
+ */
+export type EnumVerificationRiskActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationRiskAction'>
+    
+
+
+/**
+ * Reference to a field of type 'VerificationRiskAction[]'
+ */
+export type ListEnumVerificationRiskActionFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationRiskAction[]'>
+    
+
+
+/**
  * Reference to a field of type 'VerificationStatus'
  */
 export type EnumVerificationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'VerificationStatus'>
@@ -1288,20 +1319,6 @@ export type EnumAccountLinkConfidenceFieldRefInput<$PrismaModel> = FieldRefInput
  * Reference to a field of type 'AccountLinkConfidence[]'
  */
 export type ListEnumAccountLinkConfidenceFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'AccountLinkConfidence[]'>
-    
-
-
-/**
- * Reference to a field of type 'Int'
- */
-export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
-
-
-/**
- * Reference to a field of type 'Int[]'
- */
-export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
     
 
 

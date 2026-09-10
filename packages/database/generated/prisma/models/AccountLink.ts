@@ -501,14 +501,6 @@ export type EnumAccountLinkConfidenceFieldUpdateOperationsInput = {
   set?: $Enums.AccountLinkConfidence
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type AccountLinkUpdatematchedSignalsInput = {
   set?: $Enums.VerificationSignalKind[]
   push?: $Enums.VerificationSignalKind | $Enums.VerificationSignalKind[]

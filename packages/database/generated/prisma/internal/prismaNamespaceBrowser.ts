@@ -93,6 +93,9 @@ export const GuildConfigScalarFieldEnum = {
   verificationChannelId: 'verificationChannelId',
   logChannelId: 'logChannelId',
   enabled: 'enabled',
+  minimumAccountAgeDays: 'minimumAccountAgeDays',
+  riskThreshold: 'riskThreshold',
+  riskAction: 'riskAction',
   createdAt: 'createdAt',
   updatedAt: 'updatedAt'
 } as const
