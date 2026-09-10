@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "pnpm -r --parallel dev",
     "build": "pnpm -r build",
-    "build:noweb": "pnpm -r --filter '!@verification/web' build",
+    "build:nw": "pnpm -r --filter '!@verification/web' build",
     "typecheck": "pnpm -r typecheck",
     "gen:secret": "openssl rand -hex 32",
     "db:gen": "pnpm --filter @verification/database generate",

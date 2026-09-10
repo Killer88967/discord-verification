@@ -20,8 +20,18 @@ export type AccountLinkModel = runtime.Types.Result.DefaultSelection<Prisma.$Acc
 
 export type AggregateAccountLink = {
   _count: AccountLinkCountAggregateOutputType | null
+  _avg: AccountLinkAvgAggregateOutputType | null
+  _sum: AccountLinkSumAggregateOutputType | null
   _min: AccountLinkMinAggregateOutputType | null
   _max: AccountLinkMaxAggregateOutputType | null
+}
+
+export type AccountLinkAvgAggregateOutputType = {
+  score: number | null
+}
+
+export type AccountLinkSumAggregateOutputType = {
+  score: number | null
 }
 
 export type AccountLinkMinAggregateOutputType = {
@@ -30,6 +40,7 @@ export type AccountLinkMinAggregateOutputType = {
   userBId: string | null
   reason: $Enums.AccountLinkReason | null
   confidence: $Enums.AccountLinkConfidence | null
+  score: number | null
   firstSeenAt: Date | null
   lastSeenAt: Date | null
   createdAt: Date | null
@@ -42,6 +53,7 @@ export type AccountLinkMaxAggregateOutputType = {
   userBId: string | null
   reason: $Enums.AccountLinkReason | null
   confidence: $Enums.AccountLinkConfidence | null
+  score: number | null
   firstSeenAt: Date | null
   lastSeenAt: Date | null
   createdAt: Date | null
@@ -54,6 +66,7 @@ export type AccountLinkCountAggregateOutputType = {
   userBId: number
   reason: number
   confidence: number
+  score: number
   firstSeenAt: number
   lastSeenAt: number
   createdAt: number
@@ -62,12 +75,21 @@ export type AccountLinkCountAggregateOutputType = {
 }
 
 
+export type AccountLinkAvgAggregateInputType = {
+  score?: true
+}
+
+export type AccountLinkSumAggregateInputType = {
+  score?: true
+}
+
 export type AccountLinkMinAggregateInputType = {
   id?: true
   userAId?: true
   userBId?: true
   reason?: true
   confidence?: true
+  score?: true
   firstSeenAt?: true
   lastSeenAt?: true
   createdAt?: true
@@ -80,6 +102,7 @@ export type AccountLinkMaxAggregateInputType = {
   userBId?: true
   reason?: true
   confidence?: true
+  score?: true
   firstSeenAt?: true
   lastSeenAt?: true
   createdAt?: true
@@ -92,6 +115,7 @@ export type AccountLinkCountAggregateInputType = {
   userBId?: true
   reason?: true
   confidence?: true
+  score?: true
   firstSeenAt?: true
   lastSeenAt?: true
   createdAt?: true
@@ -137,6 +161,18 @@ export type AccountLinkAggregateArgs<ExtArgs extends runtime.Types.Extensions.In
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
+   * Select which fields to average
+  **/
+  _avg?: AccountLinkAvgAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
+   * Select which fields to sum
+  **/
+  _sum?: AccountLinkSumAggregateInputType
+  /**
+   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+   * 
    * Select which fields to find the minimum value
   **/
   _min?: AccountLinkMinAggregateInputType
@@ -167,6 +203,8 @@ export type AccountLinkGroupByArgs<ExtArgs extends runtime.Types.Extensions.Inte
   take?: number
   skip?: number
   _count?: AccountLinkCountAggregateInputType | true
+  _avg?: AccountLinkAvgAggregateInputType
+  _sum?: AccountLinkSumAggregateInputType
   _min?: AccountLinkMinAggregateInputType
   _max?: AccountLinkMaxAggregateInputType
 }
@@ -177,11 +215,14 @@ export type AccountLinkGroupByOutputType = {
   userBId: string
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
+  score: number
   firstSeenAt: Date
   lastSeenAt: Date
   createdAt: Date
   updatedAt: Date
   _count: AccountLinkCountAggregateOutputType | null
+  _avg: AccountLinkAvgAggregateOutputType | null
+  _sum: AccountLinkSumAggregateOutputType | null
   _min: AccountLinkMinAggregateOutputType | null
   _max: AccountLinkMaxAggregateOutputType | null
 }
@@ -210,6 +251,7 @@ export type AccountLinkWhereInput = {
   userBId?: Prisma.StringFilter<"AccountLink"> | string
   reason?: Prisma.EnumAccountLinkReasonFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFilter<"AccountLink"> | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFilter<"AccountLink"> | number
   firstSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
@@ -222,6 +264,7 @@ export type AccountLinkOrderByWithRelationInput = {
   userBId?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -238,6 +281,7 @@ export type AccountLinkWhereUniqueInput = Prisma.AtLeast<{
   userBId?: Prisma.StringFilter<"AccountLink"> | string
   reason?: Prisma.EnumAccountLinkReasonFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFilter<"AccountLink"> | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFilter<"AccountLink"> | number
   firstSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeFilter<"AccountLink"> | Date | string
@@ -250,13 +294,16 @@ export type AccountLinkOrderByWithAggregationInput = {
   userBId?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
   _count?: Prisma.AccountLinkCountOrderByAggregateInput
+  _avg?: Prisma.AccountLinkAvgOrderByAggregateInput
   _max?: Prisma.AccountLinkMaxOrderByAggregateInput
   _min?: Prisma.AccountLinkMinOrderByAggregateInput
+  _sum?: Prisma.AccountLinkSumOrderByAggregateInput
 }
 
 export type AccountLinkScalarWhereWithAggregatesInput = {
@@ -268,6 +315,7 @@ export type AccountLinkScalarWhereWithAggregatesInput = {
   userBId?: Prisma.StringWithAggregatesFilter<"AccountLink"> | string
   reason?: Prisma.EnumAccountLinkReasonWithAggregatesFilter<"AccountLink"> | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceWithAggregatesFilter<"AccountLink"> | $Enums.AccountLinkConfidence
+  score?: Prisma.IntWithAggregatesFilter<"AccountLink"> | number
   firstSeenAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
   lastSeenAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"AccountLink"> | Date | string
@@ -280,6 +328,7 @@ export type AccountLinkCreateInput = {
   userBId: string
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
+  score: number
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -292,6 +341,7 @@ export type AccountLinkUncheckedCreateInput = {
   userBId: string
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
+  score: number
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -304,6 +354,7 @@ export type AccountLinkUpdateInput = {
   userBId?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -316,6 +367,7 @@ export type AccountLinkUncheckedUpdateInput = {
   userBId?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -328,6 +380,7 @@ export type AccountLinkCreateManyInput = {
   userBId: string
   reason: $Enums.AccountLinkReason
   confidence: $Enums.AccountLinkConfidence
+  score: number
   firstSeenAt?: Date | string
   lastSeenAt?: Date | string
   createdAt?: Date | string
@@ -340,6 +393,7 @@ export type AccountLinkUpdateManyMutationInput = {
   userBId?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -352,6 +406,7 @@ export type AccountLinkUncheckedUpdateManyInput = {
   userBId?: Prisma.StringFieldUpdateOperationsInput | string
   reason?: Prisma.EnumAccountLinkReasonFieldUpdateOperationsInput | $Enums.AccountLinkReason
   confidence?: Prisma.EnumAccountLinkConfidenceFieldUpdateOperationsInput | $Enums.AccountLinkConfidence
+  score?: Prisma.IntFieldUpdateOperationsInput | number
   firstSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   lastSeenAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
@@ -370,10 +425,15 @@ export type AccountLinkCountOrderByAggregateInput = {
   userBId?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type AccountLinkAvgOrderByAggregateInput = {
+  score?: Prisma.SortOrder
 }
 
 export type AccountLinkMaxOrderByAggregateInput = {
@@ -382,6 +442,7 @@ export type AccountLinkMaxOrderByAggregateInput = {
   userBId?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
@@ -394,10 +455,15 @@ export type AccountLinkMinOrderByAggregateInput = {
   userBId?: Prisma.SortOrder
   reason?: Prisma.SortOrder
   confidence?: Prisma.SortOrder
+  score?: Prisma.SortOrder
   firstSeenAt?: Prisma.SortOrder
   lastSeenAt?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   updatedAt?: Prisma.SortOrder
+}
+
+export type AccountLinkSumOrderByAggregateInput = {
+  score?: Prisma.SortOrder
 }
 
 export type EnumAccountLinkReasonFieldUpdateOperationsInput = {
@@ -408,6 +474,14 @@ export type EnumAccountLinkConfidenceFieldUpdateOperationsInput = {
   set?: $Enums.AccountLinkConfidence
 }
 
+export type IntFieldUpdateOperationsInput = {
+  set?: number
+  increment?: number
+  decrement?: number
+  multiply?: number
+  divide?: number
+}
+
 
 
 export type AccountLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
@@ -416,6 +490,7 @@ export type AccountLinkSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   userBId?: boolean
   reason?: boolean
   confidence?: boolean
+  score?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -428,6 +503,7 @@ export type AccountLinkSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   userBId?: boolean
   reason?: boolean
   confidence?: boolean
+  score?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -440,6 +516,7 @@ export type AccountLinkSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   userBId?: boolean
   reason?: boolean
   confidence?: boolean
+  score?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
@@ -452,13 +529,14 @@ export type AccountLinkSelectScalar = {
   userBId?: boolean
   reason?: boolean
   confidence?: boolean
+  score?: boolean
   firstSeenAt?: boolean
   lastSeenAt?: boolean
   createdAt?: boolean
   updatedAt?: boolean
 }
 
-export type AccountLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userAId" | "userBId" | "reason" | "confidence" | "firstSeenAt" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["accountLink"]>
+export type AccountLinkOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "userAId" | "userBId" | "reason" | "confidence" | "score" | "firstSeenAt" | "lastSeenAt" | "createdAt" | "updatedAt", ExtArgs["result"]["accountLink"]>
 
 export type $AccountLinkPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   name: "AccountLink"
@@ -469,6 +547,7 @@ export type $AccountLinkPayload<ExtArgs extends runtime.Types.Extensions.Interna
     userBId: string
     reason: $Enums.AccountLinkReason
     confidence: $Enums.AccountLinkConfidence
+    score: number
     firstSeenAt: Date
     lastSeenAt: Date
     createdAt: Date
@@ -901,6 +980,7 @@ export interface AccountLinkFieldRefs {
   readonly userBId: Prisma.FieldRef<"AccountLink", 'String'>
   readonly reason: Prisma.FieldRef<"AccountLink", 'AccountLinkReason'>
   readonly confidence: Prisma.FieldRef<"AccountLink", 'AccountLinkConfidence'>
+  readonly score: Prisma.FieldRef<"AccountLink", 'Int'>
   readonly firstSeenAt: Prisma.FieldRef<"AccountLink", 'DateTime'>
   readonly lastSeenAt: Prisma.FieldRef<"AccountLink", 'DateTime'>
   readonly createdAt: Prisma.FieldRef<"AccountLink", 'DateTime'>

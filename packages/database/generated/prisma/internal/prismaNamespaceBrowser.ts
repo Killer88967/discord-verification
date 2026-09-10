@@ -167,6 +167,7 @@ export const AccountLinkScalarFieldEnum = {
   userBId: 'userBId',
   reason: 'reason',
   confidence: 'confidence',
+  score: 'score',
   firstSeenAt: 'firstSeenAt',
   lastSeenAt: 'lastSeenAt',
   createdAt: 'createdAt',

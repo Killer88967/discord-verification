@@ -168,6 +168,7 @@ model AccountLink {
 
     reason     AccountLinkReason
     confidence AccountLinkConfidence
+    score      Int
 
     firstSeenAt DateTime @default(now())
     lastSeenAt  DateTime @default(now())

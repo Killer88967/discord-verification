@@ -151,6 +151,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
           userBId: match.userId,
           reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
           confidence: assessment.confidence,
+          score: assessment.score,
         });
       }),
     );
@@ -160,7 +161,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
-    deviceMatchCount: result.status === "VERIFIED" ? signalMatches.length : 0,
+    matchCount: result.status === "VERIFIED" ? signalMatches.length : 0,
   });
 }
 

@@ -1145,6 +1145,7 @@ export const AccountLinkScalarFieldEnum = {
   userBId: 'userBId',
   reason: 'reason',
   confidence: 'confidence',
+  score: 'score',
   firstSeenAt: 'firstSeenAt',
   lastSeenAt: 'lastSeenAt',
   createdAt: 'createdAt',
@@ -1300,6 +1301,20 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Float'
+ */
+export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
+    
+
+
+/**
+ * Reference to a field of type 'Float[]'
+ */
+export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
 
 /**
