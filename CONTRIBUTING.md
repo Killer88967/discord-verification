@@ -11,15 +11,15 @@ This project is a pnpm monorepo.
 
 Clone the repository and install dependencies:
 
-\`\`\`bash
+```bash
 pnpm install
-\`\`\`
+```
 
 Start the development environment:
 
-\`\`\`bash
+```bash
 pnpm dev
-\`\`\`
+```
 
 Individual applications and packages can also be run through their
 respective workspace commands.
