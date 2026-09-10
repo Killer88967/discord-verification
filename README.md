@@ -64,18 +64,18 @@ These signals can be used by the verification system to identify relationships b
 discord-verification/
 ├── apps/
 │ ├── bot/
-│ │ ├── src/ # Discord bot source
+│ │ ├── src/         # Discord bot source
 │ │ └── .env.example # Bot environment template
 │ │
 │ └── web/
-│ ├── src/ # Next.js verification website
-│ └── .env.example # Web environment template
+│ ├── src/           # Next.js verification website
+│ └── .env.example   # Web environment template
 │
 ├── packages/
-│ ├── database/ # Prisma models and database utilities
-│ ├── security/ # Security and verification utilities
-│ ├── shared/ # Shared application utilities
-│ └── types/ # Shared TypeScript types
+│ ├── database/      # Prisma models and database utilities
+│ ├── security/      # Security and verification utilities
+│ ├── shared/        # Shared application utilities
+│ └── types/         # Shared TypeScript types
 │
 ├── package.json
 ├── pnpm-workspace.yaml

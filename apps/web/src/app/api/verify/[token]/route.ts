@@ -7,6 +7,7 @@ import {
 } from "@verification/database";
 import { hashSignal } from "@verification/security";
 import { NextResponse } from "next/server";
+import { validateVerificationPayload } from "@/lib/verification/validateVerificationPayload";
 
 export const runtime = "nodejs";
 
@@ -14,27 +15,6 @@ interface VerifyRouteContext {
   params: Promise<{
     token: string;
   }>;
-}
-
-interface VerificationRequestBody {
-  deviceId: string;
-
-  signals: {
-    timezone: string;
-    language: string;
-    languages: string[];
-    platform: string;
-
-    screen: {
-      width: number;
-      height: number;
-      colorDepth: number;
-      pixelRatio: number;
-    };
-
-    hardwareConcurrency: number;
-    maxTouchPoints: number;
-  };
 }
 
 export async function POST(request: Request, { params }: VerifyRouteContext) {
@@ -46,9 +26,24 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     throw new Error("FINGERPRINT_HMAC_SECRET is not defined.");
   }
 
-  const body = (await request.json()) as VerificationRequestBody;
+  let rawBody: unknown;
 
-  if (!body || typeof body.deviceId !== "string" || !body.signals) {
+  try {
+    rawBody = await request.json();
+  } catch {
+    return NextResponse.json(
+      {
+        error: "Invalid JSON payload.",
+      },
+      {
+        status: 400,
+      },
+    );
+  }
+
+  const body = validateVerificationPayload(rawBody);
+
+  if (!body) {
     return NextResponse.json(
       {
         error: "Invalid verification payload.",
