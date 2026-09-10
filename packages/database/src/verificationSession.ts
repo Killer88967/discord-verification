@@ -55,6 +55,25 @@ export type CompleteVerificationSessionResult =
       status: "USED";
     };
 
+export type RejectVerificationSessionResult =
+  | {
+      status: "REJECTED";
+      session: {
+        id: string;
+        guildId: string;
+        userId: string;
+      };
+    }
+  | {
+      status: "INVALID";
+    }
+  | {
+      status: "EXPIRED";
+    }
+  | {
+      status: "USED";
+    };
+
 function hashVerificationToken(token: string): string {
   return createHash("sha256").update(token).digest("hex");
 }
@@ -304,4 +323,103 @@ export async function createVerificationSession({
     token,
     expiresAt: session.expiresAt,
   };
+}
+
+export async function rejectVerificationSession(
+  token: string,
+): Promise<RejectVerificationSessionResult> {
+  const tokenHash = hashVerificationToken(token);
+  const now = new Date();
+
+  return prisma.$transaction(async (tx) => {
+    const session = await tx.verificationSession.findUnique({
+      where: {
+        tokenHash,
+      },
+      select: {
+        id: true,
+        guildId: true,
+        userId: true,
+        status: true,
+        expiresAt: true,
+      },
+    });
+
+    if (!session) {
+      return {
+        status: "INVALID",
+      };
+    }
+
+    if (session.status !== "PENDING") {
+      return {
+        status: "USED",
+      };
+    }
+
+    if (session.expiresAt <= now) {
+      const expired = await tx.verificationSession.updateMany({
+        where: {
+          id: session.id,
+          status: "PENDING",
+        },
+        data: {
+          status: "EXPIRED",
+        },
+      });
+
+      if (expired.count === 1) {
+        await tx.verificationEvent.create({
+          data: {
+            guildId: session.guildId,
+            sessionId: session.id,
+            userId: session.userId,
+            type: "EXPIRED",
+          },
+        });
+      }
+
+      return {
+        status: "EXPIRED",
+      };
+    }
+
+    const rejected = await tx.verificationSession.updateMany({
+      where: {
+        id: session.id,
+        status: "PENDING",
+        expiresAt: {
+          gt: now,
+        },
+      },
+      data: {
+        status: "REJECTED",
+        completedAt: now,
+      },
+    });
+
+    if (rejected.count !== 1) {
+      return {
+        status: "USED",
+      };
+    }
+
+    await tx.verificationEvent.create({
+      data: {
+        guildId: session.guildId,
+        sessionId: session.id,
+        userId: session.userId,
+        type: "REJECTED",
+      },
+    });
+
+    return {
+      status: "REJECTED",
+      session: {
+        id: session.id,
+        guildId: session.guildId,
+        userId: session.userId,
+      },
+    };
+  });
 }
