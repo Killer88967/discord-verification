@@ -10,7 +10,8 @@
 */
 
 export const AccountLinkReason = {
-  DEVICE_TOKEN: 'DEVICE_TOKEN'
+  DEVICE_TOKEN: 'DEVICE_TOKEN',
+  SIGNAL_MATCH: 'SIGNAL_MATCH'
 } as const
 
 export type AccountLinkReason = (typeof AccountLinkReason)[keyof typeof AccountLinkReason]

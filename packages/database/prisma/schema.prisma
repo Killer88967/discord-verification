@@ -9,6 +9,7 @@ datasource db {
 
 enum AccountLinkReason {
     DEVICE_TOKEN
+    SIGNAL_MATCH
 }
 
 enum AccountLinkConfidence {
