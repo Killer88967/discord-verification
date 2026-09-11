@@ -10,7 +10,7 @@ export interface GuildSecurityPolicy {
 
 export interface UpdateGuildSecurityPolicyOptions {
   guildId: string;
-  enabled: boolean;
+  enabled?: boolean;
   minimumAccountAgeDays?: number;
   riskThreshold?: number;
   riskAction?: VerificationRiskAction;
