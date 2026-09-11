@@ -1,5 +1,6 @@
 import { auth, signOut } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import Image from "next/image";
 
 export const metadata = {
   title: "Dashboard",
@@ -62,8 +63,20 @@ export default async function DashboardPage() {
                 className="group rounded-xl border border-zinc-800 bg-zinc-900 p-5 transition hover:border-zinc-700 hover:bg-zinc-800"
               >
                 <div className="flex items-center gap-4">
-                  <div className="flex size-12 shrink-0 items-center justify-center rounded-xl bg-zinc-800 text-lg font-semibold group-hover:bg-zinc-700">
-                    {getGuildInitials(guild.name)}
+                  <div className="relative size-12 shrink-0 overflow-hidden rounded-xl bg-zinc-800">
+                    {guild.icon ? (
+                      <Image
+                        src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=96`}
+                        alt={`${guild.name} icon`}
+                        fill
+                        sizes="48px"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <div className="flex size-full items-center justify-center text-lg font-semibold">
+                        {getGuildInitials(guild.name)}
+                      </div>
+                    )}
                   </div>
 
                   <div className="min-w-0">
