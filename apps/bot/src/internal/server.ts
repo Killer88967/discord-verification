@@ -259,7 +259,8 @@ export async function startInternalServer({
       const pid = await findProcessUsingPort(port);
 
       const lines = [
-        `Internal API could not start because port ${port} is already in use.`,
+        "",
+        `Failed to start internal API: port ${port} is already in use.`,
       ];
 
       if (pid !== null) {
@@ -286,44 +287,61 @@ export async function startInternalServer({
       lines.push(
         "",
         "You can also change INTERNAL_API_PORT in the bot environment file.",
+        "",
       );
 
-      throw new Error(lines.join("\n"), {
-        cause: error,
-      });
+      console.error(lines.join("\n"));
+
+      client.destroy();
+      process.exit(1);
     }
 
     if (isNodeError(error) && error.code === "EACCES") {
-      throw new Error(
+      console.error(
         [
-          `Internal API does not have permission to listen on port ${port}.`,
+          "",
+          `Failed to start internal API: permission denied for port ${port}.`,
           "",
           "Try using a port above 1024.",
           "",
-          "You can change INTERNAL_API_PORT in the bot environment file.",
+          "You can also change INTERNAL_API_PORT in the bot environment file.",
+          "",
         ].join("\n"),
-        {
-          cause: error,
-        },
       );
+
+      client.destroy();
+      process.exit(1);
     }
 
     if (isNodeError(error) && error.code === "EADDRNOTAVAIL") {
-      throw new Error(
+      console.error(
         [
-          "Internal API could not bind to 127.0.0.1.",
+          "",
+          "Failed to start internal API: address is not available.",
           "",
           `Requested address: 127.0.0.1:${port}`,
           "",
           "Check the network configuration for the current environment.",
+          "",
         ].join("\n"),
-        {
-          cause: error,
-        },
       );
+
+      client.destroy();
+      process.exit(1);
     }
 
-    throw error;
+    console.error(
+      [
+        "",
+        "Failed to start internal API:",
+        "",
+        error instanceof Error ? error.message : String(error),
+        "",
+      ].join("\n"),
+    );
+
+    client.destroy();
+    process.exit(1);
   }
 }
 

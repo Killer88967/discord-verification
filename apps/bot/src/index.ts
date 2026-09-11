@@ -37,7 +37,7 @@ const rest = new REST({
 client.once("clientReady", async (readyClient) => {
   console.log(`Logged in as ${readyClient.user.tag}`);
 
-  startInternalServer({
+  await startInternalServer({
     client: readyClient,
     secret: internalApiSecret,
     port: internalApiPort,
