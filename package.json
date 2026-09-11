@@ -6,8 +6,10 @@
   "author": "Killer88967",
   "license": "Apache-2.0",
   "scripts": {
-    "dev": "pnpm -r --parallel dev",
+    "dev": "concurrently -k --names db,apps \"pnpm db:dev\" \"pnpm dev:apps\"",
+    "dev:apps": "wait-on tcp:127.0.0.1:51213 && pnpm --parallel --filter @verification/bot --filter @verification/web dev",
     "dev:web": "pnpm --filter @verification/web dev",
+    "dev:bot": "pnpm --filter @verification/bot dev",
     "build": "pnpm -r build",
     "build:nw": "pnpm -r --filter '!@verification/web' build",
     "typecheck": "pnpm -r typecheck",
@@ -26,6 +28,8 @@
   },
   "packageManager": "pnpm@12.3.4",
   "devDependencies": {
-    "typescript": "^7.0.2"
+    "concurrently": "^10.0.5",
+    "typescript": "^7.0.2",
+    "wait-on": "^9.1.0"
   }
 }
