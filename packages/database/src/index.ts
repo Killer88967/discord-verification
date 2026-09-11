@@ -7,3 +7,4 @@ export * from "./deviceMatches.js";
 export * from "./accountLinks.js";
 export * from "./signalMatches.js";
 export * from "./securityPolicy.js";
+export * from "./verificationEnforcement.js";

@@ -5,7 +5,10 @@ import {
   type ServerResponse,
 } from "node:http";
 
-import { getRoleAssignmentTarget } from "@verification/database";
+import {
+  getRoleAssignmentTarget,
+  getVerificationEnforcementTarget,
+} from "@verification/database";
 import type { Client } from "discord.js";
 
 interface StartInternalServerOptions {
@@ -14,7 +17,7 @@ interface StartInternalServerOptions {
   port: number;
 }
 
-interface VerificationCompleteBody {
+interface InternalSessionBody {
   sessionId: string;
 }
 
@@ -25,10 +28,7 @@ export function startInternalServer({
 }: StartInternalServerOptions): void {
   const server = createServer(async (request, response) => {
     try {
-      if (
-        request.method !== "POST" ||
-        request.url !== "/internal/verification-complete"
-      ) {
+      if (request.method !== "POST") {
         sendJson(response, 404, {
           error: "Not found.",
         });
@@ -44,63 +44,133 @@ export function startInternalServer({
         return;
       }
 
-      const body = await readJsonBody<VerificationCompleteBody>(request);
+      if (request.url === "/internal/verification-enforcement") {
+        const body = await readJsonBody<InternalSessionBody>(request);
 
-      if (
-        !body ||
-        typeof body.sessionId !== "string" ||
-        body.sessionId.length === 0
-      ) {
-        sendJson(response, 400, {
-          error: "sessionId is required.",
+        if (!isValidSessionBody(body)) {
+          sendJson(response, 400, {
+            error: "sessionId is required.",
+          });
+
+          return;
+        }
+
+        const target = await getVerificationEnforcementTarget(body.sessionId);
+
+        if (target.status !== "READY") {
+          sendJson(response, 409, {
+            status: target.status,
+          });
+
+          return;
+        }
+
+        const guild =
+          client.guilds.cache.get(target.session.guildId) ??
+          (await client.guilds.fetch(target.session.guildId).catch(() => null));
+
+        if (!guild) {
+          sendJson(response, 404, {
+            error: "Guild could not be found.",
+          });
+
+          return;
+        }
+
+        if (target.session.action === "BAN") {
+          await guild.members.ban(target.session.userId, {
+            reason: "Verification security policy",
+          });
+
+          sendJson(response, 200, {
+            status: "BANNED",
+          });
+
+          return;
+        }
+
+        const member = await guild.members
+          .fetch(target.session.userId)
+          .catch(() => null);
+
+        if (!member) {
+          sendJson(response, 404, {
+            error: "Member could not be found.",
+          });
+
+          return;
+        }
+
+        await member.kick("Verification security policy");
+
+        sendJson(response, 200, {
+          status: "KICKED",
         });
 
         return;
       }
 
-      const target = await getRoleAssignmentTarget(body.sessionId);
+      if (request.url === "/internal/verification-complete") {
+        const body = await readJsonBody<InternalSessionBody>(request);
 
-      if (target.status !== "READY") {
-        sendJson(response, 409, {
-          status: target.status,
+        if (!isValidSessionBody(body)) {
+          sendJson(response, 400, {
+            error: "sessionId is required.",
+          });
+
+          return;
+        }
+
+        const target = await getRoleAssignmentTarget(body.sessionId);
+
+        if (target.status !== "READY") {
+          sendJson(response, 409, {
+            status: target.status,
+          });
+
+          return;
+        }
+
+        const guild =
+          client.guilds.cache.get(target.session.guildId) ??
+          (await client.guilds.fetch(target.session.guildId).catch(() => null));
+
+        if (!guild) {
+          sendJson(response, 404, {
+            error: "Guild could not be found.",
+          });
+
+          return;
+        }
+
+        const member = await guild.members
+          .fetch(target.session.userId)
+          .catch(() => null);
+
+        if (!member) {
+          sendJson(response, 404, {
+            error: "Member could not be found.",
+          });
+
+          return;
+        }
+
+        if (!member.roles.cache.has(target.session.verifiedRoleId)) {
+          await member.roles.add(
+            target.session.verifiedRoleId,
+            "Verification completed",
+          );
+        }
+
+        sendJson(response, 200, {
+          status: "ROLE_GRANTED",
         });
 
         return;
       }
 
-      const guild =
-        client.guilds.cache.get(target.session.guildId) ??
-        (await client.guilds.fetch(target.session.guildId).catch(() => null));
-
-      if (!guild) {
-        sendJson(response, 404, {
-          error: "Guild could not be found.",
-        });
-
-        return;
-      }
-
-      const member = await guild.members
-        .fetch(target.session.userId)
-        .catch(() => null);
-
-      if (!member) {
-        sendJson(response, 404, {
-          error: "Member could not be found.",
-        });
-
-        return;
-      }
-
-      if (!member.roles.cache.has(target.session.verifiedRoleId)) {
-        await member.roles.add(
-          target.session.verifiedRoleId,
-          "Verification completed",
-        );
-      }
-
-      sendJson(response, 200, {
-        status: "ROLE_GRANTED",
+      sendJson(response, 404, {
+        error: "Not found.",
       });
     } catch (error) {
       console.error("Internal API request failed:", error);
@@ -114,6 +184,16 @@ export function startInternalServer({
   server.listen(port, "127.0.0.1", () => {
     console.log(`Internal bot API listening on port ${port}`);
   });
+}
+
+function isValidSessionBody(
+  body: InternalSessionBody | null,
+): body is InternalSessionBody {
+  return (
+    body !== null &&
+    typeof body.sessionId === "string" &&
+    body.sessionId.length > 0
+  );
 }
 
 function isAuthorized(
