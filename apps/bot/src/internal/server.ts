@@ -50,7 +50,7 @@ export function startInternalServer({
         const body = await readJsonBody<InternalSessionBody>(request);
         if (!isValidSessionBody(body)) {
           sendJson(response, 400, {
-            error: "sessionId is requied.",
+            error: "sessionId is required.",
           });
 
           return;

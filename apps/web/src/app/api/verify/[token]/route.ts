@@ -162,7 +162,6 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   const strongestAssessments = [...bestAssessments.values()];
 
-  /** @deprecated */
   const persistAccountLinks = async (userId: string): Promise<void> => {
     await Promise.all(
       strongestAssessments.map(({ match, assessment }) => {
@@ -185,6 +184,8 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     deviceTokenHash,
     signals,
   });
+
+  await persistAccountLinks(lookup.session.userId);
 
   const securityPolicy = await getGuildSecurityPolicy(lookup.session.guildId);
 
@@ -225,7 +226,6 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
-    matchCount: result.status === "VERIFIED" ? strongestAssessments.length : 0,
   });
 }
 
