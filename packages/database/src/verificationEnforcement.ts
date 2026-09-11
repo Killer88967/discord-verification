@@ -77,10 +77,10 @@ export async function getVerificationEnforcementTarget(
   return {
     status: "READY",
     session: {
-      id: "",
-      guildId: "",
-      userId: "",
-      action: "KICK",
+      id: session.id,
+      guildId: session.guildId,
+      userId: session.userId,
+      action: config.riskAction,
     },
   };
 }
