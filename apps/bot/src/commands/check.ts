@@ -44,7 +44,7 @@ export const checkCommand = new Command()
                 `\`${link.userId}\``,
                 `Reason: ${formatReason(link.reason)}`,
                 `Confidence: ${link.confidence}`,
-                `Risk Score: ${link.score}/100`,
+                `Match Score: ${link.score}/100`,
                 `Signals: ${formatSignals(link.matchedSignals)}`,
                 `First Seen: <t:${Math.floor(link.firstSeenAt.getTime() / 1000)}:R>`,
                 `Last Seen: <t:${Math.floor(link.lastSeenAt.getTime() / 1000)}:R>`,
