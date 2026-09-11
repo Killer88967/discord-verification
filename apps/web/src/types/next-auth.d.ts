@@ -6,9 +6,3 @@ declare module "next-auth" {
     manageableGuilds: ManageableDiscordGuild[];
   }
 }
-
-declare module "next-auth/jwt" {
-  interface JWT {
-    manageableGuilds: ManageableDiscordGuild[];
-  }
-}
