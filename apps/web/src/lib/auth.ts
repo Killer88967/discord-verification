@@ -1,5 +1,6 @@
 import NextAuth from "next-auth";
 import Discord from "next-auth/providers/discord";
+import { getManageableDiscordGuilds } from "@/lib/discord";
 
 const discordClientId = process.env.AUTH_DISCORD_ID;
 const discordClientSecret = process.env.AUTH_DISCORD_SECRET;
@@ -23,4 +24,22 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
     }),
   ],
+
+  callbacks: {
+    async jwt({ token, account }) {
+      if (account?.provider === "discord" && account.access_token) {
+        token.manageableGuilds = await getManageableDiscordGuilds(
+          account.access_token,
+        );
+      }
+
+      return token;
+    },
+
+    async session({ session, token }) {
+      session.manageableGuilds = token.manageableGuilds ?? [];
+
+      return session;
+    },
+  },
 });
