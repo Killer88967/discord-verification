@@ -10,6 +10,7 @@ export interface GuildSecurityPolicy {
 
 export interface UpdateGuildSecurityPolicyOptions {
   guildId: string;
+  enabled: boolean;
   minimumAccountAgeDays?: number;
   riskThreshold?: number;
   riskAction?: VerificationRiskAction;
@@ -33,6 +34,7 @@ export async function getGuildSecurityPolicy(
 
 export async function updateGuildSecurityPolicy({
   guildId,
+  enabled,
   minimumAccountAgeDays,
   riskThreshold,
   riskAction,
@@ -66,6 +68,11 @@ export async function updateGuildSecurityPolicy({
       guildId,
     },
     data: {
+      ...(enabled !== undefined
+        ? {
+            enabled,
+          }
+        : {}),
       ...(minimumAccountAgeDays !== undefined
         ? {
             minimumAccountAgeDays,
