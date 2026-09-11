@@ -23,6 +23,10 @@ interface StartInternalServerOptions {
   port: number;
 }
 
+interface InternalGuildBody {
+  guildId: string;
+}
+
 interface InternalSessionBody {
   sessionId: string;
 }
@@ -225,6 +229,68 @@ export async function startInternalServer({
 
         sendJson(response, 200, {
           status: "ROLE_GRANTED",
+        });
+
+        return;
+      }
+
+      if (request.url === "/internal/guild-options") {
+        const body = await readJsonBody<InternalGuildBody>(request);
+
+        if (
+          !body ||
+          typeof body.guildId !== "string" ||
+          body.guildId.length === 0
+        ) {
+          sendJson(response, 400, {
+            error: "guildId is required.",
+          });
+
+          return;
+        }
+
+        const guild =
+          client.guilds.cache.get(body.guildId) ??
+          (await client.guilds.fetch(body.guildId).catch(() => null));
+
+        if (!guild) {
+          sendJson(response, 404, {
+            error: "Guild could not be found.",
+          });
+        }
+
+        const botMember = guild?.members.me;
+
+        const roles = guild?.roles.cache
+          .filter((role) => {
+            if (role.id === guild.id || role.managed) {
+              return false;
+            }
+
+            if (!botMember) {
+              return;
+            }
+
+            return role.position < botMember.roles.highest.position;
+          })
+          .sort((a, b) => b.position - a.position)
+          .map((role) => ({
+            id: role.id,
+            name: role.name,
+            position: role.position,
+          }));
+
+        const channels = guild?.channels.cache
+          .filter((channel) => channel.type === 0)
+          .sort((a, b) => a.position - b.position)
+          .map((channel) => ({
+            id: channel.id,
+            name: channel.name,
+          }));
+
+        sendJson(response, 200, {
+          roles,
+          channels,
         });
 
         return;
