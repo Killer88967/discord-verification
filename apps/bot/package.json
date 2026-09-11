@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@verification/database": "workspace:*",
+    "@verification/security": "workspace:*",
     "discord.js": "^14.27.0",
     "dotenv": "^17.4.2"
   },

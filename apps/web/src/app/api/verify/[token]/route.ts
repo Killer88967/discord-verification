@@ -1,7 +1,9 @@
 import {
   completeVerificationSession,
   findSignalMatches,
+  getGuildSecurityPolicy,
   getVerificationSessionByToken,
+  rejectVerificationSession,
   storeVerificationSignals,
   upsertAccountLink,
   type SignalMatchInput,
@@ -22,6 +24,12 @@ interface VerifyRouteContext {
   params: Promise<{
     token: string;
   }>;
+}
+
+interface VerificationRiskResponse {
+  status: "ASSESSED";
+  score: number;
+  reasons: string[];
 }
 
 export async function POST(request: Request, { params }: VerifyRouteContext) {
@@ -154,6 +162,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   const strongestAssessments = [...bestAssessments.values()];
 
+  /** @deprecated */
   const persistAccountLinks = async (userId: string): Promise<void> => {
     await Promise.all(
       strongestAssessments.map(({ match, assessment }) => {
@@ -177,11 +186,40 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     signals,
   });
 
+  const securityPolicy = await getGuildSecurityPolicy(lookup.session.guildId);
+
+  if (
+    securityPolicy !== null &&
+    securityPolicy.enabled &&
+    securityPolicy.riskAction !== "NONE"
+  ) {
+    const riskAssessment = await assessVerificationRisk(sessionId);
+
+    if (riskAssessment.score >= securityPolicy.riskThreshold) {
+      const rejected = await rejectVerificationSession(token);
+
+      if (rejected.status !== "REJECTED") {
+        return NextResponse.json({
+          status: rejected.status,
+        });
+      }
+
+      if (
+        securityPolicy.riskAction === "KICK" ||
+        securityPolicy.riskAction === "BAN"
+      ) {
+        await enforceVerificationPolicy(rejected.session.id);
+      }
+
+      return NextResponse.json({
+        status: "REJECTED",
+      });
+    }
+  }
+
   const result = await completeVerificationSession(token);
 
   if (result.status === "VERIFIED") {
-    await persistAccountLinks(result.session.userId);
-
     await assignVerifiedRole(result.session.id);
   }
 
@@ -250,5 +288,79 @@ async function assignVerifiedRole(sessionId: string): Promise<void> {
     const body = await response.text();
 
     throw new Error(`Bot role assignment failed: ${response.status} ${body}`);
+  }
+}
+
+async function assessVerificationRisk(
+  sessionId: string,
+): Promise<VerificationRiskResponse> {
+  const botInternalUrl = process.env.BOT_INTERNAL_URL;
+  const internalApiSecret = process.env.INTERNAL_API_SECRET;
+
+  if (!botInternalUrl) {
+    throw new Error("BOT_INTERNAL_URL is not defined.");
+  }
+
+  if (!internalApiSecret) {
+    throw new Error("INTERNAL_API_SECRET is not defined.");
+  }
+
+  const response = await fetch(
+    new URL("/internal/verification-risk", botInternalUrl),
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${internalApiSecret}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sessionId,
+      }),
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+
+    throw new Error(`Bot risk assessment failed: ${response.status} ${body}`);
+  }
+
+  return (await response.json()) as VerificationRiskResponse;
+}
+
+async function enforceVerificationPolicy(sessionId: string): Promise<void> {
+  const botInternalUrl = process.env.BOT_INTERNAL_URL;
+  const internalApiSecret = process.env.INTERNAL_API_SECRET;
+
+  if (!botInternalUrl) {
+    throw new Error("BOT_INTERNAL_URL is not defined.");
+  }
+
+  if (!internalApiSecret) {
+    throw new Error("INTERNAL_API_SECRET is not defined.");
+  }
+
+  const response = await fetch(
+    new URL("/internal/verification-enforcement", botInternalUrl),
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${internalApiSecret}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        sessionId,
+      }),
+      cache: "no-store",
+    },
+  );
+
+  if (!response.ok) {
+    const body = await response.text();
+
+    throw new Error(
+      `Bot verification enforcement failed: ${response.status} ${body}`,
+    );
   }
 }

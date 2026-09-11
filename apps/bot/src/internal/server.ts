@@ -8,8 +8,10 @@ import {
 import {
   getRoleAssignmentTarget,
   getVerificationEnforcementTarget,
+  getVerificationRiskContext,
 } from "@verification/database";
-import type { Client } from "discord.js";
+import { calculateRiskScore } from "@verification/security";
+import type { Client, Guild } from "discord.js";
 
 interface StartInternalServerOptions {
   client: Client;
@@ -39,6 +41,60 @@ export function startInternalServer({
       if (!isAuthorized(request, secret)) {
         sendJson(response, 401, {
           error: "Unauthorized.",
+        });
+
+        return;
+      }
+
+      if (request.url === "/internal/verification-risk") {
+        const body = await readJsonBody<InternalSessionBody>(request);
+        if (!isValidSessionBody(body)) {
+          sendJson(response, 400, {
+            error: "sessionId is requied.",
+          });
+
+          return;
+        }
+
+        const context = await getVerificationRiskContext(body.sessionId);
+
+        if (context.status !== "READY") {
+          sendJson(response, 409, {
+            status: context.status,
+          });
+
+          return;
+        }
+
+        const guild =
+          client.guilds.cache.get(context.session.guildId) ??
+          (await client.guilds
+            .fetch(context.session.guildId)
+            .catch(() => null));
+
+        if (!guild) {
+          sendJson(response, 404, {
+            error: "Guild could not be found.",
+          });
+
+          return;
+        }
+
+        const bannedMatches = await Promise.all(
+          context.linkedUserIds.map((userId) => isUserBanned(guild, userId)),
+        );
+
+        const assessment = calculateRiskScore([
+          {
+            reason: "LINKED_BANNED_ACCOUNT",
+            matched: bannedMatches.some(Boolean),
+          },
+        ]);
+
+        sendJson(response, 200, {
+          status: "ASSESSED",
+          score: assessment.score,
+          reasons: assessment.reasons,
         });
 
         return;
@@ -251,4 +307,23 @@ function sendJson(
   });
 
   response.end(JSON.stringify(data));
+}
+
+async function isUserBanned(guild: Guild, userId: string): Promise<boolean> {
+  try {
+    await guild.bans.fetch(userId);
+
+    return true;
+  } catch (error) {
+    if (
+      error !== null &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === 10026
+    ) {
+      return false;
+    }
+
+    throw error;
+  }
 }
