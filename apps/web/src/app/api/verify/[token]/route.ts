@@ -1,7 +1,9 @@
 import {
   completeVerificationSession,
   findSignalMatches,
+  getGuildSecurityPolicy,
   getVerificationSessionByToken,
+  rejectVerificationSession,
   storeVerificationSignals,
   upsertAccountLink,
   type SignalMatchInput,
@@ -123,7 +125,25 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
       ),
     },
   ];
+
   const signalMatches = await findSignalMatches(signals, lookup.session.userId);
+
+  const assessments = signalMatches.map((match) => ({
+    match,
+    assessment: calculateRiskScore(
+      match.matchedKinds.map((kind) => ({
+        matched: true,
+        reason: signalKindToRiskReason(kind),
+      })),
+    ),
+  }));
+
+  const highestRiskScore = assessments.reduce(
+    (highest, current) => Math.max(highest, current.assessment.score),
+    0,
+  );
+
+  const securityPolicy = await getGuildSecurityPolicy(lookup.session.guildId);
 
   await storeVerificationSignals({
     sessionId,
@@ -131,18 +151,31 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     signals,
   });
 
+  const shouldReject =
+    securityPolicy !== null &&
+    securityPolicy.enabled &&
+    securityPolicy.riskAction !== "NONE" &&
+    highestRiskScore >= securityPolicy.riskThreshold;
+
+  if (shouldReject) {
+    const rejected = await rejectVerificationSession(token);
+
+    if (rejected.status !== "REJECTED") {
+      return NextResponse.json({
+        status: rejected.status,
+      });
+    }
+
+    return NextResponse.json({
+      status: "REJECTED",
+    });
+  }
+
   const result = await completeVerificationSession(token);
 
   if (result.status === "VERIFIED") {
     await Promise.all(
-      signalMatches.map((match) => {
-        const assessment = calculateRiskScore(
-          match.matchedKinds.map((kind) => ({
-            matched: true,
-            reason: signalKindToRiskReason(kind),
-          })),
-        );
-
+      assessments.map(({ match, assessment }) => {
         const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
 
         return upsertAccountLink({
