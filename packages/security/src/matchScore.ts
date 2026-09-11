@@ -1,6 +1,6 @@
-export type RiskConfidence = "LOW" | "MEDIUM" | "HIGH";
+export type MatchConfidence = "LOW" | "MEDIUM" | "HIGH";
 
-export type RiskReason =
+export type MatchReason =
   | "DEVICE_TOKEN_MATCH"
   | "USER_AGENT_MATCH"
   | "TIMEZONE_MATCH"
@@ -9,18 +9,18 @@ export type RiskReason =
   | "SCREEN_MATCH"
   | "HARDWARE_MATCH";
 
-export interface RiskSignalMatch {
-  reason: RiskReason;
+export interface MatchSignal {
+  reason: MatchReason;
   matched: boolean;
 }
 
-export interface RiskAssessment {
+export interface MatchAssessment {
   score: number;
-  confidence: RiskConfidence;
-  reasons: RiskReason[];
+  confidence: MatchConfidence;
+  reasons: MatchReason[];
 }
 
-const WEIGHTS: Record<RiskReason, number> = {
+const WEIGHTS: Record<MatchReason, number> = {
   DEVICE_TOKEN_MATCH: 70,
   USER_AGENT_MATCH: 5,
   TIMEZONE_MATCH: 3,
@@ -29,8 +29,7 @@ const WEIGHTS: Record<RiskReason, number> = {
   SCREEN_MATCH: 7,
   HARDWARE_MATCH: 8,
 };
-
-export function calculateRiskScore(matches: RiskSignalMatch[]): RiskAssessment {
+export function calculateMatchScore(matches: MatchSignal[]): MatchAssessment {
   const reasons = matches
     .filter((match) => match.matched)
     .map((match) => match.reason);
@@ -47,7 +46,7 @@ export function calculateRiskScore(matches: RiskSignalMatch[]): RiskAssessment {
   };
 }
 
-function getConfidence(score: number): RiskConfidence {
+function getConfidence(score: number): MatchConfidence {
   if (score >= 70) {
     return "HIGH";
   }

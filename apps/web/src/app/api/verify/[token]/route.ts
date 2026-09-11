@@ -9,9 +9,9 @@ import {
   type SignalMatchInput,
 } from "@verification/database";
 import {
-  calculateRiskScore,
+  calculateMatchScore,
   hashSignal,
-  type RiskReason,
+  type MatchReason,
 } from "@verification/security";
 import { NextResponse } from "next/server";
 import { validateVerificationPayload } from "@/lib/verification/validateVerificationPayload";
@@ -130,10 +130,10 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   const assessments = signalMatches.map((match) => ({
     match,
-    assessment: calculateRiskScore(
+    assessment: calculateMatchScore(
       match.matchedKinds.map((kind) => ({
         matched: true,
-        reason: signalKindToRiskReason(kind),
+        reason: signalKindToMatchReason(kind),
       })),
     ),
   }));
@@ -173,7 +173,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     );
   };
 
-  const highestRiskScore = strongestAssessments.reduce(
+  const highestMatchScore = strongestAssessments.reduce(
     (highest, current) => Math.max(highest, current.assessment.score),
     0,
   );
@@ -190,7 +190,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     securityPolicy !== null &&
     securityPolicy.enabled &&
     securityPolicy.riskAction !== "NONE" &&
-    highestRiskScore >= securityPolicy.riskThreshold;
+    highestMatchScore >= securityPolicy.riskThreshold;
 
   if (shouldReject) {
     const rejected = await rejectVerificationSession(token);
@@ -229,7 +229,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   });
 }
 
-function signalKindToRiskReason(kind: SignalMatchInput["kind"]): RiskReason {
+function signalKindToMatchReason(kind: SignalMatchInput["kind"]): MatchReason {
   switch (kind) {
     case "DEVICE_TOKEN":
       return "DEVICE_TOKEN_MATCH";
