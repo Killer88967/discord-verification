@@ -7,6 +7,12 @@ export interface ConfigureGuildOptions {
   verificationChannelId: string;
 }
 
+export interface GuildConfigSettings {
+  verifiedRoleId: string | null;
+  verificationChannelId: string | null;
+  logChannelId: string | null;
+}
+
 export async function configureGuild({
   guildId,
   guildName,
@@ -43,5 +49,20 @@ export async function configureGuild({
         enabled: true,
       },
     });
+  });
+}
+
+export async function getGuildConfigSettings(
+  guildId: string,
+): Promise<GuildConfigSettings | null> {
+  return prisma.guildConfig.findUnique({
+    where: {
+      guildId,
+    },
+    select: {
+      verifiedRoleId: true,
+      verificationChannelId: true,
+      logChannelId: true,
+    },
   });
 }
