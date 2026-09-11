@@ -118,3 +118,33 @@ export async function getAccountLinksForUser(
     lastSeenAt: link.lastSeenAt,
   }));
 }
+
+export async function getGuildAccountLinksForUser(
+  guildId: string,
+  userId: string,
+): Promise<AccountLinkMatch[]> {
+  const links = await getAccountLinksForUser(userId);
+
+  if (links.length === 0) {
+    return [];
+  }
+
+  const linkedUserIds = links.map((link) => link.userId);
+
+  const guildUsers = await prisma.verificationSession.findMany({
+    where: {
+      guildId,
+      userId: {
+        in: linkedUserIds,
+      },
+    },
+    select: {
+      userId: true,
+    },
+    distinct: ["userId"],
+  });
+
+  const guildUserIds = new Set(guildUsers.map((session) => session.userId));
+
+  return links.filter((link) => guildUserIds.has(link.userId));
+}

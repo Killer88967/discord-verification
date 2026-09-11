@@ -1,5 +1,5 @@
 import {
-  getAccountLinksForUser,
+  getGuildAccountLinksForUser,
   getUserInvestigation,
 } from "@verification/database";
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
@@ -19,7 +19,7 @@ export const checkCommand = new Command()
 
     const [investigation, links] = await Promise.all([
       getUserInvestigation(interaction.guild.id, user.id),
-      getAccountLinksForUser(user.id),
+      getGuildAccountLinksForUser(interaction.guild.id, user.id),
     ]);
 
     const linkedAccounts = await Promise.all(
