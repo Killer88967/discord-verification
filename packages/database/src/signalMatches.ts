@@ -6,7 +6,8 @@ export interface SignalMatchInput {
   valueHash: string;
 }
 
-export interface SignalMatchedUser {
+export interface SignalMatchedSession {
+  sessionId: string;
   userId: string;
   guildId: string;
   matchedKinds: VerificationSignalKind[];
@@ -15,7 +16,7 @@ export interface SignalMatchedUser {
 export async function findSignalMatches(
   signals: SignalMatchInput[],
   excludeUserId: string,
-): Promise<SignalMatchedUser[]> {
+): Promise<SignalMatchedSession[]> {
   if (signals.length === 0) {
     return [];
   }
@@ -40,6 +41,7 @@ export async function findSignalMatches(
 
       session: {
         select: {
+          id: true,
           guildId: true,
           userId: true,
         },
@@ -47,10 +49,10 @@ export async function findSignalMatches(
     },
   });
 
-  const users = new Map<string, SignalMatchedUser>();
+  const sessions = new Map<string, SignalMatchedSession>();
 
   for (const match of matches) {
-    const existing = users.get(match.session.userId);
+    const existing = sessions.get(match.session.id);
 
     if (existing) {
       if (!existing.matchedKinds.includes(match.kind)) {
@@ -60,12 +62,13 @@ export async function findSignalMatches(
       continue;
     }
 
-    users.set(match.session.userId, {
+    sessions.set(match.session.id, {
+      sessionId: match.session.id,
       userId: match.session.userId,
       guildId: match.session.guildId,
       matchedKinds: [match.kind],
     });
   }
 
-  return [...users.values()];
+  return [...sessions.values()];
 }

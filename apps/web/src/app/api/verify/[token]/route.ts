@@ -138,7 +138,25 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
     ),
   }));
 
-  const highestRiskScore = assessments.reduce(
+  const bestAssessments = new Map<string, (typeof assessments)[number]>();
+
+  for (const candidate of assessments) {
+    const existing = bestAssessments.get(candidate.match.userId);
+
+    if (
+      !existing ||
+      candidate.assessment.score > existing.assessment.score ||
+      (candidate.assessment.score === existing.assessment.score &&
+        candidate.match.matchedKinds.includes("DEVICE_TOKEN") &&
+        !existing.match.matchedKinds.includes("DEVICE_TOKEN"))
+    ) {
+      bestAssessments.set(candidate.match.userId, candidate);
+    }
+  }
+
+  const strongestAssessments = [...bestAssessments.values()];
+
+  const highestRiskScore = strongestAssessments.reduce(
     (highest, current) => Math.max(highest, current.assessment.score),
     0,
   );
@@ -175,7 +193,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   if (result.status === "VERIFIED") {
     await Promise.all(
-      assessments.map(({ match, assessment }) => {
+      assessments.map(({ match, assessment }) => { // Edit later
         const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
 
         return upsertAccountLink({
@@ -194,7 +212,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   return NextResponse.json({
     status: result.status,
-    matchCount: result.status === "VERIFIED" ? signalMatches.length : 0,
+    matchCount: result.status === "VERIFIED" ? strongestAssessments.length : 0,
   });
 }
 
