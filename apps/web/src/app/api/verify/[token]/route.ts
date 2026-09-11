@@ -193,7 +193,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   if (result.status === "VERIFIED") {
     await Promise.all(
-      assessments.map(({ match, assessment }) => { // Edit later
+      strongestAssessments.map(({ match, assessment }) => {
         const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
 
         return upsertAccountLink({
