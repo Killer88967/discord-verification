@@ -1,4 +1,5 @@
 import "dotenv/config";
+import { getGuildSecurityPolicy } from "@verification/database";
 import { Client, GatewayIntentBits, REST, Routes } from "discord.js";
 import { commands } from "./commands/index.js";
 import { startInternalServer } from "./internal/server.js";
@@ -43,7 +44,6 @@ client.once("clientReady", async (readyClient) => {
   });
 
   await rest.put(
-    // Routes.applicationCommands(clientId)
     Routes.applicationGuildCommands(
       clientId,
       process.env.DISCORD_DEV_GUILD_ID as string,
@@ -66,6 +66,30 @@ client.on("interactionCreate", async (interaction) => {
       await interaction.deferReply({
         flags: 64,
       });
+
+      const securityPolicy = await getGuildSecurityPolicy(interaction.guild.id);
+
+      if (securityPolicy?.enabled && securityPolicy.minimumAccountAgeDays > 0) {
+        const minimumAgeMs =
+          securityPolicy.minimumAccountAgeDays * 24 * 60 * 60 * 1000;
+
+        const eligibleAt = interaction.user.createdTimestamp + minimumAgeMs;
+
+        if (Date.now() < eligibleAt) {
+          const eligibleAtUnix = Math.floor(eligibleAt / 1000);
+
+          await interaction.editReply({
+            content: [
+              "Your Discord account is too new to verify in this server.",
+              "",
+              `Accounts must be at least **${securityPolicy.minimumAccountAgeDays} day${securityPolicy.minimumAccountAgeDays === 1 ? "" : "s"} old**.`,
+              `You can verify <t:${eligibleAtUnix}:R>.`,
+            ].join("\n"),
+          });
+
+          return;
+        }
+      }
 
       const url = await createVerificationLink({
         guildId: interaction.guild.id,
