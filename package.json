@@ -7,6 +7,7 @@
   "license": "Apache-2.0",
   "scripts": {
     "dev": "pnpm -r --parallel dev",
+    "dev:web": "pnpm --filter @verification/web dev",
     "build": "pnpm -r build",
     "build:nw": "pnpm -r --filter '!@verification/web' build",
     "typecheck": "pnpm -r typecheck",
