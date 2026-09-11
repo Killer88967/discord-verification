@@ -156,6 +156,23 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
 
   const strongestAssessments = [...bestAssessments.values()];
 
+  const persistAccountLinks = async (userId: string): Promise<void> => {
+    await Promise.all(
+      strongestAssessments.map(({ match, assessment }) => {
+        const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
+
+        return upsertAccountLink({
+          userAId: userId,
+          userBId: match.userId,
+          reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
+          confidence: assessment.confidence,
+          score: assessment.score,
+          matchedSignals: match.matchedKinds,
+        });
+      }),
+    );
+  };
+
   const highestRiskScore = strongestAssessments.reduce(
     (highest, current) => Math.max(highest, current.assessment.score),
     0,
@@ -184,6 +201,8 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
       });
     }
 
+    await persistAccountLinks(rejected.session.userId);
+
     if (
       securityPolicy.riskAction === "KICK" ||
       securityPolicy.riskAction === "BAN"
@@ -199,20 +218,7 @@ export async function POST(request: Request, { params }: VerifyRouteContext) {
   const result = await completeVerificationSession(token);
 
   if (result.status === "VERIFIED") {
-    await Promise.all(
-      strongestAssessments.map(({ match, assessment }) => {
-        const deviceTokenMatched = match.matchedKinds.includes("DEVICE_TOKEN");
-
-        return upsertAccountLink({
-          userAId: result.session.userId,
-          userBId: match.userId,
-          reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
-          confidence: assessment.confidence,
-          score: assessment.score,
-          matchedSignals: match.matchedKinds,
-        });
-      }),
-    );
+    await persistAccountLinks(result.session.userId);
 
     await assignVerifiedRole(result.session.id);
   }
