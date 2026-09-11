@@ -257,18 +257,20 @@ export async function startInternalServer({
           sendJson(response, 404, {
             error: "Guild could not be found.",
           });
+
+          return;
         }
 
-        const botMember = guild?.members.me;
+        const botMember = guild.members.me;
 
-        const roles = guild?.roles.cache
+        const roles = guild.roles.cache
           .filter((role) => {
             if (role.id === guild.id || role.managed) {
               return false;
             }
 
             if (!botMember) {
-              return;
+              return false;
             }
 
             return role.position < botMember.roles.highest.position;
@@ -280,7 +282,7 @@ export async function startInternalServer({
             position: role.position,
           }));
 
-        const channels = guild?.channels.cache
+        const channels = guild.channels.cache
           .filter((channel) => channel.type === 0)
           .sort((a, b) => a.position - b.position)
           .map((channel) => ({
