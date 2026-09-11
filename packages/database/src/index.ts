@@ -9,3 +9,4 @@ export * from "./signalMatches.js";
 export * from "./securityPolicy.js";
 export * from "./verificationEnforcement.js";
 export * from "./verificationRisk.js";
+export * from "./userInvestigation.js";

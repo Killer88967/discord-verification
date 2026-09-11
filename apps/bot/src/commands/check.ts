@@ -1,4 +1,7 @@
-import { getAccountLinksForUser } from "@verification/database";
+import {
+  getAccountLinksForUser,
+  getUserInvestigation,
+} from "@verification/database";
 import { EmbedBuilder, PermissionFlagsBits } from "discord.js";
 import { Command } from "../types/command/index.js";
 
@@ -13,57 +16,87 @@ export const checkCommand = new Command()
   })
   .execute(async (interaction) => {
     const user = interaction.options.getUser("user", true);
-    const links = await getAccountLinksForUser(user.id);
 
-    const guildLinks = (
-      await Promise.all(
-        links.map(async (link) => {
-          const member =
-            interaction.guild.members.cache.get(link.userId) ??
-            (await interaction.guild.members
-              .fetch(link.userId)
-              .catch(() => null));
+    const [investigation, links] = await Promise.all([
+      getUserInvestigation(interaction.guild.id, user.id),
+      getAccountLinksForUser(user.id),
+    ]);
 
-          if (!member) {
-            return null;
-          }
+    const linkedAccounts = await Promise.all(
+      links.slice(0, 10).map(async (link) => {
+        const member =
+          interaction.guild.members.cache.get(link.userId) ??
+          (await interaction.guild.members
+            .fetch(link.userId)
+            .catch(() => null));
 
-          return link;
-        }),
-      )
-    ).filter((link) => link !== null);
+        return {
+          ...link,
+          inGuild: member !== null,
+        };
+      }),
+    );
 
-    const linkedAccounts =
-      guildLinks.length === 0
-        ? "No linked accounts found in this server."
-        : guildLinks
-            .slice(0, 10)
+    const accountSummary = [
+      `Verified: ${investigation.verified ? "Yes" : "No"}`,
+      `Successful Verifications: ${investigation.verificationCount}`,
+      `Rejected Attempts: ${investigation.rejectedCount}`,
+      `Latest Session: ${formatSessionStatus(
+        investigation.latestSessionStatus,
+      )}`,
+      investigation.firstVerifiedAt
+        ? `First Verified: <t:${toUnix(investigation.firstVerifiedAt)}:R>`
+        : null,
+      investigation.lastVerifiedAt
+        ? `Last Verified: <t:${toUnix(investigation.lastVerifiedAt)}:R>`
+        : null,
+      investigation.latestSessionAt
+        ? `Latest Attempt: <t:${toUnix(investigation.latestSessionAt)}:R>`
+        : null,
+    ]
+      .filter((value): value is string => value !== null)
+      .join("\n");
+
+    const relationshipSummary =
+      linkedAccounts.length === 0
+        ? "No linked accounts found."
+        : linkedAccounts
             .map((link) =>
               [
-                `<@${link.userId}>`,
-                `\`${link.userId}\``,
+                link.inGuild
+                  ? `<@${link.userId}>`
+                  : `Discord User \`${link.userId}\``,
+                `Server Status: ${
+                  link.inGuild ? "Currently in server" : "Not in server"
+                }`,
                 `Reason: ${formatReason(link.reason)}`,
                 `Confidence: ${link.confidence}`,
                 `Match Score: ${link.score}/100`,
                 `Signals: ${formatSignals(link.matchedSignals)}`,
-                `First Seen: <t:${Math.floor(link.firstSeenAt.getTime() / 1000)}:R>`,
-                `Last Seen: <t:${Math.floor(link.lastSeenAt.getTime() / 1000)}:R>`,
+                `First Seen: <t:${toUnix(link.firstSeenAt)}:R>`,
+                `Last Seen: <t:${toUnix(link.lastSeenAt)}:R>`,
               ].join("\n"),
             )
             .join("\n\n");
 
     const extra =
-      guildLinks.length > 10
-        ? `\n\n...and ${guildLinks.length - 10} more.`
+      links.length > 10
+        ? `\n\n...and ${links.length - 10} more linked accounts.`
         : "";
 
     const embed = new EmbedBuilder()
-      .setTitle("Verification Check")
+      .setTitle("Verification Investigation")
       .setDescription(`${user}\n\`${user.id}\``)
-      .addFields({
-        name: `Linked Accounts (${guildLinks.length})`,
-        value: `${linkedAccounts}${extra}`,
-      })
+      .addFields(
+        {
+          name: "Verification",
+          value: accountSummary,
+        },
+        {
+          name: `Linked Accounts (${links.length})`,
+          value: `${relationshipSummary}${extra}`,
+        },
+      )
       .setColor(0x5865f2)
       .setTimestamp();
 
@@ -71,6 +104,22 @@ export const checkCommand = new Command()
       embeds: [embed],
     });
   });
+
+function toUnix(date: Date): number {
+  return Math.floor(date.getTime() / 1000);
+}
+
+function formatSessionStatus(
+  status: "PENDING" | "VERIFIED" | "REJECTED" | "EXPIRED" | null,
+): string {
+  if (status === null) {
+    return "None";
+  }
+
+  return status
+    .toLowerCase()
+    .replace(/^./, (character) => character.toUpperCase());
+}
 
 function formatReason(reason: "DEVICE_TOKEN" | "SIGNAL_MATCH"): string {
   switch (reason) {
