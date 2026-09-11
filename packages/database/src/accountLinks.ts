@@ -42,56 +42,47 @@ export async function upsertAccountLink({
   const now = new Date();
 
   return prisma.$transaction(async (tx) => {
-    const existing = await tx.accountLink.findUnique({
+    const existing = await tx.accountLink.upsert({
       where: {
         userAId_userBId: {
           userAId: normalizedUserAId,
           userBId: normalizedUserBId,
         },
       },
+      create: {
+        userAId: normalizedUserAId,
+        userBId: normalizedUserBId,
+        reason,
+        confidence,
+        score,
+        matchedSignals,
+        firstSeenAt: now,
+        lastSeenAt: now,
+      },
+      update: {
+        lastSeenAt: now,
+      },
     });
 
-    if (!existing) {
-      return tx.accountLink.create({
-        data: {
-          userAId: normalizedUserAId,
-          userBId: normalizedUserBId,
-          reason,
-          confidence,
-          score,
-          matchedSignals,
-          firstSeenAt: now,
-          lastSeenAt: now,
-        },
-      });
+    const shouldReplaceEvidence =
+      score > existing.score ||
+      (score === existing.score &&
+        reason === "DEVICE_TOKEN" &&
+        existing.reason !== "DEVICE_TOKEN");
+
+    if (!shouldReplaceEvidence) {
+      return existing;
     }
-
-    const mergedSignals = [
-      ...new Set([...existing.matchedSignals, ...matchedSignals]),
-    ];
-
-    const deviceTokenMatched = mergedSignals.includes("DEVICE_TOKEN");
-
-    const strongerAssessment =
-      score > existing.score
-        ? {
-            score,
-            confidence,
-          }
-        : {
-            score: existing.score,
-            confidence: existing.confidence,
-          };
 
     return tx.accountLink.update({
       where: {
         id: existing.id,
       },
       data: {
-        reason: deviceTokenMatched ? "DEVICE_TOKEN" : "SIGNAL_MATCH",
-        confidence: strongerAssessment.confidence,
-        score: strongerAssessment.score,
-        matchedSignals: mergedSignals,
+        reason,
+        confidence,
+        score,
+        matchedSignals,
         lastSeenAt: now,
       },
     });
