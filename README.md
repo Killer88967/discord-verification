@@ -8,7 +8,7 @@
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![Node.js](https://img.shields.io/badge/Node.js-Required-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
-[![pnpm](https://img.shields.io/badge/pnpm-12.3.4-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
+[![pnpm](https://img.shields.io/badge/pnpm-12.4.1-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
 [![Next.js](https://img.shields.io/badge/Next.js-Web-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
 [![Discord.js](https://img.shields.io/badge/discord.js-Bot-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
