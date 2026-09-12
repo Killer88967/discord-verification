@@ -51,30 +51,39 @@ export default async function GuildDashboardPage({
           ← Back to servers
         </Link>
 
-        <header className="mt-6 flex items-center gap-4">
-          <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-zinc-800">
-            {guild.icon ? (
-              <Image
-                src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`}
-                alt={`${guild.name} icon`}
-                fill
-                sizes="64px"
-                className="object-cover"
-              />
-            ) : (
-              <div className="flex size-full items-center justify-center text-xl font-semibold">
-                {getGuildInitials(guild.name)}
-              </div>
-            )}
+        <header className="mt-6 flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
+          <div className="flex items-center gap-4">
+            <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-zinc-800">
+              {guild.icon ? (
+                <Image
+                  src={`https://cdn.discordapp.com/icons/${guild.id}/${guild.icon}.png?size=128`}
+                  alt={`${guild.name} icon`}
+                  fill
+                  sizes="64px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="flex size-full items-center justify-center text-xl font-semibold">
+                  {getGuildInitials(guild.name)}
+                </div>
+              )}
+            </div>
+
+            <div>
+              <h1 className="text-3xl font-semibold">{guild.name}</h1>
+
+              <p className="mt-1 text-sm text-zinc-400">
+                {guild.owner ? "Server Owner" : "Server Manager"}
+              </p>
+            </div>
           </div>
 
-          <div>
-            <h1 className="text-3xl font-semibold">{guild.name}</h1>
-
-            <p className="mt-1 text-sm text-zinc-400">
-              {guild.owner ? "Server Owner" : "Server Manager"}
-            </p>
-          </div>
+          <Link
+            href={`/dashboard/${guildId}/logs`}
+            className="inline-flex items-center justify-center rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-2.5 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800"
+          >
+            Verification Logs
+          </Link>
         </header>
 
         {!securityPolicy || !guildConfig || !guildOptions ? (
