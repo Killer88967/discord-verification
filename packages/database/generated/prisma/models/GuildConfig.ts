@@ -364,11 +364,11 @@ export type GuildConfigUpdateInput = {
   riskAction?: Prisma.EnumVerificationRiskActionFieldUpdateOperationsInput | $Enums.VerificationRiskAction
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   updatedAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
-  guild?: Prisma.GuildUpdateOneRequiredWithoutConfigNestedInput | undefined
+  guild?: Prisma.GuildUpdateOneRequiredWithoutConfigNestedInput
 }
 
 export type GuildConfigUncheckedUpdateInput = {
-  guildId?: Prisma.StringFieldUpdateOperationsInput | string | undefined
+  guildId?: Prisma.StringFieldUpdateOperationsInput | string
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
