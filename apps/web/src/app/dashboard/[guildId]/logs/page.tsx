@@ -1,4 +1,5 @@
 import { auth } from "@/lib/auth";
+import { getGuildUsers, type GuildUser } from "@/lib/bot";
 import {
   getGuildVerificationHistory,
   type VerificationHistoryEntry,
@@ -30,6 +31,9 @@ export default async function LogsPage({ params }: LogsPageProps) {
   }
 
   const history = await getGuildVerificationHistory(guildId);
+  const userIds = [...new Set(history.map((entry) => entry.userId))];
+  const users = await getGuildUsers(guildId, userIds);
+  const usersById = new Map(users.map((user) => [user.id, user]));
 
   return (
     <main className="min-h-screen bg-zinc-950 px-6 py-10 text-white">
@@ -70,7 +74,11 @@ export default async function LogsPage({ params }: LogsPageProps) {
         ) : (
           <div className="mt-10 space-y-4">
             {history.map((entry) => (
-              <VerificationLogCard key={entry.id} entry={entry} />
+              <VerificationLogCard
+                key={entry.id}
+                entry={entry}
+                user={usersById.get(entry.userId)}
+              />
             ))}
           </div>
         )}
@@ -79,14 +87,46 @@ export default async function LogsPage({ params }: LogsPageProps) {
   );
 }
 
-function VerificationLogCard({ entry }: { entry: VerificationHistoryEntry }) {
+function VerificationLogCard({
+  entry,
+  user,
+}: {
+  entry: VerificationHistoryEntry;
+  user: GuildUser | undefined;
+}) {
   return (
     <article className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
       <div className="flex flex-col justify-between gap-4 sm:flex-row sm:items-start">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h2 className="font-medium">User {entry.userId}</h2>
+            <div className="flex items-center gap-3">
+              {user?.avatarUrl ? (
+                <img
+                  src={user.avatarUrl}
+                  alt=""
+                  className="size-10 rounded-full object-cover"
+                />
+              ) : (
+                <div className="flex size-10 items-center justify-center rounded-full bg-zinc-800 text-sm font-medium text-zinc-400">
+                  ?
+                </div>
+              )}
 
+              <div>
+                <h2 className="font-medium">
+                  {user?.displayName ??
+                    user?.username ??
+                    `User ${entry.userId}`}
+                </h2>
+
+                {user?.username ? (
+                  <p className="mt-0.5 text-xs text-zinc-500">
+                    @{user.username}
+                    {!user.inGuild ? " · No longer in server" : ""}
+                  </p>
+                ) : null}
+              </div>
+            </div>
             <StatusBadge status={entry.status} />
           </div>
 
