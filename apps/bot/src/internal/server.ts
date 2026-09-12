@@ -29,7 +29,7 @@ interface InternalGuildBody {
 
 interface InternalGuildUsersBody {
   guildId: string;
-  userIds: string;
+  userIds: string[];
 }
 
 interface InternalSessionBody {
@@ -345,9 +345,9 @@ export async function startInternalServer({
             if (member) {
               return {
                 id: member.id,
-                name: member.user.username,
-                displayName: member.user.displayName,
-                avatarUrl: member.user.displayAvatarURL({
+                username: member.user.username,
+                displayName: member.displayName,
+                avatarUrl: member.displayAvatarURL({
                   size: 128,
                 }),
                 inGuild: true,
@@ -362,7 +362,7 @@ export async function startInternalServer({
                 username: null,
                 displayName: null,
                 avatarUrl: null,
-                inGuild: null,
+                inGuild: false,
               };
             }
 
