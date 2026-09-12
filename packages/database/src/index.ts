@@ -11,4 +11,4 @@ export * from "./verificationEnforcement.js";
 export * from "./verificationRisk.js";
 export * from "./userInvestigation.js";
 export * from "./verificationHistory.js";
-export * from "./userInvestigateDetails.js";
+export * from "./userInvestigationDetails.js";
