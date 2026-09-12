@@ -27,6 +27,11 @@ interface InternalGuildBody {
   guildId: string;
 }
 
+interface InternalGuildUsersBody {
+  guildId: string;
+  userIds: string;
+}
+
 interface InternalSessionBody {
   sessionId: string;
 }
@@ -293,6 +298,88 @@ export async function startInternalServer({
         sendJson(response, 200, {
           roles,
           channels,
+        });
+
+        return;
+      }
+
+      if (request.url === "/internal/guild-users") {
+        const body = await readJsonBody<InternalGuildUsersBody>(request);
+
+        if (
+          !body ||
+          typeof body.guildId !== "string" ||
+          body.guildId.length === 0 ||
+          !Array.isArray(body.userIds) ||
+          body.userIds.length === 0 ||
+          body.userIds.length > 100 ||
+          body.userIds.some(
+            (userId) => typeof userId !== "string" || userId.length === 0,
+          )
+        ) {
+          sendJson(response, 400, {
+            error: "guildId and userIds are required.",
+          });
+
+          return;
+        }
+
+        const guild =
+          client.guilds.cache.get(body.guildId) ??
+          (await client.guilds.fetch(body.guildId).catch(() => null));
+
+        if (!guild) {
+          sendJson(response, 404, {
+            error: "Guild could not be found.",
+          });
+
+          return;
+        }
+
+        const uniqueUserIds = [...new Set(body.userIds)];
+
+        const users = await Promise.all(
+          uniqueUserIds.map(async (userId) => {
+            const member = await guild.members.fetch(userId).catch(() => null);
+
+            if (member) {
+              return {
+                id: member.id,
+                name: member.user.username,
+                displayName: member.user.displayName,
+                avatarUrl: member.user.displayAvatarURL({
+                  size: 128,
+                }),
+                inGuild: true,
+              };
+            }
+
+            const user = await client.users.fetch(userId).catch(() => null);
+
+            if (!user) {
+              return {
+                id: userId,
+                username: null,
+                displayName: null,
+                avatarUrl: null,
+                inGuild: null,
+              };
+            }
+
+            return {
+              id: user.id,
+              username: user.username,
+              displayName: user.displayName,
+              avatarUrl: user.displayAvatarURL({
+                size: 128,
+              }),
+              inGuild: false,
+            };
+          }),
+        );
+
+        sendJson(response, 200, {
+          users,
         });
 
         return;
