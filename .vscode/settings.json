@@ -19,6 +19,7 @@
   },
   "files.associations": {
     "*.json": "json",
+    "devcontainer.json": "jsonc",
     "*.css": "tailwindcss",
     "NOTICE": "markdown"
   },
