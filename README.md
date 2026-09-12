@@ -76,21 +76,22 @@ These signals can be used by the verification system to identify relationships b
 
 ```text
 discord-verification/
+├── .github/                 # GitHub issue/PR configuration
 ├── apps/
-│ ├── bot/
-│ │ ├── src/         # Discord bot source
-│ │ └── .env.example # Bot environment template
-│ │
-│ └── web/
-│ ├── src/           # Next.js verification website
-│ └── .env.example   # Web environment template
+│   ├── bot/                 # Discord bot
+│   └── web/                 # Verification website
 │
 ├── packages/
-│ ├── database/      # Prisma models and database utilities
-│ ├── security/      # Security and verification utilities
-│ ├── shared/        # Shared application utilities
-│ └── types/         # Shared TypeScript types
+│   ├── database/            # Prisma models and database utilities
+│   ├── security/            # Security and verification utilities
+│   ├── shared/              # Shared application utilities
+│   └── types/               # Shared TypeScript types
 │
+├── CONTRIBUTING.md
+├── SECURITY.md
+├── SUPPORT.md
+├── LICENSE
+├── NOTICE
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── tsconfig.json
@@ -115,8 +116,7 @@ discord-verification/
 Before running the project, you will need:
 
 - Node.js
-- pnpm `12.3.4`
-- PostgreSQL
+- pnpm `12.4.1`
 - A Discord application and bot
 - OpenSSL or another method of generating secure secrets
 
@@ -256,26 +256,34 @@ The database currently stores information including:
 
 ## Development
 
-Run all development applications in parallel:
+Start the complete local development environment:
 
 ```bash
 pnpm dev
 ```
 
-The root workspace runs each package's `dev` command through pnpm.
+This starts the local Prisma development database and then launches both the Discord bot and Next.js web application.
 
-You can also run individual applications.
+The application processes wait for the local database to become available before starting.
 
-### Bot
-
-```bash
-pnpm --filter @verification/bot dev
-```
+You can also run individual applications:
 
 ### Web
 
 ```bash
-pnpm --filter @verification/web dev
+pnpm dev:web
+```
+
+### Bot
+
+```bash
+pnpm dev:bot
+```
+
+### Database
+
+```bash
+pnpm db:dev
 ```
 
 By default, the Next.js application runs at:
@@ -298,6 +306,12 @@ Build the entire workspace:
 
 ```bash
 pnpm build
+```
+
+Build everything except the web application:
+
+```bash
+pnpm build:nw
 ```
 
 Run TypeScript checks across the workspace:
