@@ -1,4 +1,5 @@
 import { auth, signIn, signOut } from "@/lib/auth";
+import Link from "next/link";
 
 export default async function Home() {
   const session = await auth();
@@ -21,12 +22,12 @@ export default async function Home() {
             </p>
 
             <div className="mt-6 flex gap-3">
-              <a
+              <Link
                 href="/dashboard"
                 className="rounded-lg bg-indigo-500 px-4 py-2 font-medium transition hover:bg-indigo-400"
               >
                 Open Dashboard
-              </a>
+              </Link>
 
               <form
                 action={async () => {
