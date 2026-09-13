@@ -72,6 +72,10 @@ model GuildConfig {
     verificationChannelId String?
     logChannelId          String?
 
+    verificationTitle       String?
+    verificationDescription String?
+    accentColor             String?
+
     enabled Boolean @default(true)
 
     minimumAccountAgeDays Int                    @default(0)

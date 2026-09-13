@@ -11,6 +11,9 @@ export interface GuildConfigSettings {
   verifiedRoleId: string | null;
   verificationChannelId: string | null;
   logChannelId: string | null;
+  verificationTitle: string | null;
+  verificationDescription: string | null;
+  accentColor: string | null;
 }
 
 export interface UpdateGuildConfigSettingsOptions {
@@ -18,6 +21,9 @@ export interface UpdateGuildConfigSettingsOptions {
   verifiedRoleId?: string | null;
   verificationChannelId?: string | null;
   logChannelId?: string | null;
+  verificationTitle?: string | null;
+  verificationDescription?: string | null;
+  accentColor?: string | null;
 }
 
 export async function configureGuild({
@@ -70,6 +76,9 @@ export async function getGuildConfigSettings(
       verifiedRoleId: true,
       verificationChannelId: true,
       logChannelId: true,
+      verificationTitle: true,
+      verificationDescription: true,
+      accentColor: true,
     },
   });
 }
@@ -79,6 +88,9 @@ export async function updateGuildConfigSettings({
   verifiedRoleId,
   verificationChannelId,
   logChannelId,
+  verificationTitle,
+  verificationDescription,
+  accentColor,
 }: UpdateGuildConfigSettingsOptions): Promise<GuildConfigSettings> {
   return prisma.guildConfig.update({
     where: {
@@ -100,11 +112,29 @@ export async function updateGuildConfigSettings({
             logChannelId,
           }
         : {}),
+      ...(verificationTitle !== undefined
+        ? {
+            verificationTitle,
+          }
+        : {}),
+      ...(verificationDescription !== undefined
+        ? {
+            verificationDescription,
+          }
+        : {}),
+      ...(accentColor !== undefined
+        ? {
+            accentColor,
+          }
+        : {}),
     },
     select: {
       verifiedRoleId: true,
       verificationChannelId: true,
       logChannelId: true,
+      verificationTitle: true,
+      verificationDescription: true,
+      accentColor: true,
     },
   });
 }

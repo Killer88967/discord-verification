@@ -41,6 +41,9 @@ export type GuildConfigMinAggregateOutputType = {
   verifiedRoleId: string | null
   verificationChannelId: string | null
   logChannelId: string | null
+  verificationTitle: string | null
+  verificationDescription: string | null
+  accentColor: string | null
   enabled: boolean | null
   minimumAccountAgeDays: number | null
   riskThreshold: number | null
@@ -54,6 +57,9 @@ export type GuildConfigMaxAggregateOutputType = {
   verifiedRoleId: string | null
   verificationChannelId: string | null
   logChannelId: string | null
+  verificationTitle: string | null
+  verificationDescription: string | null
+  accentColor: string | null
   enabled: boolean | null
   minimumAccountAgeDays: number | null
   riskThreshold: number | null
@@ -67,6 +73,9 @@ export type GuildConfigCountAggregateOutputType = {
   verifiedRoleId: number
   verificationChannelId: number
   logChannelId: number
+  verificationTitle: number
+  verificationDescription: number
+  accentColor: number
   enabled: number
   minimumAccountAgeDays: number
   riskThreshold: number
@@ -92,6 +101,9 @@ export type GuildConfigMinAggregateInputType = {
   verifiedRoleId?: true
   verificationChannelId?: true
   logChannelId?: true
+  verificationTitle?: true
+  verificationDescription?: true
+  accentColor?: true
   enabled?: true
   minimumAccountAgeDays?: true
   riskThreshold?: true
@@ -105,6 +117,9 @@ export type GuildConfigMaxAggregateInputType = {
   verifiedRoleId?: true
   verificationChannelId?: true
   logChannelId?: true
+  verificationTitle?: true
+  verificationDescription?: true
+  accentColor?: true
   enabled?: true
   minimumAccountAgeDays?: true
   riskThreshold?: true
@@ -118,6 +133,9 @@ export type GuildConfigCountAggregateInputType = {
   verifiedRoleId?: true
   verificationChannelId?: true
   logChannelId?: true
+  verificationTitle?: true
+  verificationDescription?: true
+  accentColor?: true
   enabled?: true
   minimumAccountAgeDays?: true
   riskThreshold?: true
@@ -218,6 +236,9 @@ export type GuildConfigGroupByOutputType = {
   verifiedRoleId: string | null
   verificationChannelId: string | null
   logChannelId: string | null
+  verificationTitle: string | null
+  verificationDescription: string | null
+  accentColor: string | null
   enabled: boolean
   minimumAccountAgeDays: number
   riskThreshold: number
@@ -254,6 +275,9 @@ export type GuildConfigWhereInput = {
   verifiedRoleId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   verificationChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  verificationTitle?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  verificationDescription?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  accentColor?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolFilter<"GuildConfig"> | boolean
   minimumAccountAgeDays?: Prisma.IntFilter<"GuildConfig"> | number
   riskThreshold?: Prisma.IntFilter<"GuildConfig"> | number
@@ -268,6 +292,9 @@ export type GuildConfigOrderByWithRelationInput = {
   verifiedRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   verificationChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  accentColor?: Prisma.SortOrderInput | Prisma.SortOrder
   enabled?: Prisma.SortOrder
   minimumAccountAgeDays?: Prisma.SortOrder
   riskThreshold?: Prisma.SortOrder
@@ -285,6 +312,9 @@ export type GuildConfigWhereUniqueInput = Prisma.AtLeast<{
   verifiedRoleId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   verificationChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  verificationTitle?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  verificationDescription?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
+  accentColor?: Prisma.StringNullableFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolFilter<"GuildConfig"> | boolean
   minimumAccountAgeDays?: Prisma.IntFilter<"GuildConfig"> | number
   riskThreshold?: Prisma.IntFilter<"GuildConfig"> | number
@@ -299,6 +329,9 @@ export type GuildConfigOrderByWithAggregationInput = {
   verifiedRoleId?: Prisma.SortOrderInput | Prisma.SortOrder
   verificationChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
   logChannelId?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationTitle?: Prisma.SortOrderInput | Prisma.SortOrder
+  verificationDescription?: Prisma.SortOrderInput | Prisma.SortOrder
+  accentColor?: Prisma.SortOrderInput | Prisma.SortOrder
   enabled?: Prisma.SortOrder
   minimumAccountAgeDays?: Prisma.SortOrder
   riskThreshold?: Prisma.SortOrder
@@ -320,6 +353,9 @@ export type GuildConfigScalarWhereWithAggregatesInput = {
   verifiedRoleId?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
   verificationChannelId?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
   logChannelId?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
+  verificationTitle?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
+  verificationDescription?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
+  accentColor?: Prisma.StringNullableWithAggregatesFilter<"GuildConfig"> | string | null
   enabled?: Prisma.BoolWithAggregatesFilter<"GuildConfig"> | boolean
   minimumAccountAgeDays?: Prisma.IntWithAggregatesFilter<"GuildConfig"> | number
   riskThreshold?: Prisma.IntWithAggregatesFilter<"GuildConfig"> | number
@@ -332,6 +368,9 @@ export type GuildConfigCreateInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
+  verificationTitle?: string | null
+  verificationDescription?: string | null
+  accentColor?: string | null
   enabled?: boolean
   minimumAccountAgeDays?: number
   riskThreshold?: number
@@ -346,6 +385,9 @@ export type GuildConfigUncheckedCreateInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
+  verificationTitle?: string | null
+  verificationDescription?: string | null
+  accentColor?: string | null
   enabled?: boolean
   minimumAccountAgeDays?: number
   riskThreshold?: number
@@ -358,6 +400,9 @@ export type GuildConfigUpdateInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -372,6 +417,9 @@ export type GuildConfigUncheckedUpdateInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -385,6 +433,9 @@ export type GuildConfigCreateManyInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
+  verificationTitle?: string | null
+  verificationDescription?: string | null
+  accentColor?: string | null
   enabled?: boolean
   minimumAccountAgeDays?: number
   riskThreshold?: number
@@ -397,6 +448,9 @@ export type GuildConfigUpdateManyMutationInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -410,6 +464,9 @@ export type GuildConfigUncheckedUpdateManyInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -428,6 +485,9 @@ export type GuildConfigCountOrderByAggregateInput = {
   verifiedRoleId?: Prisma.SortOrder
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
+  verificationTitle?: Prisma.SortOrder
+  verificationDescription?: Prisma.SortOrder
+  accentColor?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   minimumAccountAgeDays?: Prisma.SortOrder
   riskThreshold?: Prisma.SortOrder
@@ -446,6 +506,9 @@ export type GuildConfigMaxOrderByAggregateInput = {
   verifiedRoleId?: Prisma.SortOrder
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
+  verificationTitle?: Prisma.SortOrder
+  verificationDescription?: Prisma.SortOrder
+  accentColor?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   minimumAccountAgeDays?: Prisma.SortOrder
   riskThreshold?: Prisma.SortOrder
@@ -459,6 +522,9 @@ export type GuildConfigMinOrderByAggregateInput = {
   verifiedRoleId?: Prisma.SortOrder
   verificationChannelId?: Prisma.SortOrder
   logChannelId?: Prisma.SortOrder
+  verificationTitle?: Prisma.SortOrder
+  verificationDescription?: Prisma.SortOrder
+  accentColor?: Prisma.SortOrder
   enabled?: Prisma.SortOrder
   minimumAccountAgeDays?: Prisma.SortOrder
   riskThreshold?: Prisma.SortOrder
@@ -524,6 +590,9 @@ export type GuildConfigCreateWithoutGuildInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
+  verificationTitle?: string | null
+  verificationDescription?: string | null
+  accentColor?: string | null
   enabled?: boolean
   minimumAccountAgeDays?: number
   riskThreshold?: number
@@ -536,6 +605,9 @@ export type GuildConfigUncheckedCreateWithoutGuildInput = {
   verifiedRoleId?: string | null
   verificationChannelId?: string | null
   logChannelId?: string | null
+  verificationTitle?: string | null
+  verificationDescription?: string | null
+  accentColor?: string | null
   enabled?: boolean
   minimumAccountAgeDays?: number
   riskThreshold?: number
@@ -564,6 +636,9 @@ export type GuildConfigUpdateWithoutGuildInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -576,6 +651,9 @@ export type GuildConfigUncheckedUpdateWithoutGuildInput = {
   verifiedRoleId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   verificationChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   logChannelId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationTitle?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  verificationDescription?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  accentColor?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   enabled?: Prisma.BoolFieldUpdateOperationsInput | boolean
   minimumAccountAgeDays?: Prisma.IntFieldUpdateOperationsInput | number
   riskThreshold?: Prisma.IntFieldUpdateOperationsInput | number
@@ -591,6 +669,9 @@ export type GuildConfigSelect<ExtArgs extends runtime.Types.Extensions.InternalA
   verifiedRoleId?: boolean
   verificationChannelId?: boolean
   logChannelId?: boolean
+  verificationTitle?: boolean
+  verificationDescription?: boolean
+  accentColor?: boolean
   enabled?: boolean
   minimumAccountAgeDays?: boolean
   riskThreshold?: boolean
@@ -605,6 +686,9 @@ export type GuildConfigSelectCreateManyAndReturn<ExtArgs extends runtime.Types.E
   verifiedRoleId?: boolean
   verificationChannelId?: boolean
   logChannelId?: boolean
+  verificationTitle?: boolean
+  verificationDescription?: boolean
+  accentColor?: boolean
   enabled?: boolean
   minimumAccountAgeDays?: boolean
   riskThreshold?: boolean
@@ -619,6 +703,9 @@ export type GuildConfigSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.E
   verifiedRoleId?: boolean
   verificationChannelId?: boolean
   logChannelId?: boolean
+  verificationTitle?: boolean
+  verificationDescription?: boolean
+  accentColor?: boolean
   enabled?: boolean
   minimumAccountAgeDays?: boolean
   riskThreshold?: boolean
@@ -633,6 +720,9 @@ export type GuildConfigSelectScalar = {
   verifiedRoleId?: boolean
   verificationChannelId?: boolean
   logChannelId?: boolean
+  verificationTitle?: boolean
+  verificationDescription?: boolean
+  accentColor?: boolean
   enabled?: boolean
   minimumAccountAgeDays?: boolean
   riskThreshold?: boolean
@@ -641,7 +731,7 @@ export type GuildConfigSelectScalar = {
   updatedAt?: boolean
 }
 
-export type GuildConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "verifiedRoleId" | "verificationChannelId" | "logChannelId" | "enabled" | "minimumAccountAgeDays" | "riskThreshold" | "riskAction" | "createdAt" | "updatedAt", ExtArgs["result"]["guildConfig"]>
+export type GuildConfigOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"guildId" | "verifiedRoleId" | "verificationChannelId" | "logChannelId" | "verificationTitle" | "verificationDescription" | "accentColor" | "enabled" | "minimumAccountAgeDays" | "riskThreshold" | "riskAction" | "createdAt" | "updatedAt", ExtArgs["result"]["guildConfig"]>
 export type GuildConfigInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   guild?: boolean | Prisma.GuildDefaultArgs<ExtArgs>
 }
@@ -662,6 +752,9 @@ export type $GuildConfigPayload<ExtArgs extends runtime.Types.Extensions.Interna
     verifiedRoleId: string | null
     verificationChannelId: string | null
     logChannelId: string | null
+    verificationTitle: string | null
+    verificationDescription: string | null
+    accentColor: string | null
     enabled: boolean
     minimumAccountAgeDays: number
     riskThreshold: number
@@ -1096,6 +1189,9 @@ export interface GuildConfigFieldRefs {
   readonly verifiedRoleId: Prisma.FieldRef<"GuildConfig", 'String'>
   readonly verificationChannelId: Prisma.FieldRef<"GuildConfig", 'String'>
   readonly logChannelId: Prisma.FieldRef<"GuildConfig", 'String'>
+  readonly verificationTitle: Prisma.FieldRef<"GuildConfig", 'String'>
+  readonly verificationDescription: Prisma.FieldRef<"GuildConfig", 'String'>
+  readonly accentColor: Prisma.FieldRef<"GuildConfig", 'String'>
   readonly enabled: Prisma.FieldRef<"GuildConfig", 'Boolean'>
   readonly minimumAccountAgeDays: Prisma.FieldRef<"GuildConfig", 'Int'>
   readonly riskThreshold: Prisma.FieldRef<"GuildConfig", 'Int'>
