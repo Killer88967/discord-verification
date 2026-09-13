@@ -16,52 +16,50 @@
 
 A self-hosted Discord verification system built to provide more advanced verification than a simple button or CAPTCHA.
 
-Discord Verification combines a **Discord bot**, **web-based verification flow**, **device/browser signals**, and a persistent database to help Discord servers verify users and detect potentially linked accounts.
+Discord Verification combines a **Discord bot**, **web-based verification flow**, **browser/device signals**, **risk analysis**, and a persistent database to help Discord servers verify users and identify potentially related accounts.
 
 > [!WARNING]
-> This project is currently under development. APIs, database schemas, configuration, and behavior may change.
+> This project is currently under active development. APIs, database schemas, configuration, and behavior may change.
 
-## Features
+## Table of Contents
 
-- Discord verification through generated, single-use verification sessions
-- Web-based verification flow
-- Automatic verified-role assignment
-- Configurable verification settings per Discord server
-- Expiring verification sessions
-- Verification event logging
-- Browser and device signal collection
-- Hashed verification signals
-- Detection infrastructure for potentially linked Discord accounts
-- PostgreSQL-backed persistent storage
-- Monorepo architecture with reusable internal packages
-- Written primarily in TypeScript
-
-## How It Works
-
-1. A Discord user starts verification through the bot.
-2. The bot creates a new verification session in the database.
-3. A unique verification URL is generated for that session.
-4. The user opens the verification website.
-5. The verification service validates the session and processes verification signals.
-6. When verification succeeds, the session is marked as verified.
-7. The web service communicates with the bot's internal API.
-8. The bot assigns the configured verified role to the Discord user.
-
-Verification sessions have an expiration time and their lifecycle can be recorded through events such as:
-
-- `SESSION_CREATED`
-- `SESSION_OPENED`
-- `VERIFIED`
-- `REJECTED`
-- `EXPIRED`
+- [Quick Start](#quick-start)
+- [Features](#features)
+- [Current Status](#current-status)
+- [How It Works](#how-it-works)
+- [Architecture](#architecture)
+- [Discord Commands](#discord-commands)
+- [Bot Permissions](#bot-permissions)
+- [Server Configuration](#server-configuration)
+- [Risk Detection](#risk-detection)
+- [Privacy and Data Handling](#privacy-and-data-handling)
+- [Project Structure](#project-structure)
+- [Tech Stack](#tech-stack)
+- [Requirements](#requirements)
+- [Environment Setup](#environment-setup)
+- [Database Setup](#database-setup)
+- [Development](#development)
+- [Building](#building)
+- [Database Models](#database-models)
+- [Production Deployment](#production-deployment)
+- [Troubleshooting](#troubleshooting)
+- [Roadmap](#roadmap)
+- [Project Resources](#project-resources)
+- [Contributing](#contributing)
+- [License](#license)
 
 ## Quick Start
 
-Clone the repository and install dependencies:
+Clone the repository:
 
 ```bash
 git clone https://github.com/Killer88967/discord-verification.git
 cd discord-verification
+```
+
+Install dependencies:
+
+```bash
 pnpm install
 ```
 
@@ -72,7 +70,7 @@ cp apps/bot/.env.example apps/bot/.env
 cp apps/web/.env.example apps/web/.env
 ```
 
-Fill in the required environment variables, then start the development environment:
+Configure the required environment variables, then start the development environment:
 
 ```bash
 pnpm dev
@@ -80,73 +78,109 @@ pnpm dev
 
 Once the bot is online:
 
-1. Invite it to your Discord server with the required permissions.
+1. Invite the bot to your Discord server.
 2. Run `/setup`.
-3. Select the channel where verification should take place.
-4. Select the role users should receive after successful verification.
-5. Configure optional security rules with `/config security`.
-6. Users can then verify through the verification message created by the bot.
+3. Choose the verification channel.
+4. Choose the role users should receive after verification.
+5. Optionally configure security rules with `/config security`.
+6. Users can begin verification through the message posted by the bot.
 
----
+## Features
+
+- Generated, single-use verification sessions
+- Web-based Discord verification flow
+- Automatic verified-role assignment
+- Per-server verification configuration
+- Expiring verification sessions
+- Verification event history
+- Browser and device signal collection
+- HMAC/hash-based signal storage
+- Potential linked-account detection
+- Relationship confidence levels
+- Relationship match scoring
+- Minimum Discord account-age enforcement
+- Configurable server risk thresholds
+- Automatic reject, kick, or ban enforcement
+- Moderator investigation tools
+- PostgreSQL-backed persistent storage
+- Reusable internal monorepo packages
+- Self-hosted infrastructure
+
+## Current Status
+
+The core verification pipeline is functional.
+
+Currently implemented:
+
+- Verification session creation
+- Web verification
+- Discord role assignment
+- Server setup through `/setup`
+- Security configuration through `/config security`
+- Moderator investigations through `/check`
+- Browser/device signal processing
+- Account relationship detection
+- Risk scoring and threshold enforcement
+- Verification history and event tracking
+
+The project remains under development and should not yet be considered API-stable.
+
+## How It Works
+
+1. A server administrator configures verification using `/setup`.
+2. The bot creates a verification message with a **Verify** button.
+3. A user starts verification through Discord.
+4. The bot creates an expiring verification session.
+5. A unique verification URL is generated for that session.
+6. The user opens the Next.js verification application.
+7. The web application validates the session and processes verification signals.
+8. The risk system evaluates available account and browser information.
+9. The verification session is accepted or rejected.
+10. The web application securely communicates the result to the bot.
+11. The bot applies the configured result, such as:
+    - assigning the verified role,
+    - rejecting verification,
+    - kicking the member,
+    - or banning the member.
+
+Verification session events can include:
+
+- `SESSION_CREATED`
+- `SESSION_OPENED`
+- `VERIFIED`
+- `REJECTED`
+- `EXPIRED`
 
 ## Architecture
 
-Discord Verification is split into multiple applications and internal packages.
+```mermaid
+flowchart TD
+    U[Discord User]
 
-```text
-┌───────────────────────────┐
-│       Discord User        │
-└─────────────┬─────────────┘
-              │
-              │ Verify
-              ▼
-┌───────────────────────────┐
-│        Discord Bot        │
-│        discord.js         │
-└─────────────┬─────────────┘
-              │
-              │ Creates Session
-              ▼
-┌───────────────────────────┐
-│    PostgreSQL / Prisma    │
-│                           │
-│  Sessions                 │
-│  Users                    │
-│  Signals                  │
-│  Events                   │
-│  Account Links            │
-└─────────────┬─────────────┘
-              ▲
-              │
-              │ Reads / Writes Session
-              │
-              ▼
-┌───────────────────────────┐
-│       Next.js Web         │
-│    Verification App       │
-└─────────────┬─────────────┘
-              │
-              │ Processes Verification
-              │ and Security Signals
-              ▼
-┌───────────────────────────┐
-│     Bot Internal API      │
-└─────────────┬─────────────┘
-              │
-              │ Apply Verification
-              │ / Enforcement Action
-              ▼
-┌───────────────────────────┐
-│      Discord Server       │
-│                           │
-│  Role / Reject / Kick /   │
-│  Ban                      │
-└───────────────────────────┘
+    B[Discord Bot<br/>discord.js]
+    W[Verification Web App<br/>Next.js]
+    DB[(PostgreSQL<br/>Prisma)]
+    S[Security / Risk Engine]
+    API[Bot Internal API]
+    D[Discord Server]
+
+    U -->|Starts Verification| B
+    B -->|Creates Session| DB
+    B -->|Provides Verification URL| U
+    U -->|Opens Verification Link| W
+
+    W <-->|Sessions / Events / Signals| DB
+    W -->|Verification Signals| S
+    S <-->|Risk / Relationship Data| DB
+
+    W -->|Verification Result| API
+    API --> B
+
+    B -->|Verified Role| D
+    B -->|Reject / Kick / Ban| D
 ```
 
-The bot and web application share database and security logic through internal workspace packages.
-
----
+The repository separates application-specific code from reusable database, security, shared, and type packages.
 
 ## Discord Commands
 
@@ -154,101 +188,128 @@ The bot and web application share database and security logic through internal w
 
 Configures verification for a Discord server.
 
-Requires the **Manage Server** permission.
+Requires **Manage Server**.
 
-The command accepts:
+Options:
 
-| Option    | Description                                                 |
-| --------- | ----------------------------------------------------------- |
-| `channel` | Text channel where the verification message will be created |
-| `role`    | Role granted after successful verification                  |
+| Option    | Description                                                |
+| --------- | ---------------------------------------------------------- |
+| `channel` | Text channel where the verification message will be posted |
+| `role`    | Role granted after successful verification                 |
 
-The bot checks that:
+The bot validates that:
 
 - The selected channel is a text channel
-- The verified role is assignable
-- The verified role is below the bot's highest role
+- The selected role can be assigned by the bot
+- The role is below the bot's highest role
 - The bot has `Manage Roles`
-- The bot can view, send messages, and embed links in the verification channel
+- The bot can view the verification channel
+- The bot can send messages
+- The bot can embed links
 
 After setup, the bot posts a verification message containing a **Verify** button.
 
+### `/verify`
+
+Creates a verification link for the current Discord server.
+
+This can be used to manually begin a verification session without relying on the persistent verification message.
+
 ### `/config security`
 
-Views or changes server-specific verification security settings.
+Views or modifies verification security settings.
 
-Requires the **Manage Server** permission.
+Requires **Manage Server**.
 
-Available options:
+| Option                | Range / Values                  | Description                                     |
+| --------------------- | ------------------------------- | ----------------------------------------------- |
+| `minimum-account-age` | `0-3650`                        | Minimum Discord account age in days             |
+| `risk-threshold`      | `0-100`                         | Risk score required before enforcement          |
+| `risk-action`         | `NONE`, `REJECT`, `KICK`, `BAN` | Action taken when the risk threshold is reached |
 
-| Option                | Range / Values                  | Description                                |
-| --------------------- | ------------------------------- | ------------------------------------------ |
-| `minimum-account-age` | `0-3650`                        | Minimum Discord account age in days        |
-| `risk-threshold`      | `0-100`                         | Risk score required before enforcement     |
-| `risk-action`         | `NONE`, `REJECT`, `KICK`, `BAN` | Action taken when the threshold is reached |
-
-Running `/config security` without options displays the current policy.
+Running `/config security` without any options displays the current policy.
 
 ### `/check`
 
-Investigates a Discord user's verification history and detected account relationships.
+Investigates a user's verification history and detected account relationships.
 
-Requires the **Moderate Members** permission.
+Requires **Moderate Members**.
 
-The command displays information including:
+The result can include:
 
-- Whether the user has verified
+- Verification status
 - Successful verification count
-- Rejected verification attempts
-- Latest verification session status
-- First and last verification timestamps
-- Linked accounts
+- Rejected attempt count
+- Latest verification session
+- First verification time
+- Last verification time
+- Latest verification attempt
+- Linked Discord accounts
+- Relationship reason
 - Relationship confidence
-- Relationship match score
-- Matching verification signals
+- Match score
+- Matching signals
+- First-seen and last-seen timestamps
 - Whether linked accounts are currently in the server
 
-The response is ephemeral and is only visible to the moderator who runs the command.
+The command response is ephemeral.
 
----
+## Bot Permissions
+
+The bot requires appropriate Discord permissions depending on the enabled features.
+
+### Required for Verification
+
+- View Channels
+- Send Messages
+- Embed Links
+- Manage Roles
+
+The bot's highest role must be positioned **above** the configured verified role.
+
+### Required for Enforcement
+
+Depending on the configured risk action, the bot may also require:
+
+- Kick Members
+- Ban Members
+
+> [!IMPORTANT]
+> Discord's role hierarchy still applies even when the bot has the correct permission.
 
 ## Server Configuration
 
-Verification settings are stored separately for each Discord server.
+Each Discord server maintains its own verification configuration.
 
-Basic verification configuration includes:
+Basic settings include:
 
 - Verification enabled state
 - Verification channel
 - Verified role
 - Logging configuration
 
-Security policy settings include:
+Security policies include:
 
-- Minimum account age
+- Minimum Discord account age
 - Risk threshold
-- Risk enforcement action
-
-This allows each server to decide how aggressively suspicious verification attempts should be handled.
+- Risk action
 
 ### Risk Actions
 
-Servers can currently configure one of the following responses when the configured risk threshold is reached:
+| Action   | Behavior                             |
+| -------- | ------------------------------------ |
+| `NONE`   | Do not perform automatic enforcement |
+| `REJECT` | Reject the verification attempt      |
+| `KICK`   | Remove the user from the server      |
+| `BAN`    | Ban the user from the server         |
 
-| Action   | Behavior                                         |
-| -------- | ------------------------------------------------ |
-| `NONE`   | Record the result without additional enforcement |
-| `REJECT` | Reject the verification attempt                  |
-| `KICK`   | Remove the user from the Discord server          |
-| `BAN`    | Ban the user from the Discord server             |
-
----
+This allows individual servers to decide how aggressively suspicious verification attempts should be handled.
 
 ## Risk Detection
 
-Discord Verification includes a risk-analysis layer designed to detect suspicious verification behavior and potentially related accounts.
+Discord Verification includes a risk-analysis layer designed to identify suspicious verification activity and potential relationships between accounts.
 
-Signals that may contribute to account relationships include:
+Signals currently supported include:
 
 - Device token
 - User agent
@@ -259,17 +320,22 @@ Signals that may contribute to account relationships include:
 - Hardware information
 - Network information
 
-Relationships can include both direct device-token matches and broader browser-signal matches.
+Relationships may be detected through:
 
-Detected relationships can contain:
+- Direct device-token matches
+- Multiple matching browser/device signals
+- Historical verification information
 
-- Matching signal types
-- Confidence level
+Detected relationships may include:
+
+- Relationship reason
+- Matching signals
 - Match score
+- Confidence
 - First-seen timestamp
 - Last-seen timestamp
 
-Confidence levels currently include:
+Confidence levels include:
 
 ```text
 LOW
@@ -278,19 +344,19 @@ HIGH
 ```
 
 > [!IMPORTANT]
-> Account relationships are indicators, not proof that two Discord accounts belong to the same person.
+> Account relationships are indicators, not proof that multiple Discord accounts belong to the same person.
 >
-> Server moderators should consider the available evidence before taking manual moderation action.
+> Fingerprinting and browser-based detection are inherently probabilistic and may produce false positives or false negatives.
 
----
+Moderators should consider the available evidence before taking manual action.
 
 ## Privacy and Data Handling
 
-Discord Verification processes browser and device information in order to detect suspicious verification activity and potential relationships between accounts.
+Discord Verification processes browser and device information to evaluate verification activity and detect potential account relationships.
 
-The system is designed to store verification signals as **hashed values** rather than their original raw values.
+Verification signals are designed to be stored as **hashed/HMAC-derived values** rather than directly storing their original values.
 
-Examples of processed signals include:
+Processed signals can include:
 
 - Device identifiers generated by the verification system
 - Browser user agent
@@ -301,129 +367,62 @@ Examples of processed signals include:
 - Hardware information
 - Network-related information
 
-Sensitive hashing operations use server-side secrets such as `FINGERPRINT_HMAC_SECRET`.
+Sensitive hashing operations use server-side secrets such as:
 
-These secrets must never be exposed to client-side JavaScript or committed to source control.
+```text
+FINGERPRINT_HMAC_SECRET
+```
+
+These secrets must never be exposed to browser-side JavaScript or committed to source control.
+
+### Security Limitations
+
+Hashing verification signals reduces direct exposure of their original values, but hashed data should still be treated as sensitive.
+
+Operators should not assume that hashing alone makes collected information anonymous.
+
+Browser and device fingerprinting may also be affected by:
+
+- Browser privacy protections
+- Extensions
+- VPNs and proxies
+- Device configuration changes
+- Shared devices
+- Virtual machines
+- Automated clients
+- Deliberate attempts to evade detection
 
 ### Self-Hosting Responsibility
 
 Discord Verification is self-hosted.
 
-Anyone operating an instance is responsible for:
+Instance operators are responsible for:
 
-- Securing collected verification data
-- Protecting application secrets
-- Controlling database access
+- Protecting stored verification data
+- Restricting database access
+- Securing application secrets
 - Configuring appropriate data retention
-- Informing users about collected information when required
+- Informing users about data collection when required
 - Following applicable privacy and data-protection laws
-
----
-
-## Production Deployment
-
-The project can be self-hosted, but production deployments should be configured more carefully than the default development environment.
-
-Recommended production practices include:
-
-- Use HTTPS for the verification website
-- Use a production PostgreSQL database
-- Generate strong, unique application secrets
-- Restrict access to the bot's internal API
-- Do not expose the internal API directly to the public internet unless properly secured
-- Run the bot and web application under dedicated service accounts where possible
-- Keep dependencies and the host operating system updated
-- Back up the database
-- Use firewall or reverse-proxy rules to restrict internal services
-- Never commit production `.env` files
-
-The bot and web application must share the same `INTERNAL_API_SECRET`.
-
----
-
-## Roadmap
-
-Discord Verification is still actively being developed.
-
-### Implemented
-
-- [x] Discord verification sessions
-- [x] Single-use verification links
-- [x] Web-based verification flow
-- [x] Automatic verified-role assignment
-- [x] Per-server verification setup
-- [x] Browser and device signal collection
-- [x] Hashed verification signals
-- [x] Verification event history
-- [x] Linked-account detection
-- [x] Relationship confidence and match scoring
-- [x] Moderator account investigation command
-- [x] Minimum account-age policy
-- [x] Configurable risk threshold
-- [x] Reject, kick, and ban risk actions
-
-<!-- ### Planned / Future Improvements
-
-- [ ] Expanded verification configuration
-- [ ] Improved moderation and investigation tooling
-- [ ] Additional risk signals and detection methods
-- [ ] Improved verification logging and audit tools
-- [ ] Administration dashboard
-- [ ] Improved deployment documentation -->
-
-The roadmap may change as the project develops.
-
----
-
-## Screenshots
-
-Screenshots and examples of the Discord and web verification flow will be added as the interface continues to develop.
-
-<!--
-
-Suggested screenshots:
-
-1. /setup result and verification message
-2. Web verification page
-3. Successful verification page
-4. /check investigation output
-5. /config security output
-
-Example:
-
-![Verification Message](docs/images/verification-message.png)
-
--->
-
-## Verification Signals
-
-The system currently has support for verification signals including:
-
-- Device token
-- User agent
-- Timezone
-- Language
-- Platform
-- Screen information
-- Hardware information
-- Network information
-
-Signal values are designed to be stored as hashes rather than directly storing their original values.
-
-These signals can be used by the verification system to identify relationships between verification attempts and help detect potentially linked accounts.
 
 ## Project Structure
 
 ```text
 discord-verification/
-├── .github/                 # GitHub issue/PR configuration
+├── .github/                 # GitHub configuration and templates
+│
 ├── apps/
 │   ├── bot/                 # Discord bot
-│   └── web/                 # Verification website
+│   │   ├── src/
+│   │   └── .env.example
+│   │
+│   └── web/                 # Next.js verification application
+│       ├── src/
+│       └── .env.example
 │
 ├── packages/
 │   ├── database/            # Prisma models and database utilities
-│   ├── security/            # Security and verification utilities
+│   ├── security/            # Risk and security logic
 │   ├── shared/              # Shared application utilities
 │   └── types/               # Shared TypeScript types
 │
@@ -440,16 +439,16 @@ discord-verification/
 
 ## Tech Stack
 
-| Technology   | Usage                                  |
-| ------------ | -------------------------------------- |
-| TypeScript   | Primary language                       |
-| Discord.js   | Discord bot                            |
-| Next.js      | Verification website and API           |
-| React        | Web interface                          |
-| Tailwind CSS | Web styling                            |
-| Prisma       | Database ORM/tooling                   |
-| PostgreSQL   | Persistent database                    |
-| pnpm         | Package manager and monorepo workspace |
+| Technology   | Usage                                      |
+| ------------ | ------------------------------------------ |
+| TypeScript   | Primary language                           |
+| Discord.js   | Discord bot                                |
+| Next.js      | Verification website and API               |
+| React        | Web interface                              |
+| Tailwind CSS | Web styling                                |
+| Prisma       | Database tooling                           |
+| PostgreSQL   | Persistent storage                         |
+| pnpm         | Package management and monorepo workspaces |
 
 ## Requirements
 
@@ -460,38 +459,18 @@ Before running the project, you will need:
 - A Discord application and bot
 - OpenSSL or another method of generating secure secrets
 
-## Installation
-
-Clone the repository:
-
-```bash
-git clone https://github.com/Killer88967/discord-verification.git
-cd discord-verification
-```
-
-Install dependencies:
-
-```bash
-pnpm install
-```
-
 ## Environment Setup
 
-Environment templates are included for both applications.
+Environment templates are included for the bot and web application.
 
-Create the bot environment file:
+Create local copies:
 
 ```bash
 cp apps/bot/.env.example apps/bot/.env
-```
-
-Create the web environment file:
-
-```bash
 cp apps/web/.env.example apps/web/.env
 ```
 
-Then replace the placeholder values inside each file.
+Then replace the placeholder values.
 
 ### Bot Environment
 
@@ -504,7 +483,6 @@ VERIFY_URL=http://localhost:3000
 DATABASE_URL="postgres://postgres:postgres@localhost:51214/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0"
 
 # Internal
-
 INTERNAL_API_SECRET=REPLACE
 INTERNAL_API_PORT=3100
 ```
@@ -517,53 +495,55 @@ INTERNAL_API_PORT=3100
 DATABASE_URL="postgres://postgres:postgres@localhost:51214/template1?sslmode=disable&connection_limit=10&connect_timeout=0&max_idle_connection_lifetime=0&pool_timeout=0&socket_timeout=0"
 
 # Internal
-
 INTERNAL_API_SECRET=REPLACE
 BOT_INTERNAL_URL=http://127.0.0.1:3100
 
 # Security
-
 FINGERPRINT_HMAC_SECRET=REPLACE
 ```
 
 ### Environment Variables
 
-| Variable                  | Application | Description                                                 |
-| ------------------------- | ----------- | ----------------------------------------------------------- |
-| `DISCORD_TOKEN`           | Bot         | Discord bot token                                           |
-| `DISCORD_CLIENT_ID`       | Bot         | Discord application/client ID                               |
-| `VERIFY_URL`              | Bot         | Base URL of the verification website                        |
-| `DATABASE_URL`            | Bot & Web   | PostgreSQL connection string                                |
-| `INTERNAL_API_SECRET`     | Bot & Web   | Shared secret used for internal communication               |
-| `INTERNAL_API_PORT`       | Bot         | Port used by the bot's internal API                         |
-| `BOT_INTERNAL_URL`        | Web         | URL used by the web application to communicate with the bot |
-| `FINGERPRINT_HMAC_SECRET` | Web         | Secret used when hashing verification fingerprint data      |
+| Variable                  | Application | Description                                   |
+| ------------------------- | ----------- | --------------------------------------------- |
+| `DISCORD_TOKEN`           | Bot         | Discord bot token                             |
+| `DISCORD_CLIENT_ID`       | Bot         | Discord application/client ID                 |
+| `VERIFY_URL`              | Bot         | Base URL of the verification website          |
+| `DATABASE_URL`            | Bot & Web   | PostgreSQL connection string                  |
+| `INTERNAL_API_SECRET`     | Bot & Web   | Shared secret used for internal communication |
+| `INTERNAL_API_PORT`       | Bot         | Port exposed by the bot's internal API        |
+| `BOT_INTERNAL_URL`        | Web         | Internal URL used to communicate with the bot |
+| `FINGERPRINT_HMAC_SECRET` | Web         | Secret used when hashing fingerprint signals  |
 
 > [!IMPORTANT]
-> `INTERNAL_API_SECRET` must contain the **same value** in both the bot and web environment files.
+> `INTERNAL_API_SECRET` must be identical between the bot and web application.
 
-Generate a secure secret with:
+Generate a secure random secret with:
 
 ```bash
 pnpm gen:secret
 ```
 
-This currently uses:
+which currently uses:
 
 ```bash
 openssl rand -hex 32
 ```
 
-You should generate separate secure values where appropriate rather than reusing a secret for unrelated purposes.
+Generate separate secrets for unrelated purposes.
 
 > [!CAUTION]
-> Never commit real Discord tokens, database credentials, internal API secrets, fingerprint secrets, or production environment files to Git.
+> Never commit real Discord tokens, database credentials, internal API secrets, fingerprint secrets, or production environment files.
 
 ## Database Setup
 
 The database package uses Prisma with PostgreSQL.
 
-Make sure `DATABASE_URL` points to a running PostgreSQL database before continuing.
+Start the local Prisma development database:
+
+```bash
+pnpm db:dev
+```
 
 Generate the Prisma client:
 
@@ -577,56 +557,55 @@ Run a development migration:
 pnpm db:mig <migration-name>
 ```
 
-For example:
+Example:
 
 ```bash
 pnpm db:mig initial
 ```
 
-The database currently stores information including:
+The database stores information including:
 
 - Discord guilds
 - Guild verification configuration
+- Security policies
 - Verification sessions
 - Verified users
 - Verification events
 - Verification signals
-- Browser devices
-- Potential account links
+- Browser/device information
+- Potential account relationships
 
 ## Development
 
-Start the complete local development environment:
+Start the complete development environment:
 
 ```bash
 pnpm dev
 ```
 
-This starts the local Prisma development database and then launches both the Discord bot and Next.js web application.
+The root development command starts the Prisma development database and launches the bot and web application once the database is available.
 
-The application processes wait for the local database to become available before starting.
+### Run Individual Applications
 
-You can also run individual applications:
-
-### Web
+Web application:
 
 ```bash
 pnpm dev:web
 ```
 
-### Bot
+Discord bot:
 
 ```bash
 pnpm dev:bot
 ```
 
-### Database
+Database:
 
 ```bash
 pnpm db:dev
 ```
 
-By default, the Next.js application runs at:
+By default, the web application runs at:
 
 ```text
 http://localhost:3000
@@ -637,8 +616,6 @@ The bot's internal API defaults to:
 ```text
 http://127.0.0.1:3100
 ```
-
-unless `INTERNAL_API_PORT` or `BOT_INTERNAL_URL` is configured differently.
 
 ## Building
 
@@ -654,7 +631,7 @@ Build everything except the web application:
 pnpm build:nw
 ```
 
-Run TypeScript checks across the workspace:
+Run TypeScript checks:
 
 ```bash
 pnpm typecheck
@@ -662,7 +639,7 @@ pnpm typecheck
 
 ## Database Models
 
-The verification database is centered around several core models.
+The database is centered around several verification-related models.
 
 ### `Guild`
 
@@ -670,18 +647,18 @@ Represents a Discord server using the verification system.
 
 ### `GuildConfig`
 
-Stores server-specific settings such as:
+Stores per-server verification configuration such as:
 
 - Verified role
 - Verification channel
-- Log channel
-- Whether verification is enabled
+- Logging configuration
+- Enabled state
 
 ### `VerificationSession`
 
-Represents an individual verification attempt and contains its status, user, server, expiration time, events, and collected signals.
+Represents an individual verification attempt.
 
-Possible states are:
+Possible states include:
 
 ```text
 PENDING
@@ -690,13 +667,22 @@ REJECTED
 EXPIRED
 ```
 
+A session can contain:
+
+- User ID
+- Guild ID
+- Expiration information
+- Verification events
+- Verification signals
+- Completion state
+
 ### `VerifiedUser`
 
-Tracks users that have successfully completed verification in a server.
+Tracks users that have successfully completed verification.
 
 ### `VerificationEvent`
 
-Records events that occur during a verification session.
+Records events that occur throughout the verification lifecycle.
 
 ### `VerificationSignal`
 
@@ -704,74 +690,189 @@ Stores hashed signals associated with a verification attempt.
 
 ### `BrowserDevice`
 
-Represents a recognized browser/device token using its hashed value.
+Represents recognized browser/device identifiers using hashed values.
 
 ### `AccountLink`
 
-Represents a detected relationship between two Discord user IDs.
+Represents a detected relationship between Discord accounts.
 
-Links can currently have confidence levels of:
+Relationships may include:
 
-```text
-LOW
-MEDIUM
-HIGH
+- Reason
+- Confidence
+- Match score
+- Matching signals
+- First-seen time
+- Last-seen time
+
+## Production Deployment
+
+Development defaults are not intended to represent a complete production configuration.
+
+Recommended production practices include:
+
+- Use HTTPS
+- Use a production PostgreSQL database
+- Generate strong unique secrets
+- Restrict database access
+- Restrict access to the bot's internal API
+- Avoid exposing the internal API publicly
+- Place public services behind an appropriate reverse proxy
+- Run services under dedicated system users or containers
+- Keep dependencies and operating systems updated
+- Configure database backups
+- Monitor application logs
+- Never commit production environment files
+
+The bot and web application must be able to communicate securely through the internal API.
+
+## Troubleshooting
+
+### Slash Commands Do Not Appear
+
+Check that:
+
+- `DISCORD_CLIENT_ID` is correct
+- The bot was invited with application command permissions
+- The bot successfully registered its commands
+- The bot is logged into the expected Discord application
+
+### The Bot Cannot Assign the Verified Role
+
+Make sure:
+
+- The bot has `Manage Roles`
+- The bot's highest role is above the verified role
+- The verified role is not managed by another integration
+- The configured role still exists
+
+### Verification Message Cannot Be Created
+
+Make sure the bot has the following permissions in the verification channel:
+
+- View Channel
+- Send Messages
+- Embed Links
+
+### Web Application Cannot Reach the Bot
+
+Check:
+
+- `BOT_INTERNAL_URL`
+- `INTERNAL_API_PORT`
+- `INTERNAL_API_SECRET`
+- Firewall or container networking rules
+
+The bot and web application must use the same `INTERNAL_API_SECRET`.
+
+### Database Connection Fails
+
+Check:
+
+- `DATABASE_URL`
+- Whether the Prisma development database is running
+- The configured database port
+- PostgreSQL availability
+- Firewall or container networking configuration
+
+### Verification Links Open the Wrong Address
+
+Check `VERIFY_URL` in the bot environment.
+
+For local development it normally points to:
+
+```env
+VERIFY_URL=http://localhost:3000
 ```
 
-## Security
+For production it should point to the public HTTPS verification domain.
 
-The project is designed so sensitive verification values can be processed as hashes instead of being stored directly.
+## Roadmap
 
-Several secrets are used internally, including:
+Discord Verification is actively being developed.
 
-- Discord bot token
-- Internal bot/web API secret
-- Fingerprint HMAC secret
-- Database credentials
+### Implemented
 
-Production deployments should always use strong, independently generated secrets and HTTPS.
+- [x] Verification sessions
+- [x] Single-use verification links
+- [x] Web-based verification
+- [x] Automatic verified-role assignment
+- [x] Per-server setup
+- [x] Browser/device signal collection
+- [x] Hashed verification signals
+- [x] Verification event history
+- [x] Linked-account detection
+- [x] Relationship confidence
+- [x] Relationship match scoring
+- [x] Moderator investigation command
+- [x] Minimum account-age policies
+- [x] Configurable risk thresholds
+- [x] Reject enforcement
+- [x] Kick enforcement
+- [x] Ban enforcement
 
-Never expose `INTERNAL_API_SECRET`, `FINGERPRINT_HMAC_SECRET`, or other server-side credentials to browser-side JavaScript.
+<!--
+### Planned
 
-## Monorepo
+- [ ] Expanded server configuration
+- [ ] Improved moderation tooling
+- [ ] Additional risk signals
+- [ ] Improved audit logs
+- [ ] Administration dashboard
+- [ ] Deployment documentation
+-->
 
-This repository uses pnpm workspaces.
+The roadmap may change as the project develops.
 
-The primary applications are:
+## Screenshots
 
-```text
-@verification/bot
-@verification/web
-```
+Screenshots of the Discord and web verification flow will be added as the user interface continues to develop.
 
-Internal packages are shared between applications using workspace dependencies such as:
+<!--
+Suggested screenshots:
 
-```json
-{
-  "@verification/database": "workspace:*"
-}
-```
+- Verification message
+- /setup result
+- Web verification page
+- Successful verification page
+- /config security output
+- /check investigation output
 
-This keeps database, security, shared logic, and types separated from application-specific code.
+Example:
+
+![Verification Message](docs/images/verification-message.png)
+-->
+
+## Project Resources
+
+- [Contributing Guide](CONTRIBUTING.md)
+- [Security Policy](SECURITY.md)
+- [Support](SUPPORT.md)
+- [License](LICENSE)
+- [Notice](NOTICE)
 
 ## Contributing
 
 Contributions, bug reports, and suggestions are welcome.
 
-If contributing code:
+Before contributing, read [CONTRIBUTING.md](CONTRIBUTING.md).
+
+A typical development workflow is:
 
 1. Fork the repository.
-2. Create a branch for your changes.
+2. Create a branch.
 3. Install dependencies with `pnpm install`.
-4. Copy and configure the required `.env.example` files.
-5. Make your changes.
-6. Run the build and type checks.
-7. Submit a pull request.
+4. Configure the `.env.example` files.
+5. Start development with `pnpm dev`.
+6. Make your changes.
+7. Run the build and type checks.
+8. Submit a pull request.
+
+Security vulnerabilities should be reported according to [SECURITY.md](SECURITY.md) rather than through a public issue.
 
 ## License
 
-Discord Verification Bot is licensed under the
-[Apache License 2.0](LICENSE).
+Discord Verification is licensed under the [Apache License 2.0](LICENSE).
 
 See [NOTICE](NOTICE) for attribution information.
 
