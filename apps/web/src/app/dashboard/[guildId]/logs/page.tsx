@@ -76,6 +76,7 @@ export default async function LogsPage({ params }: LogsPageProps) {
             {history.map((entry) => (
               <VerificationLogCard
                 key={entry.id}
+                guildId={guildId}
                 entry={entry}
                 user={usersById.get(entry.userId)}
               />
@@ -88,9 +89,11 @@ export default async function LogsPage({ params }: LogsPageProps) {
 }
 
 function VerificationLogCard({
+  guildId,
   entry,
   user,
 }: {
+  guildId: string;
   entry: VerificationHistoryEntry;
   user: GuildUser | undefined;
 }) {
@@ -113,11 +116,14 @@ function VerificationLogCard({
               )}
 
               <div>
-                <h2 className="font-medium">
+                <Link
+                  href={`/dashboard/${guildId}/investigate/${entry.userId}`}
+                  className="font-medium transition hover:text-indigo-300"
+                >
                   {user?.displayName ??
                     user?.username ??
                     `User ${entry.userId}`}
-                </h2>
+                </Link>
 
                 {user?.username ? (
                   <p className="mt-0.5 text-xs text-zinc-500">
