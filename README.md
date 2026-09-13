@@ -1,18 +1,21 @@
 # Discord Verification
 
+[![CI](https://github.com/Killer88967/discord-verification/actions/workflows/ci.yml/badge.svg)](https://github.com/Killer88967/discord-verification/actions/workflows/ci.yml)
 [![GitHub License](https://img.shields.io/github/license/Killer88967/discord-verification?style=for-the-badge)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/forks)
 [![GitHub Issues](https://img.shields.io/github/issues/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/issues)
 [![GitHub Pull Requests](https://img.shields.io/github/issues-pr/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/pulls)
+[![GitHub Last Commit](https://img.shields.io/github/last-commit/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/commits/main)
+[![GitHub Repo Size](https://img.shields.io/github/repo-size/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification)
 
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![Node.js](https://img.shields.io/badge/Node.js-Required-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
+[![Node.js](https://img.shields.io/badge/Node.js-22-339933?style=flat-square&logo=node.js&logoColor=white)](https://nodejs.org/)
 [![pnpm](https://img.shields.io/badge/pnpm-12.4.1-F69220?style=flat-square&logo=pnpm&logoColor=white)](https://pnpm.io/)
-[![Next.js](https://img.shields.io/badge/Next.js-Web-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Discord.js](https://img.shields.io/badge/discord.js-Bot-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.3.4-000000?style=flat-square&logo=next.js&logoColor=white)](https://nextjs.org/)
+[![Discord.js](https://img.shields.io/badge/discord.js-14.27.0-5865F2?style=flat-square&logo=discord&logoColor=white)](https://discord.js.org/)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Database-4169E1?style=flat-square&logo=postgresql&logoColor=white)](https://www.postgresql.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-ORM-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
+[![Prisma](https://img.shields.io/badge/Prisma-7.10.0-2D3748?style=flat-square&logo=prisma&logoColor=white)](https://www.prisma.io/)
 
 A self-hosted Discord verification system built to provide more advanced verification than a simple button or CAPTCHA.
 
