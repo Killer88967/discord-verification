@@ -1,6 +1,6 @@
 # Discord Verification
 
-[![CI](https://github.com/Killer88967/discord-verification/actions/workflows/ci.yml/badge.svg)](https://github.com/Killer88967/discord-verification/actions/workflows/ci.yml)
+[![CI](https://img.shields.io/github/actions/workflow/status/Killer88967/discord-verification/ci.yml?branch=main&style=for-the-badge&label=CI)](https://github.com/Killer88967/discord-verification/actions/workflows/ci.yml)
 [![GitHub License](https://img.shields.io/github/license/Killer88967/discord-verification?style=for-the-badge)](LICENSE)
 [![GitHub Stars](https://img.shields.io/github/stars/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/stargazers)
 [![GitHub Forks](https://img.shields.io/github/forks/Killer88967/discord-verification?style=for-the-badge)](https://github.com/Killer88967/discord-verification/forks)
