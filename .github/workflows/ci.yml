@@ -24,6 +24,12 @@ jobs:
       DISCORD_CLIENT_ID: "ci-placeholder"
       VERIFY_URL: "http://localhost:3000"
 
+      AUTH_SECRET: "ci-placeholder"
+      AUTH_DISCORD_ID: "ci-placeholder"
+      AUTH_DISCORD_SECRET: "ci-placeholder"
+
+      DISCORD_DEV_GUILD_ID: "ci-placeholder"
+
       INTERNAL_API_SECRET: "ci-placeholder"
       INTERNAL_API_PORT: "3100"
 
