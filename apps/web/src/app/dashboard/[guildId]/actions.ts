@@ -133,3 +133,72 @@ export async function updateGuildSettings(formData: FormData): Promise<void> {
 
   revalidatePath(`/dashboard/${guildId}`);
 }
+
+export async function updateBrandingSettings(
+  formData: FormData,
+): Promise<void> {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/");
+  }
+
+  const guildId = formData.get("guildId");
+
+  if (typeof guildId !== "string" || guildId.length === 0) {
+    throw new Error("guildId is required.");
+  }
+
+  const guild = session.manageableGuilds.find(
+    (manageableGuild) => manageableGuild.id === guildId,
+  );
+
+  if (!guild) {
+    notFound();
+  }
+
+  const verificationTitle = normalizeOptionalString(
+    formData.get("verificationTitle"),
+  );
+
+  const verificationDescription = normalizeOptionalString(
+    formData.get("verificationDescription"),
+  );
+
+  const accentColor = normalizeOptionalString(formData.get("accentColor"));
+
+  if (verificationTitle && verificationTitle.length > 80) {
+    throw new Error("Verification title must be 80 characters or fewer.");
+  }
+
+  if (verificationDescription && verificationDescription.length > 300) {
+    throw new Error(
+      "Verification description must be 300 characters or fewer.",
+    );
+  }
+
+  if (accentColor && !/^#[0-9a-fA-F]{6}$/.test(accentColor)) {
+    throw new Error("Accent color must be a valid 6-digit hex color.");
+  }
+
+  await updateGuildConfigSettings({
+    guildId,
+    verificationTitle,
+    verificationDescription,
+    accentColor,
+  });
+
+  revalidatePath(`/dashboard/${guildId}`);
+}
+
+function normalizeOptionalString(
+  value: FormDataEntryValue | null,
+): string | null {
+  if (typeof value !== "string") {
+    return null;
+  }
+
+  const trimmed = value.trim();
+
+  return trimmed.length === 0 ? null : trimmed;
+}

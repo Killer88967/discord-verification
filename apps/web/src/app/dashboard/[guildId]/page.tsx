@@ -4,7 +4,11 @@ import {
   getGuildConfigSettings,
   getGuildSecurityPolicy,
 } from "@verification/database";
-import { updateGuildSettings, updateSecuritySettings } from "./actions";
+import {
+  updateBrandingSettings,
+  updateGuildSettings,
+  updateSecuritySettings,
+} from "./actions";
 import Image from "next/image";
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
@@ -198,6 +202,126 @@ export default async function GuildDashboardPage({
               </section>
             </form>
 
+            <form action={updateBrandingSettings}>
+              <input type="hidden" name="guildId" value={guildId} />
+
+              <section className="rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                <div>
+                  <h2 className="text-lg font-semibold">
+                    Verification Branding
+                  </h2>
+
+                  <p className="mt-1 text-sm text-zinc-500">
+                    Customize the text and accent color shown on the
+                    verification page.
+                  </p>
+                </div>
+
+                <div className="mt-6 grid gap-6 lg:grid-cols-2">
+                  <label className="block">
+                    <span className="text-sm font-medium">
+                      Verification title
+                    </span>
+
+                    <p className="mt-1 text-sm text-zinc-500">
+                      Leave blank to use the default title.
+                    </p>
+
+                    <input
+                      type="text"
+                      name="verificationTitle"
+                      maxLength={80}
+                      defaultValue={guildConfig.verificationTitle ?? ""}
+                      placeholder="Verify your Discord account"
+                      className="mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+                    />
+                  </label>
+
+                  <label className="block">
+                    <span className="text-sm font-medium">Accent color</span>
+
+                    <p className="mt-1 text-sm text-zinc-500">
+                      Hex color used for the verification accent.
+                    </p>
+
+                    <div className="mt-3 flex items-center gap-3">
+                      <input
+                        type="color"
+                        value={guildConfig.accentColor ?? "#6366f1"}
+                        readOnly
+                        className="size-10 rounded border border-zinc-700 bg-zinc-950 p-1"
+                      />
+
+                      <input
+                        type="text"
+                        name="accentColor"
+                        maxLength={7}
+                        defaultValue={guildConfig.accentColor ?? ""}
+                        placeholder="#6366F1"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        className="w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 font-mono text-sm uppercase outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+                      />
+                    </div>
+                  </label>
+                </div>
+
+                <label className="mt-6 block">
+                  <span className="text-sm font-medium">
+                    Verification description
+                  </span>
+
+                  <p className="mt-1 text-sm text-zinc-500">
+                    Leave blank to use the default verification description.
+                  </p>
+
+                  <textarea
+                    name="verificationDescription"
+                    maxLength={300}
+                    rows={4}
+                    defaultValue={guildConfig.verificationDescription ?? ""}
+                    placeholder="Your browser is securely completing the verification process."
+                    className="mt-3 w-full resize-y rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm leading-6 outline-none placeholder:text-zinc-600 focus:border-zinc-500"
+                  />
+                </label>
+
+                <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-950 p-5">
+                  <p className="text-xs font-medium uppercase tracking-wide text-zinc-500">
+                    Preview
+                  </p>
+
+                  <div className="mt-4 max-w-md rounded-2xl border border-zinc-800 bg-zinc-900 p-6">
+                    <div
+                      className="mb-4 flex size-12 items-center justify-center rounded-xl text-xl font-bold text-white"
+                      style={{
+                        backgroundColor: guildConfig.accentColor ?? "#6366f1",
+                      }}
+                    >
+                      ✓
+                    </div>
+
+                    <h3 className="text-xl font-semibold">
+                      {guildConfig.verificationTitle ??
+                        "Verify your Discord account"}
+                    </h3>
+
+                    <p className="mt-2 text-sm leading-6 text-zinc-400">
+                      {guildConfig.verificationDescription ??
+                        "Your browser is securely completing the verification process."}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end">
+                  <button
+                    type="submit"
+                    className="rounded-lg bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-zinc-200"
+                  >
+                    Save Branding
+                  </button>
+                </div>
+              </section>
+            </form>
+
             <form action={updateSecuritySettings} className="space-y-6">
               <input type="hidden" name="guildId" value={guildId} />
 
@@ -292,11 +416,8 @@ export default async function GuildDashboardPage({
                         className="mt-3 w-full rounded-lg border border-zinc-700 bg-zinc-950 px-3 py-2 text-sm outline-none focus:border-zinc-500"
                       >
                         <option value="NONE">None</option>
-
                         <option value="REJECT">Reject Verification</option>
-
                         <option value="KICK">Kick User</option>
-
                         <option value="BAN">Ban User</option>
                       </select>
                     </label>
