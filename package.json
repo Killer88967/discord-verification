@@ -12,6 +12,7 @@
     "dev:bot": "pnpm --filter @verification/bot dev",
     "build": "pnpm -r build",
     "build:nw": "pnpm -r --filter '!@verification/web' build",
+    "build:packages": "pnpm --filter @verification/database --filter @verification/security --filter @verification/shared --filter @verification/types build",
     "typecheck": "pnpm -r typecheck",
     "gen:secret": "openssl rand -hex 32",
     "db:gen": "pnpm --filter @verification/database generate",

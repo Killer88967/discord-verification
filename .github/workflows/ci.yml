@@ -52,6 +52,9 @@ jobs:
       - name: Generate Prisma client
         run: pnpm db:gen
 
+      - name: Build internal packages
+        run: pnpm build:packages
+
       - name: Typecheck
         run: pnpm typecheck
 
